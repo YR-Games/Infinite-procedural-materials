@@ -14,8 +14,11 @@ general/accessibility_support=2
 
 [application]
 
-config/name="ProciduralNetExperiment"
+config/name="Infinite-procedural-materials"
+config/description="<eleott e;t pltcm"
 run/main_scene="uid://dmcaagv0qv1ru"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="YR-Games"
 config/features=PackedStringArray("4.6", "Forward Plus")
 run/delta_smoothing=false
 config/icon="res://icon.svg"

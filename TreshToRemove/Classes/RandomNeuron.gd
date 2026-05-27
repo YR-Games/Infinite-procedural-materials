@@ -32,7 +32,7 @@ var depiction1:Image = Image.create_empty(pixeles, pixeles, false, Image.FORMAT_
 var depiction2:Image = Image.create_empty(pixeles, pixeles, false, Image.FORMAT_RGB8)
 var depiction3:Image = Image.create_empty(pixeles, pixeles, false, Image.FORMAT_RGB8)
 
-func _process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	#print("Поиск рараметров для пикселя: ", uv)
 	refenence = _random(uv)
 
