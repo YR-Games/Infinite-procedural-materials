@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://c04q21bkosqbw"]
+
+[ext_resource type="Shader" uid="uid://dxp7xkx1qo77m" path="res://Shaders/tiling_and_sdf_restoration/MSDF_restoration.gdshader" id="1_j0n2v"]
+[ext_resource type="Texture2D" uid="uid://bd3fig6ueem2h" path="res://sdfs/output_msdf_64.png" id="2_j0n2v"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_j0n2v")
+shader_parameter/mult = 4.0
+shader_parameter/normal_power = 1.0
+shader_parameter/sed = ExtResource("2_j0n2v")

@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://dn180m58cu7a1"]
+
+[ext_resource type="Shader" uid="uid://183wkkle0dwm" path="res://Shaders/example_sand.gdshader" id="1_02ok5"]
+[ext_resource type="Script" uid="uid://baa3lt0c3mrhk" path="res://camera_3d.gd" id="2_extcj"]
+[ext_resource type="Shader" uid="uid://b8wh3vaynkn8q" path="res://Shaders/wood_oko_veneer.gdshader" id="3_dtpgv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ljjn8"]
+render_priority = 0
+shader = ExtResource("1_02ok5")
+shader_parameter/scale = Vector2(64, 64)
+shader_parameter/normal_power = 1.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_extcj"]
+size = Vector2(32, 32)
+
+[sub_resource type="Environment" id="Environment_aibyl"]
+background_mode = 1
+background_color = Color(1, 1, 1, 1)
+ambient_light_color = Color(1, 1, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_aibyl"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_02ok5"]
+render_priority = 0
+shader = ExtResource("3_dtpgv")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" unique_id=1095576021]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.019113302, 0.095941305, 0.0004172325)
+material_override = SubResource("ShaderMaterial_ljjn8")
+mesh = SubResource("PlaneMesh_extcj")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1366034911]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 10.889009, 1.5189289e-07)
+script = ExtResource("2_extcj")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Camera3D" unique_id=1973877285]
+transform = Transform3D(0.99960476, -0.028113492, -5.5496143e-18, 0.028113492, 0.99960476, 0, 0, 0, 1, -0.73655164, 1.1484927, -10.426085)
+visible = false
+light_energy = 2.32
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1547975035]
+environment = SubResource("Environment_aibyl")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=863294311]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1, 1.770781, 1.1467243, 0.24041128)
+visible = false
+mesh = SubResource("BoxMesh_aibyl")
+surface_material_override/0 = SubResource("ShaderMaterial_02ok5")

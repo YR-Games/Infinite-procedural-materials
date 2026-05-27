@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://bupo62sa4a0ci"]
+
+[ext_resource type="StyleBox" uid="uid://dhhh003lvmmll" path="res://PTE_V3_R/styles/normal_style_box.tres" id="1_boyt4"]
+[ext_resource type="Script" uid="uid://dc6lv88cgq3jh" path="res://PTE_V3_R/generator.gd" id="1_dc8ch"]
+[ext_resource type="Resource" uid="uid://bmaq7tuu3rwdc" path="res://PTE_V3_R/VoronoiGeneratorData.tres" id="2_polyx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j64ke"]
+
+[node name="Generator" type="PanelContainer" unique_id=607833355]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("1_boyt4")
+script = ExtResource("1_dc8ch")
+generator_data = ExtResource("2_polyx")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1561880892]
+layout_mode = 2
+
+[node name="GeneratorName" type="Label" parent="VBoxContainer" unique_id=1776101676]
+layout_mode = 2
+
+[node name="PreviewContainer" type="PanelContainer" parent="VBoxContainer" unique_id=1622747468]
+layout_mode = 2
+
+[node name="Preview" type="ColorRect" parent="VBoxContainer/PreviewContainer" unique_id=178683292]
+material = SubResource("ShaderMaterial_j64ke")
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+
+[node name="ParameterScroll" type="ScrollContainer" parent="VBoxContainer" unique_id=1087340497]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ParameterList" type="VBoxContainer" parent="VBoxContainer/ParameterScroll" unique_id=1160946702]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

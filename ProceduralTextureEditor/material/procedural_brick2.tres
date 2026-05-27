@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cc32plwj0k81d"]
+
+[ext_resource type="Shader" uid="uid://c0s6ds8juo4v8" path="res://Shaders/failed/smalt.gdshader" id="1_s7plp"]
+[ext_resource type="Texture2D" uid="uid://ccti50pvrarus" path="res://textures/grad.png" id="2_340eg"]
+[ext_resource type="Texture2D" uid="uid://c4kvdnk8i1j4j" path="res://textures/rec.png" id="3_340eg"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_s7plp")
+shader_parameter/scale = Vector2(256, 256)
+shader_parameter/normal_power = 1.0
+shader_parameter/img = ExtResource("3_340eg")
+shader_parameter/grad = ExtResource("2_340eg")

@@ -1,0 +1,102 @@
+[gd_scene load_steps=13 format=3 uid="uid://bxr1v2v00r24c"]
+
+[ext_resource type="Shader" path="res://palette_viewer.gdshader" id="2_woudc"]
+[ext_resource type="Script" path="res://node.gd" id="4_xqon1"]
+[ext_resource type="Material" uid="uid://cxa8e43rjhloo" path="res://procedural_brick.tres" id="7_tfd0t"]
+[ext_resource type="Texture2D" uid="uid://c7xbq171yxksn" path="res://normal_maps1.png" id="8_3iuew"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_dv26m"]
+size = Vector2(4, 4)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xdcqo"]
+render_priority = 0
+shader = ExtResource("2_woudc")
+shader_parameter/ua = Vector3(0.5, 0.5, 0.5)
+shader_parameter/ub = Vector3(1, 1, 1)
+shader_parameter/uc = Vector3(1, 1, 1)
+shader_parameter/ud = Vector3(0, 0.3, 0.66)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rgns3"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_3233k"]
+size = Vector2(4, 2.5)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_aax7j"]
+size = Vector2(4, 2.5)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_6j54d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1fii1"]
+roughness = 0.5
+normal_enabled = true
+normal_texture = ExtResource("8_3iuew")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5f318"]
+albedo_texture = ExtResource("8_3iuew")
+normal_texture = ExtResource("8_3iuew")
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(0.999999, 0.000404383, -0.00154691, -0.000404794, 1, -0.000269723, 0.00154677, 0.000270337, 0.999999, -0.0167898, 0, -0.0466766)
+material_override = ExtResource("7_tfd0t")
+mesh = SubResource("PlaneMesh_dv26m")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.09446, -0.0356923, -0.0519042)
+material_override = SubResource("ShaderMaterial_xdcqo")
+mesh = SubResource("PlaneMesh_dv26m")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.70164, 2, 1.09972)
+material_override = ExtResource("7_tfd0t")
+mesh = SubResource("BoxMesh_rgns3")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.25, 2)
+material_override = ExtResource("7_tfd0t")
+mesh = SubResource("PlaneMesh_3233k")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(-4.37114e-08, 1, 4.37114e-08, 0, -4.37114e-08, 1, 0.999999, 4.37114e-08, 1.91068e-15, -2, 1.25, 0)
+material_override = ExtResource("7_tfd0t")
+mesh = SubResource("PlaneMesh_aax7j")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0781, 0.0897051, -5.58687)
+mesh = SubResource("PlaneMesh_6j54d")
+surface_material_override/0 = SubResource("StandardMaterial3D_1fii1")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.09159, 0.0897051, -3.4305)
+mesh = SubResource("PlaneMesh_6j54d")
+surface_material_override/0 = SubResource("StandardMaterial3D_5f318")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.88553, -5.15906)
+light_color = Color(1, 1, 0.717647, 1)
+light_energy = 0.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Node3D"]
+transform = Transform3D(0.999605, -0.0281135, 0, 0.0281135, 0.999605, 0, 0, 0, 1, 0, 0.267124, -0.0282425)
+light_energy = 0.5
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="Node3D"]
+transform = Transform3D(0.999605, -0.0281135, 0, 0.0281135, 0.999605, 0, 0, 0, 1, 6.11021, 0.370603, 0.170112)
+light_energy = 0.5
+
+[node name="Camera3D" type="Camera3D" parent="Node3D"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, 2, 1, -2)
+
+[node name="tree2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.120386, 0, 0.193998)
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource("4_xqon1")

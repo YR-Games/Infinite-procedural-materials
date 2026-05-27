@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cxa8e43rjhloo"]
+
+[ext_resource type="Shader" uid="uid://bt278r0eiffvl" path="res://Shaders/SDF_TEXTURE_V1_test_dupe.gdshader" id="1_y58hk"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_y58hk")
+shader_parameter/scale = Vector2(4, 8)
+shader_parameter/normal_power = 1.0

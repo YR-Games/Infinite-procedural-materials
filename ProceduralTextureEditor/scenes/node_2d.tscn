@@ -1,0 +1,157 @@
+[gd_scene format=3 uid="uid://dpr76n036henx"]
+
+[ext_resource type="Shader" uid="uid://b4fdml88xk6lm" path="res://Shaders/ray/ray_test.gdshader" id="1_d21ai"]
+[ext_resource type="PackedScene" path="res://textures/test_objects.glb" id="4_85e7g"]
+[ext_resource type="ArrayMesh" uid="uid://d3s0bhwfq6iks" path="res://models/table.tres" id="6_y868g"]
+[ext_resource type="ArrayMesh" uid="uid://dubmgq5dae2i5" path="res://models/stool.tres" id="7_vcrqq"]
+[ext_resource type="Material" uid="uid://cxa8e43rjhloo" path="res://material/procedural_brick.tres" id="8_ayovm"]
+[ext_resource type="Texture2D" uid="uid://c7xbq171yxksn" path="res://textures/normal_maps1.png" id="10_fcj2d"]
+[ext_resource type="Script" uid="uid://bg4b3cjpfx8kj" path="res://editor/runtime_shader_test.gd" id="10_fyw53"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7luj4"]
+shader = ExtResource("1_d21ai")
+shader_parameter/cam = Basis(1, 0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_svnis"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ab0cg"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_mu4gt"]
+size = Vector2(4, 4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_u1xn4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ojbsn"]
+emission = Color(0.099986, 0.099986, 0.099986, 1)
+emission_energy_multiplier = 16.0
+uv1_scale = Vector3(3, 3, 3)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ygnie"]
+size = Vector2(4, 2.5)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_42kpw"]
+size = Vector2(4, 2.5)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_dki18"]
+
+[sub_resource type="Sky" id="Sky_1w1kh"]
+sky_material = SubResource("ProceduralSkyMaterial_dki18")
+
+[sub_resource type="Environment" id="Environment_7pyl8"]
+background_mode = 2
+sky = SubResource("Sky_1w1kh")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ei83f"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ahgle"]
+roughness = 0.5
+normal_enabled = true
+normal_texture = ExtResource("10_fcj2d")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7dy6a"]
+albedo_texture = ExtResource("10_fcj2d")
+normal_texture = ExtResource("10_fcj2d")
+
+[node name="Node2D" type="Node2D"]
+visible = false
+rotation = 0.00455362
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_7luj4")
+scale = Vector2(1024, 1024)
+texture = SubResource("CanvasTexture_svnis")
+
+[node name="Sprite2D3" type="Sprite2D" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_7luj4")
+position = Vector2(512, -512)
+scale = Vector2(1024, 1024)
+texture = SubResource("CanvasTexture_svnis")
+
+[node name="Sprite2D4" type="Sprite2D" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_7luj4")
+position = Vector2(-512, 512)
+scale = Vector2(1024, 1024)
+texture = SubResource("CanvasTexture_svnis")
+
+[node name="Sprite2D5" type="Sprite2D" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_7luj4")
+position = Vector2(527184, -522405)
+rotation = 0.00455362
+scale = Vector2(1.04858e+06, 1.04858e+06)
+texture = SubResource("CanvasTexture_svnis")
+
+[node name="test_objects" parent="." instance=ExtResource("4_85e7g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.09222, 0, -6.65361)
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.37063, 0, 0)
+material_override = SubResource("ShaderMaterial_ab0cg")
+mesh = ExtResource("6_y868g")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15429, 0, 0.523962)
+material_override = SubResource("ShaderMaterial_ab0cg")
+mesh = ExtResource("7_vcrqq")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Node3D"]
+material_override = ExtResource("8_ayovm")
+mesh = SubResource("PlaneMesh_mu4gt")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 2, 0.50708)
+material_override = ExtResource("8_ayovm")
+mesh = SubResource("BoxMesh_u1xn4")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.67888, -1.269)
+visible = false
+material_override = SubResource("StandardMaterial3D_ojbsn")
+mesh = SubResource("BoxMesh_u1xn4")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.25, 2)
+material_override = ExtResource("8_ayovm")
+mesh = SubResource("PlaneMesh_ygnie")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(-4.37114e-08, 1, 4.37114e-08, 0, -4.37114e-08, 1, 0.999999, 4.37114e-08, 1.91068e-15, -2, 1.25, 0)
+material_override = ExtResource("8_ayovm")
+mesh = SubResource("PlaneMesh_42kpw")
+skeleton = NodePath("../..")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Node3D"]
+environment = SubResource("Environment_7pyl8")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0781, 0.0897051, -2.9912)
+mesh = SubResource("PlaneMesh_ei83f")
+surface_material_override/0 = SubResource("StandardMaterial3D_ahgle")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.969186, 0.0897051, -2.9912)
+mesh = SubResource("PlaneMesh_ei83f")
+surface_material_override/0 = SubResource("StandardMaterial3D_7dy6a")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.88553, -5.15906)
+light_energy = 0.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Node3D"]
+transform = Transform3D(0.999605, -0.0281135, 0, 0.0281135, 0.999605, 0, 0, 0, 1, 0.236168, 0.19922, 0.746462)
+light_energy = 0.5
+
+[node name="Camera3D" type="Camera3D" parent="Node3D"]
+transform = Transform3D(-0.734702, 0, 0.678391, 0, 1, 0, -0.678391, 0, -0.734702, 1.55074, 0.870702, -1.2956)
+
+[node name="Node3D" type="Node3D" parent="Node3D"]
+script = ExtResource("10_fyw53")

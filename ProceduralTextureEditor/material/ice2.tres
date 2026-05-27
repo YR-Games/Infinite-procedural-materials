@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://7f43ti0kxejh"]
+
+[ext_resource type="Shader" uid="uid://crb3wlf6jvc5k" path="res://Shaders/grid_pattern_test.gdshader" id="1_1t0ij"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_1t0ij")
+shader_parameter/mult = 1.0
+shader_parameter/normal_power = 1.0

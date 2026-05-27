@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cgsgmmylr6nh2"]
+
+[ext_resource type="Script" uid="uid://bss4ei7grmfxs" path="res://baker/generator_baker.gd" id="1_e6qrq"]
+[ext_resource type="Resource" uid="uid://bmaq7tuu3rwdc" path="res://PTE_V3_R/VoronoiGeneratorData.tres" id="2_0dptq"]
+
+[node name="SubViewport" type="SubViewport" unique_id=1175955105]
+transparent_bg = true
+render_target_clear_mode = 1
+render_target_update_mode = 4
+script = ExtResource("1_e6qrq")
+generator_data = ExtResource("2_0dptq")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1810753721]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

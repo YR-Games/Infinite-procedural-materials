@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ColorRampLayerData" format=3 uid="uid://2erafpv0dyjf"]
+
+[ext_resource type="Script" uid="uid://o6hg3cpkq1wj" path="res://PTE_V3_R/resources/ColorRampLayerData.gd" id="1_qs7ol"]
+
+[sub_resource type="Gradient" id="Gradient_7oigj"]
+
+[resource]
+script = ExtResource("1_qs7ol")
+gradient = SubResource("Gradient_7oigj")
+metadata/_custom_type_script = "uid://o6hg3cpkq1wj"

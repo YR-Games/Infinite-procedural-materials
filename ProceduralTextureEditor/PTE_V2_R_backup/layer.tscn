@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://cqbh8ckpnp5d1"]
+
+[ext_resource type="Script" uid="uid://q5fw6a8gyfeg" path="res://PTE_V2_R_backup/layer_script.gd" id="1_mjc0n"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j64ke"]
+
+[node name="layer" type="PanelContainer" unique_id=607833355]
+offset_right = 272.0
+offset_bottom = 128.0
+size_flags_horizontal = 3
+script = ExtResource("1_mjc0n")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=823244101]
+layout_mode = 2
+
+[node name="LayerOptionsContainer" type="PanelContainer" parent="HSplitContainer" unique_id=1860073432]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/LayerOptionsContainer" unique_id=1851136027]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer" unique_id=1440665002]
+layout_mode = 2
+
+[node name="LayerName" type="LineEdit" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer/HBoxContainer" unique_id=416433443]
+layout_mode = 2
+
+[node name="BlendModes" type="OptionButton" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer/HBoxContainer" unique_id=1809090650]
+layout_mode = 2
+
+[node name="Enabled" type="CheckBox" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer/HBoxContainer" unique_id=1203432230]
+layout_mode = 2
+
+[node name="move_up" type="Button" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer/HBoxContainer" unique_id=511655958]
+layout_mode = 2
+text = "▲"
+
+[node name="move_down" type="Button" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer/HBoxContainer" unique_id=1932584165]
+layout_mode = 2
+text = "▼"
+
+[node name="FunctionSelector" type="OptionButton" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer" unique_id=1735266623]
+layout_mode = 2
+
+[node name="OpacitySlider" type="HSlider" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer" unique_id=336165118]
+layout_mode = 2
+max_value = 1.0
+step = 0.001
+
+[node name="uniforms" type="VBoxContainer" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer" unique_id=1586890349]
+layout_mode = 2
+
+[node name="PreviewContainer" type="PanelContainer" parent="HSplitContainer" unique_id=1622747468]
+layout_mode = 2
+
+[node name="Preview" type="ColorRect" parent="HSplitContainer/PreviewContainer" unique_id=178683292]
+material = SubResource("ShaderMaterial_j64ke")
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2

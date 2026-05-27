@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://6bhntyit8n60"]
+
+[ext_resource type="Material" uid="uid://bkt60kv25f6je" path="res://material/raster_brick.tres" id="1_ubafl"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_545i1"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_dsxrk"]
+
+[node name="Node3D" type="Node3D" unique_id=366328704]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1145311151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="." unique_id=1889722004]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("SphereMesh_545i1")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="." unique_id=1442960227]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+material_override = ExtResource("1_ubafl")
+mesh = SubResource("SphereMesh_545i1")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=171609492]
+transform = Transform3D(15.9121, 0, 0, 0, 6.4298, 0, 0, 0, 0.9892, 0, 0, -2)
+mesh = SubResource("BoxMesh_dsxrk")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=759083881]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000362396, 2.01336, -0.00279093)

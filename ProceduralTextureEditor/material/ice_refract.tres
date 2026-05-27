@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://biesph5mfbnfc"]
+
+[ext_resource type="Shader" uid="uid://c34p0701awvx7" path="res://Shaders/Ice/Ice_refract.gdshader" id="1_sognc"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_sognc")
+shader_parameter/scale = 4.0

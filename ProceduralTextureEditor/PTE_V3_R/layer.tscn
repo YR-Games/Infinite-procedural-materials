@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://bb4sx0er2lpgc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j64ke"]
+
+[node name="Layer" type="PanelContainer" unique_id=607833355]
+offset_right = 272.0
+offset_bottom = 128.0
+size_flags_horizontal = 3
+
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=823244101]
+layout_mode = 2
+
+[node name="LayerOptionsContainer" type="PanelContainer" parent="HSplitContainer" unique_id=1860073432]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/LayerOptionsContainer" unique_id=1851136027]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer" unique_id=1440665002]
+layout_mode = 2
+
+[node name="LayerName" type="LineEdit" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer/HBoxContainer" unique_id=416433443]
+layout_mode = 2
+placeholder_text = "TextureFunctionName"
+
+[node name="ActiveCheckBox" type="CheckBox" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer/HBoxContainer" unique_id=2057966151]
+layout_mode = 2
+
+[node name="Parameters" type="VBoxContainer" parent="HSplitContainer/LayerOptionsContainer/VBoxContainer" unique_id=160241663]
+layout_mode = 2
+
+[node name="PreviewContainer" type="PanelContainer" parent="HSplitContainer" unique_id=1622747468]
+layout_mode = 2
+
+[node name="Preview" type="ColorRect" parent="HSplitContainer/PreviewContainer" unique_id=178683292]
+material = SubResource("ShaderMaterial_j64ke")
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2

@@ -1,0 +1,370 @@
+shader_type spatial;
+//render_mode world_vertex_coords;
+
+uniform float mult;
+varying vec3 w_pos;
+varying vec3 w_norm;
+const vec4 RANDOM_SCALE = vec4(.1031, .1030, .0973, .1099);
+
+float random(in vec2 st) {
+	  return -1.+ 2. * fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453);}
+
+vec2 random2(vec2 p) {
+     vec3 p3 = fract(p.xyx * RANDOM_SCALE.xyz);
+     p3 += dot(p3, p3.yzx + 19.19);
+     return fract((p3.xx + p3.yz) * p3.zy);}
+
+
+float bn(vec2 st) {
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+    vec2 u = f*f*f*(f*(f*6.-15.)+10.);
+    return mix( mix( random( i + vec2(0.0,0.0) ),
+                     random( i + vec2(1.0,0.0) ), u.x),
+                mix( random( i + vec2(0.0,1.0) ),
+                     random( i + vec2(1.0,1.0) ), u.x), u.y);
+}
+
+
+
+//////////////////__Support functions__/////////////////
+float mod289(const in float x) { return x - floor(x * (1. / 289.)) * 289.; }
+vec2 mod289_2d(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec3 mod289_3d(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec4 mod289_4d(const in vec4 x) { return x - floor(x * (1. / 289.)) * 289.; }
+
+float permute(const in float v) { return mod289(((v * 34.0) + 1.0) * v); }
+vec2 permute_2d(const in vec2 v) { return mod289_2d(((v * 34.0) + 1.0) * v); }
+vec3 permute_3d(const in vec3 v) { return mod289_3d(((v * 34.0) + 1.0) * v); }
+vec4 permute_4d(const in vec4 v) { return mod289_4d(((v * 34.0) + 1.0) * v); }
+
+float taylorInvSqrt(in float r) { return 1.79284291400159 - 0.85373472095314 * r; }
+vec2 taylorInvSqrt_2d(in vec2 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+vec3 taylorInvSqrt_3d(in vec3 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+vec4 taylorInvSqrt_4d(in vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+float quintic(const in float v) { return v*v*v*(v*(v*6.0-15.0)+10.0); }
+vec2  quintic_2d(const in vec2 v)  { return v*v*v*(v*(v*6.0-15.0)+10.0); }
+vec3  quintic_3d(const in vec3 v)  { return v*v*v*(v*(v*6.0-15.0)+10.0); }
+vec4  quintic_4d(const in vec4 v)  { return v*v*v*(v*(v*6.0-15.0)+10.0); }
+
+
+//////////////////__Simplex noise__/////////////////
+
+
+//
+// Description : GLSL 2D simplex noise function
+//      Author : Ian McEwan, Ashima Arts
+//  Maintainer : ijm
+//     Lastmod : 20110822 (ijm)
+//     License :
+//  Copyright (C) 2011 Ashima Arts. All rights reserved.
+//  Distributed under the MIT License. See LICENSE file.
+//  https://github.com/ashima/webgl-noise
+//
+float snoise(vec2 v) {
+
+    // Precompute values for skewed triangular grid
+    const vec4 C = vec4(0.211324865405187,
+                        // (3.0-sqrt(3.0))/6.0
+                        0.366025403784439,
+                        // 0.5*(sqrt(3.0)-1.0)
+                        -0.577350269189626,
+                        // -1.0 + 2.0 * C.x
+                        0.024390243902439);
+                        // 1.0 / 41.0
+
+    // First corner (x0)
+    vec2 i  = floor(v + dot(v, C.yy));
+    vec2 x0 = v - i + dot(i, C.xx);
+
+    // Other two corners (x1, x2)
+    vec2 i1 = vec2(0.0);
+    i1 = (x0.x > x0.y)? vec2(1.0, 0.0):vec2(0.0, 1.0);
+    vec2 x1 = x0.xy + C.xx - i1;
+    vec2 x2 = x0.xy + C.zz;
+
+    // Do some permutations to avoid
+    // truncation effects in permutation
+    i = mod289_2d(i);
+    vec3 p = permute_3d(
+            permute_3d( i.y + vec3(0.0, i1.y, 1.0))
+                + i.x + vec3(0.0, i1.x, 1.0 ));
+
+    vec3 m = max(0.5 - vec3(
+                        dot(x0,x0),
+                        dot(x1,x1),
+                        dot(x2,x2)
+                        ), 0.0);
+
+    m = m*m ;
+    m = m*m ;
+
+    // Gradients:
+    //  41 pts uniformly over a line, mapped onto a diamond
+    //  The ring size 17*17 = 289 is close to a multiple
+    //      of 41 (41*7 = 287)
+
+    vec3 x = 2.0 * fract(p * C.www) - 1.0;
+    vec3 h = abs(x) - 0.5;
+    vec3 ox = floor(x + 0.5);
+    vec3 a0 = x - ox;
+
+    // Normalise gradients implicitly by scaling m
+    // Approximation of: m *= inversesqrt(a0*a0 + h*h);
+    m *= 1.79284291400159 - 0.85373472095314 * (a0*a0+h*h);
+
+    // Compute final noise value at P
+    vec3 g = vec3(0.0);
+    g.x  = a0.x  * x0.x  + h.x  * x0.y;
+    g.yz = a0.yz * vec2(x1.x,x2.x) + h.yz * vec2(x1.y,x2.y);
+    return 130.0 * dot(m, g);
+}
+
+//////////////////__Perlin_noise__/////////////////
+
+float pnoise(in vec2 P, in vec2 rep) {
+    vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);
+    vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);
+    Pi = mod(Pi, rep.xyxy); // To create noise with explicit period
+    Pi = mod289_4d(Pi);        // To avoid truncation effects in permutation
+    vec4 ix = Pi.xzxz;
+    vec4 iy = Pi.yyww;
+    vec4 fx = Pf.xzxz;
+    vec4 fy = Pf.yyww;
+
+    vec4 i = permute_4d(permute_4d(ix) + iy);
+
+    vec4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;
+    vec4 gy = abs(gx) - 0.5 ;
+    vec4 tx = floor(gx + 0.5);
+    gx = gx - tx;
+
+    vec2 g00 = vec2(gx.x,gy.x);
+    vec2 g10 = vec2(gx.y,gy.y);
+    vec2 g01 = vec2(gx.z,gy.z);
+    vec2 g11 = vec2(gx.w,gy.w);
+
+    vec4 norm = taylorInvSqrt_4d(vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));
+    g00 *= norm.x;
+    g01 *= norm.y;
+    g10 *= norm.z;
+    g11 *= norm.w;
+
+    float n00 = dot(g00, vec2(fx.x, fy.x));
+    float n10 = dot(g10, vec2(fx.y, fy.y));
+    float n01 = dot(g01, vec2(fx.z, fy.z));
+    float n11 = dot(g11, vec2(fx.w, fy.w));
+
+    vec2 fade_xy = quintic_2d(Pf.xy);
+    vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
+    float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
+    return 2.3 * n_xy;
+}
+
+
+
+
+
+mat2 rotate2d(const in float r){
+    float c = cos(r);
+    float s = sin(r);
+    return mat2(vec2(c, -s),vec2( s, c));}
+
+
+float wavelet(vec2 p, float phase, float k) {
+    float d = 0.0, s = 1.0, m=0.0, a = 0.0;
+    for (float i = 0.0; i < 4.0; i++) {
+        vec2 q = p*s;
+        a = random(floor(q)) * 1e3;
+        q = (fract(q) - 0.5) * rotate2d(a);
+        d += sin(q.x * 10.0 + phase) * smoothstep(.25, 0.0, dot(q,q)) / s;
+        p = p * mat2(vec2(.54,-0.84),vec2( 0.84, 0.54)) + i;
+        m += 1.0 / s;
+        s *= k;
+    }
+    return d / m;}
+
+
+float wn(vec2 p, float phase) {
+    return wavelet(p, phase, 1.24);}
+
+#define VORONOI_RANDOM_FNC(uv) ( 0.5 + 0.5 * sin(time + TAU * random2(uv) ) );
+
+vec3 voronoi(vec2 uv, float time) {
+    vec2 i_uv = floor(uv);
+    vec2 f_uv = fract(uv);
+    vec3 rta = vec3(0.0, 0.0, 10.0);
+    for (int j=-1; j<=1; j++ ) {
+        for (int i=-1; i<=1; i++ ) {
+            vec2 neighbor = vec2(float(i),float(j));
+            vec2 point = VORONOI_RANDOM_FNC(i_uv + neighbor);
+            point = 0.5 + 0.5 * sin(time + TAU * point);
+            vec2 diff = neighbor + point - f_uv;
+            float dist = length(diff);
+            if ( dist < rta.z ) {
+                rta.xy = point;
+                rta.z = dist;
+            }
+        }
+    }
+    return rta;}
+
+vec3 vor2(vec2 p)  { return voronoi(p, 0.0); }
+vec3 vor3(vec3 p)  { return voronoi(p.xy, p.z); }
+
+
+#define OCTAVES 6
+float fbm (in vec2 st) {
+    // Initial values
+    float value = 0.5;
+    float amplitude = 0.25;
+    float frequency = 2.;
+    //
+    // Loop of octaves
+    for (int i = 0; i < OCTAVES; i++) {
+        value += amplitude * pnoise(st,vec2(0.));//wn(st,1.)
+        st *= 2.;
+        amplitude *= 0.5;
+    }
+    return value;
+}
+
+
+float tile(vec2 uv){
+	float f_out=0.;
+	vec2 iuv = floor(uv);
+    vec2 fuv = fract(uv);
+	vec2 smth = fuv-vec2(0.5,0.5);
+
+	float r = length(smth)*2.;
+	//float r = max(abs(smth.y),abs(smth.y))*2.;
+	float a = atan(smth.y,smth.x);
+ 			float f = 1.;
+    		f-=smoothstep(f-0.1,f,r);
+
+    return f_out;
+
+}
+
+float pcurve( float x, float a, float b )
+{
+    float k = pow(a+b,a+b)/(pow(a,a)*pow(b,b));
+    return k*pow(x,a)*pow(1.0-x,b);
+}
+
+
+
+
+vec3 colorize(float t,vec3 a, vec3 b, vec3 c,vec3 d){
+
+	return  a + b * cos(TAU*(c*t+d));
+}
+
+
+vec4 mat(vec2 uv){
+
+	//uv+=fbm(uv*0.1)*4.;
+
+	vec2 iuv = floor(uv);
+    vec2 fuv = fract(uv);
+
+	vec2 smth = fuv-vec2(0.5,0.5);
+	//float test = abs(0.5+bn(vec2(iuv.x)));
+	float r = abs(smth.x)*2.;
+	vec3 v =vor3(uv.xyx);
+    float f = v.z;
+	float edg = 0.1;
+		float col1 = (1.-step(f,r))*abs(bn(iuv.xx));
+			  col1 += (step(f,r))*abs(bn(floor(uv.xx+1.5)));//придумать что нибудь поэлегантнее
+    	float f1 =1.-smoothstep(f-edg,f,r);
+
+		f1 += smoothstep(f,f+edg,r);
+
+	r = abs(smth.y)*2.;
+	//f =  vor2(uv).z;
+   	//edg = 0.1;//fbm(uv*8.)*4.;
+		float col2 = (1.-step(f,r))*abs(wn(iuv.yy,0.1));
+			  col2 += (step(f,r))*abs(bn(floor(uv.yy+1.5)));//придумать что нибудь поэлегантнее
+    	float f2 =1.-smoothstep(f-edg,f,r);
+		f2 += smoothstep(f,f+edg,r);
+
+    //float nois = fbm(uv*4.)*0.4;
+    return vec4(col1,0.,0.,f1);//min(f1,f2);
+}
+
+
+float height2d(vec2 uv){
+
+	vec2 iuv = floor(uv);
+    vec2 fuv = fract(uv);
+	vec2 smth = fuv-vec2(0.5,0.5);
+
+	float r = abs(smth.x)*2.;
+	vec3 v =vor3(uv.xyx)*0.1;
+    float f = v.z;
+	float edg = 0.1;
+    	float f1 =1.-smoothstep(f-edg,f,r);
+
+		f1 += smoothstep(f,f+edg,r);
+
+	r = abs(smth.y)*2.;
+    	float f2 =1.-smoothstep(f-edg,f,r);
+		f2 += smoothstep(f,f+edg,r);
+
+    return float(min(f1,f2));//min(f1,f2);
+}
+
+
+
+
+void vertex(){
+	    w_norm = NORMAL;
+		w_pos = VERTEX;
+	}
+
+void fragment() {
+
+    vec3 anorm=abs(w_norm);
+	vec3 v=w_pos;
+	v.x*=floor(sign(w_norm.z));
+	v.z*=-floor(sign(w_norm.x));
+	v.y=-v.y;
+	vec2 mp =mix(v.xy,v.zy,round(anorm.x));
+	mp=mix(mp,w_pos.xz*-sign(w_norm.y),round(anorm.y));
+
+	mp*=mult;
+
+    vec4 outp = mat(mp);
+
+		float offset = 0.00001;
+		float mlp = 0.1;
+
+		vec2 nuv = vec2(mp.x+offset,mp.y);
+    vec3 fa = vec3(nuv.x, 0.0,mat(nuv).w*mlp);;
+
+	    nuv = vec2(mp.x,mp.y-offset);
+    vec3 fc = vec3(0.0, nuv.y,mat(nuv).w*mlp);
+
+		 nuv = vec2(mp.x-offset,mp.y);
+    vec3 fb = vec3(nuv.x, 0.0,mat(nuv).w*mlp);
+
+	    nuv = vec2(mp.x,mp.y+offset);
+    vec3 fd = vec3(0.0, nuv.y,mat(nuv).w*mlp);
+
+
+	vec3 normal = 0.5+normalize(cross(fa-fb*vec3(1.,0.,1.), fc-fd*vec3(0.,1.,1.)))*vec3(1.,-1.,1.);
+	ALBEDO=colorize(cos(outp.x*PI*132.),vec3(1.0, 1.0, 1.0),vec3(0.5, 0.5, 0.5),vec3(0.5, 0.5, 0.5),vec3(0., 0.1, 0.3));
+	//ALBEDO=vec3(outp.w);
+	//ALBEDO=normal;
+    ROUGHNESS = 1.;
+	NORMAL_MAP=normal;
+}
+
+//void light() {
+	// Called for every pixel for every light affecting the CanvasItem.
+	// Uncomment to replace the default light processing function with this one.
+//}
+/*
+
+*/

@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bq8vkc10h8s1i"]
+
+[ext_resource type="Shader" uid="uid://beeqj4wsgs5ar" path="res://PTE_V3_R/PreviewShaders/CellNoisePreview.gdshader" id="1_74qcs"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0gw8n"]
+shader = ExtResource("1_74qcs")
+shader_parameter/scale = 0.0
+shader_parameter/chaos = 0.0
+shader_parameter/numOctaves = 0
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_74qcs"]
+
+[node name="CanvasShaderPreview" type="Node2D" unique_id=506630413]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1971410080]
+material = SubResource("ShaderMaterial_0gw8n")
+position = Vector2(256, 256)
+scale = Vector2(512, 512)
+texture = SubResource("CanvasTexture_74qcs")
