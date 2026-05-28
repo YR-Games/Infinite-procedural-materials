@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://b2tmeou24qbuj"]
+
+[ext_resource type="Script" uid="uid://bss4ei7grmfxs" path="res://baker/generator_baker.gd" id="1_6avlx"]
+[ext_resource type="Resource" uid="uid://bmaq7tuu3rwdc" path="res://PTE_V3_R/VoronoiGeneratorData.tres" id="2_6avlx"]
+
+[node name="Control" type="Control" unique_id=548366355]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6avlx")
+generator_data = ExtResource("2_6avlx")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=527157968]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+draw_focus_border = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer" unique_id=1466510756]
+custom_minimum_size = Vector2(512, 512)
+layout_mode = 2

@@ -75,6 +75,7 @@ size_flags_vertical = 3
 layout_mode = 2
 
 [node name="GeneratorContainer" type="VBoxContainer" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit/Generators/GeneratorList/ScrollContainer" unique_id=1690100187]
+custom_minimum_size = Vector2(0, 21.47)
 layout_mode = 2
 script = ExtResource("1_mkn3d")
 

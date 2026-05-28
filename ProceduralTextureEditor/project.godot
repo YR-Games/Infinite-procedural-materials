@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="ProceduralTextureEditor"
-run/main_scene="uid://jfatu1aygp3t"
+run/main_scene="uid://q21mccbjng2h"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="ProceduralTextureEditor"
 config/features=PackedStringArray("4.6", "Forward Plus")
