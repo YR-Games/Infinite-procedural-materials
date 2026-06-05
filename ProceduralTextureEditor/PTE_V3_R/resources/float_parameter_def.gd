@@ -7,5 +7,5 @@ extends abstract_parameter_def
 @export var max_value: float = 1.0
 @export var step: float = 0.01
 
-func _to_string() -> String:
-	return "{"+param_name +" val="+ str(default_value) + ", ("+ str(min_value) + ", " +str(max_value)+"), "+str(step)+"}"
+#func _to_string() -> String:
+#	return "{"+param_name +" val="+ str(default_value) + ", ("+ str(min_value) + ", " +str(max_value)+"), "+str(step)+"}"

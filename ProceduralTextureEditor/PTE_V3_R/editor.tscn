@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://q21mccbjng2h"]
 
 [ext_resource type="Script" uid="uid://dsodougrafvpx" path="res://PTE_V3_R/generator_container.gd" id="1_mkn3d"]
-[ext_resource type="PackedScene" uid="uid://bupo62sa4a0ci" path="res://PTE_V3_R/generator.tscn" id="2_34umj"]
+[ext_resource type="Script" uid="uid://heuklbki6eqn" path="res://PTE_V3_R/editor.gd" id="1_tgygm"]
+[ext_resource type="PackedScene" uid="uid://bupo62sa4a0ci" path="res://PTE_V3_R/UI/generator.tscn" id="2_34umj"]
+[ext_resource type="Script" uid="uid://b1t61hgbb2wii" path="res://PTE_V3_R/LayerStack.gd" id="3_34umj"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dugh4"]
 
@@ -12,6 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_tgygm")
 
 [node name="MenuAndUI" type="VBoxContainer" parent="." unique_id=346902648]
 layout_mode = 1
@@ -54,7 +57,7 @@ layout_mode = 2
 [node name="GeneratorsChannelsSplit" type="HSplitContainer" parent="MenuAndUI/UI/EditorPreviewSplit" unique_id=1303703679]
 layout_mode = 2
 size_flags_horizontal = 3
-split_offsets = PackedInt32Array(123, 0)
+split_offsets = PackedInt32Array(123)
 split_offset = 123
 
 [node name="Generators" type="VBoxContainer" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit" unique_id=247188861]
@@ -82,9 +85,6 @@ script = ExtResource("1_mkn3d")
 [node name="Generator" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit/Generators/GeneratorList/ScrollContainer/GeneratorContainer" unique_id=607833355 instance=ExtResource("2_34umj")]
 layout_mode = 2
 
-[node name="Generator2" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit/Generators/GeneratorList/ScrollContainer/GeneratorContainer" unique_id=2031440756 instance=ExtResource("2_34umj")]
-layout_mode = 2
-
 [node name="Channels" type="VBoxContainer" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit" unique_id=1346118038]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -105,7 +105,11 @@ size_flags_vertical = 3
 layout_mode = 2
 title = "Albedo"
 
-[node name="AddLayerButton" type="Button" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit/Channels/ChannelsList/ChannelsScrollContainer/ChannelsVboxContainer/AlbedoChannel" unique_id=593331005]
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit/Channels/ChannelsList/ChannelsScrollContainer/ChannelsVboxContainer/AlbedoChannel" unique_id=1432078512]
+layout_mode = 2
+script = ExtResource("3_34umj")
+
+[node name="AddLayerButton" type="Button" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit/Channels/ChannelsList/ChannelsScrollContainer/ChannelsVboxContainer/AlbedoChannel/VBoxContainer" unique_id=593331005]
 layout_mode = 2
 text = "Add Layer"
 
@@ -126,9 +130,6 @@ visible = false
 layout_mode = 2
 folded = true
 title = "Metallic"
-
-[node name="ScrollContainer" type="ScrollContainer" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit" unique_id=1097190222]
-layout_mode = 2
 
 [node name="Preview" type="PanelContainer" parent="MenuAndUI/UI/EditorPreviewSplit" unique_id=735909892]
 layout_mode = 2

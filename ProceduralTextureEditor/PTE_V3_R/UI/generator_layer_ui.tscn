@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://c26q5rl7tvd26"]
+
+[ext_resource type="Script" uid="uid://qjnb5ph6ftwn" path="res://PTE_V3_R/GeneratorLayerUI.gd" id="1_55l6q"]
+
+[node name="GeneratorLayerUi" type="PanelContainer" unique_id=1003904372]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_55l6q")

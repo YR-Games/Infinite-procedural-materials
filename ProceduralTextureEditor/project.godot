@@ -25,12 +25,6 @@ config/icon="res://icon.svg"
 
 driver/driver="Dummy"
 
-[autoload]
-
-SaveManager="*uid://cgxbsubpe608h"
-MixDB="*uid://m4bk56iccmwm"
-FuncDB="*uid://4x53bje10y6k"
-
 [display]
 
 window/energy_saving/keep_screen_on=false
