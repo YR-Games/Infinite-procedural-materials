@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://dgaphwicgg5mm"]
+
+[ext_resource type="Script" uid="uid://cgwbvdaq6c3f0" path="res://PTE_V3_R/ui_controllers/float_parameter_control.gd" id="1_xm8nr"]
+
+[node name="FloatParameterUI" type="PanelContainer" unique_id=1600176633 node_paths=PackedStringArray("parameter_label", "slider")]
+custom_minimum_size = Vector2(0, 32)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 32.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+script = ExtResource("1_xm8nr")
+parameter_label = NodePath("HBoxContainer/Label")
+slider = NodePath("HBoxContainer/HSlider")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1509167587]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer" unique_id=2119446761]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+
+[node name="HSlider" type="HSlider" parent="HBoxContainer" unique_id=621021233]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2

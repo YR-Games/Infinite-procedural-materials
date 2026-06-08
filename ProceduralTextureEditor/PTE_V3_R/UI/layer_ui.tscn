@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://bb4sx0er2lpgc"]
+
+[ext_resource type="Script" uid="uid://b8t2dn38yblxy" path="res://PTE_V3_R/ui_controllers/layer_ui_controller.gd" id="1_yuedb"]
+
+[node name="LayerUI" type="PanelContainer" unique_id=607833355]
+offset_right = 272.0
+offset_bottom = 128.0
+size_flags_horizontal = 3
+script = ExtResource("1_yuedb")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1851136027]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="VBoxContainer" unique_id=1440665002]
+layout_mode = 2
+
+[node name="LayerName" type="LineEdit" parent="VBoxContainer/Header" unique_id=416433443]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "TextureFunctionName"
+
+[node name="ActiveCheckBox" type="CheckBox" parent="VBoxContainer/Header" unique_id=2057966151]
+layout_mode = 2
+
+[node name="LabelOpacity" type="Label" parent="VBoxContainer" unique_id=1752534251]
+layout_mode = 2
+text = "Opacity:"
+
+[node name="OpacitySlider" type="HSlider" parent="VBoxContainer" unique_id=2131348578]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+
+[node name="LabelBlend" type="Label" parent="VBoxContainer" unique_id=1805152174]
+layout_mode = 2
+text = "Blend mode:"
+
+[node name="BlendModeOption" type="OptionButton" parent="VBoxContainer" unique_id=1813996492]
+layout_mode = 2
+
+[node name="LabelGenerator" type="Label" parent="VBoxContainer" unique_id=1423958807]
+layout_mode = 2
+text = "Generator:"
+
+[node name="GeneratorOption" type="OptionButton" parent="VBoxContainer" unique_id=379122920]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer" unique_id=1777987136]
+layout_mode = 2
+text = "Add Modifier"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=847284585]
+layout_mode = 2
+
+[node name="ModifiersList" type="VBoxContainer" parent="VBoxContainer" unique_id=780889004]
+layout_mode = 2

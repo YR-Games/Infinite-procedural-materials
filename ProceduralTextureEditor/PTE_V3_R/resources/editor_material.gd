@@ -1,10 +1,16 @@
 class_name EditorMaterial extends RefCounted
 
 
-var material: Dictionary = { }
+static var editorMaterialData: Dictionary = { 
+		"generators":{},
+		"albedo": {
+		"layers": []
+	},
+}
 
 
 """Material: Dictionary = {
+ Генераторы: Словарь генераторов
  Альбедо: Композиция слоёв,
  ... (аналогично для других каналов (Enum))
 }
@@ -21,9 +27,9 @@ var material: Dictionary = { }
 ]
 
 Генератор: Dictionary[StringName, Variant] = {
-    &"имя генератора": генератор1,
-    &"параметры": Dictionary[StringName, Variant] = {
-      &"scale" = 0.2,
+	&"имя генератора": генератор1,
+	&"параметры": Dictionary[StringName, Variant] = {
+	  &"scale" = 0.2,
    }
 }
 
@@ -31,8 +37,8 @@ var material: Dictionary = { }
  {
    &"ключ функции": remap (Enum),
    &"параметры": Dictionary[StringName, Variant] = {
-      &"old_min_max" = Vector2(0, 21),
-      &"new_min_max" = Vector2(0, 1)
+	  &"old_min_max" = Vector2(0, 21),
+	  &"new_min_max" = Vector2(0, 1)
    }
  }
 ]

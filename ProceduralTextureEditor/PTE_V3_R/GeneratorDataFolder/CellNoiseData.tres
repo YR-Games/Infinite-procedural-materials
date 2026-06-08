@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="GeneratorData" format=3 uid="uid://cm5m6xytchh0g"]
+
+[ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_qog2d"]
+[ext_resource type="Shader" uid="uid://beeqj4wsgs5ar" path="res://PTE_V3_R/PreviewShaders/CellNoisePreview.gdshader" id="2_4adij"]
+[ext_resource type="Script" uid="uid://b2t4rdfk1u1es" path="res://PTE_V3_R/resources/generator_data.gd" id="2_aloys"]
+
+[resource]
+script = ExtResource("2_aloys")
+preview_shader = ExtResource("2_4adij")
+metadata/_custom_type_script = "uid://b2t4rdfk1u1es"

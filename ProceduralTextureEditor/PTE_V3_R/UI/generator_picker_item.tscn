@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://dw4xmglisn2hd"]
+
+[ext_resource type="Script" uid="uid://cg3qn1tlrktqo" path="res://PTE_V3_R/ui_controllers/generator_picker_item.gd" id="1_jcl3g"]
+
+[node name="GeneratorPickerItem" type="PanelContainer" unique_id=1964546735]
+custom_minimum_size = Vector2(100, 120)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_jcl3g")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1931552483]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="VBoxContainer" unique_id=1951264517]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="VBoxContainer" unique_id=526982309]
+layout_mode = 2

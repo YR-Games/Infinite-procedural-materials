@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://q21mccbjng2h"]
+
+[ext_resource type="PackedScene" uid="uid://duib2k2dsrbut" path="res://PTE_V3_R/UI/generators_list_ui.tscn" id="1_ovceq"]
+[ext_resource type="PackedScene" uid="uid://82nkvehm253j" path="res://PTE_V3_R/UI/channel_ui.tscn" id="2_l3t18"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dugh4"]
+
+[node name="EditorUI" type="Control" unique_id=1012165022]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuAndUI" type="VBoxContainer" parent="." unique_id=346902648]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuTopBar" type="PanelContainer" parent="MenuAndUI" unique_id=828567378]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuAndUI/MenuTopBar" unique_id=1639082211]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer" unique_id=1206638191]
+layout_mode = 2
+
+[node name="MenuBar" type="MenuBar" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer" unique_id=380344858]
+layout_mode = 2
+
+[node name="File" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1057990025]
+
+[node name="Edit" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1840165740]
+
+[node name="View" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=947069360]
+
+[node name="Tools" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1488132632]
+
+[node name="Help" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1996058615]
+
+[node name="UI" type="PanelContainer" parent="MenuAndUI" unique_id=209799095]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EditorPreviewSplit" type="HSplitContainer" parent="MenuAndUI/UI" unique_id=1257051681]
+layout_mode = 2
+
+[node name="GeneratorsChannelsSplit" type="HSplitContainer" parent="MenuAndUI/UI/EditorPreviewSplit" unique_id=1303703679]
+layout_mode = 2
+size_flags_horizontal = 3
+split_offsets = PackedInt32Array(123)
+split_offset = 123
+
+[node name="Generators" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit" unique_id=1397486494 instance=ExtResource("1_ovceq")]
+layout_mode = 2
+
+[node name="Channels" type="HBoxContainer" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit" unique_id=198056351]
+visible = false
+layout_mode = 2
+
+[node name="Channel" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit/Channels" unique_id=1066877951 instance=ExtResource("2_l3t18")]
+layout_mode = 2
+
+[node name="Preview" type="PanelContainer" parent="MenuAndUI/UI/EditorPreviewSplit" unique_id=735909892]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="PreviewRect" type="ColorRect" parent="MenuAndUI/UI/EditorPreviewSplit/Preview" unique_id=1747730227]
+material = SubResource("ShaderMaterial_dugh4")
+layout_mode = 2
+color = Color(0, 0, 0, 1)
