@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://82nkvehm253j"]
+
+[ext_resource type="Script" uid="uid://2ds5pasptpv3" path="res://PTE_V3_R/ui_controllers/channel_ui_controller.gd" id="1_jxkin"]
+
+[node name="ChannelUI" type="PanelContainer" unique_id=1066877951]
+custom_minimum_size = Vector2(128, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_jxkin")
+channel_name = null
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=167031125]
+layout_mode = 2
+
+[node name="ChannelNameLabel" type="Label" parent="VBoxContainer" unique_id=2089514985]
+layout_mode = 2
+text = "Channel1"
+
+[node name="AddLayerButton" type="Button" parent="VBoxContainer" unique_id=239908780]
+layout_mode = 2
+text = "Add Layer"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=772002904]
+layout_mode = 2
+
+[node name="ChannelsScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=1211466]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LayersContainer" type="VBoxContainer" parent="VBoxContainer/ChannelsScrollContainer" unique_id=141175258]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

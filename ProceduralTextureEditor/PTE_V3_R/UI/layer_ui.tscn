@@ -52,5 +52,5 @@ text = "Add Modifier"
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=847284585]
 layout_mode = 2
 
-[node name="ModifiersList" type="VBoxContainer" parent="VBoxContainer" unique_id=780889004]
+[node name="ModifiersContainer" type="VBoxContainer" parent="VBoxContainer" unique_id=780889004]
 layout_mode = 2

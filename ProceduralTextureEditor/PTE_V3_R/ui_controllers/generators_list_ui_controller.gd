@@ -8,11 +8,6 @@ var current: GeneratorUIController = null
 @onready var generators_container: VBoxContainer = $VBoxContainer/ScrollContainer/GeneratorsContainer
 
 func _ready() -> void:
-	# Собираем уже существующие панели (если они были добавлены в сцене)
-	for child in get_children():
-		if child is GeneratorUIController:
-			panels.append(child)
-			child.gui_input.connect(_on_panel_gui_input.bind(child))
 	
 	add_generator_button.pressed.connect(_on_add_generator_button_pressed)
 

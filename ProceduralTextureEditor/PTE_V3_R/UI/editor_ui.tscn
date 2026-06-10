@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://q21mccbjng2h"]
 
 [ext_resource type="PackedScene" uid="uid://duib2k2dsrbut" path="res://PTE_V3_R/UI/generators_list_ui.tscn" id="1_ovceq"]
+[ext_resource type="Script" uid="uid://bourkccrdip5e" path="res://PTE_V3_R/ui_controllers/editor_ui_controller.gd" id="1_yfcqk"]
+[ext_resource type="Script" uid="uid://da7m60llit8vk" path="res://PTE_V3_R/ui_controllers/channels_list_ui_controller.gd" id="3_nnwub"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dugh4"]
 
@@ -11,6 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_yfcqk")
 
 [node name="MenuAndUI" type="VBoxContainer" parent="." unique_id=346902648]
 layout_mode = 1
@@ -61,6 +64,7 @@ layout_mode = 2
 
 [node name="Channels" type="HBoxContainer" parent="MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit" unique_id=198056351]
 layout_mode = 2
+script = ExtResource("3_nnwub")
 
 [node name="Preview" type="PanelContainer" parent="MenuAndUI/UI/EditorPreviewSplit" unique_id=735909892]
 layout_mode = 2

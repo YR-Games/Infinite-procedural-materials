@@ -20,7 +20,7 @@ layout_mode = 2
 
 [node name="GeneratorName" type="Label" parent="VBoxContainer" unique_id=1776101676]
 layout_mode = 2
-text = "tst"
+text = "GeneratorName"
 
 [node name="PreviewContainer" type="PanelContainer" parent="VBoxContainer" unique_id=1622747468]
 layout_mode = 2
