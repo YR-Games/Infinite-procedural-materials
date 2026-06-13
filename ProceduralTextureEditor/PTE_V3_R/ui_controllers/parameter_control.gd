@@ -3,34 +3,32 @@ extends Control
 
 signal value_changed(new_value)
 
-# Ссылка на данные в глобальном словаре (путь к значению)
-var data_path: Array[StringName] = []
+var binding: MaterialPath
 
-func set_data_path(path: Array[StringName]) -> void:
-	data_path = path
+
+func bind(path: MaterialPath) -> void:
+	binding = path
 	_update_from_data()
 
-# Загрузить текущее значение из глобального синглтона по пути
-func _get_data_value():
-	var current = EditorMaterial.editorMaterialData 
-	for key in data_path:
-		if current is Dictionary and current.has(key):
-			current = current[key]
-		else:
-			return null
-	return current
 
-# Установить значение в синглтоне
-func _set_data_value(new_value):
-	var current = EditorMaterial.editorMaterialData
-	for i in range(data_path.size() - 1):
-		current = current[data_path[i]]
-	current[data_path[-1]] = new_value
+func get_data_value():
+	if binding == null:
+		return null
 
-# Должен быть переопределён в наследниках
+	return binding.get_value()
+
+
+func set_data_value(value):
+	if binding == null:
+		return
+
+	binding.set_value(value)
+
+
 func _update_from_data():
 	pass
 
+
 func _on_ui_changed(new_value):
-	_set_data_value(new_value)
+	set_data_value(new_value)
 	value_changed.emit(new_value)

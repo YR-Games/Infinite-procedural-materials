@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://o2c0vugukety" path="res://PTE_V3_R/ui_controllers/int_parameter_control.gd" id="1_k3irn"]
 
-[node name="IntParameterUI" type="PanelContainer" unique_id=1101960727 node_paths=PackedStringArray("parameter_label", "slider")]
+[node name="IntParameterUI" type="PanelContainer" unique_id=1101960727]
 custom_minimum_size = Vector2(0, 32)
 anchors_preset = 10
 anchor_right = 1.0
@@ -10,8 +10,6 @@ offset_bottom = 32.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 script = ExtResource("1_k3irn")
-parameter_label = NodePath("HBoxContainer/Label")
-slider = NodePath("HBoxContainer/HSlider")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1509167587]
 layout_mode = 2

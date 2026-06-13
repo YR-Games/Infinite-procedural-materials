@@ -3,8 +3,28 @@
 [ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_qog2d"]
 [ext_resource type="Shader" uid="uid://beeqj4wsgs5ar" path="res://PTE_V3_R/PreviewShaders/CellNoisePreview.gdshader" id="2_4adij"]
 [ext_resource type="Script" uid="uid://b2t4rdfk1u1es" path="res://PTE_V3_R/resources/generator_data.gd" id="2_aloys"]
+[ext_resource type="Script" uid="uid://vq2u6j364n55" path="res://PTE_V3_R/resources/float_parameter_def.gd" id="2_l3tis"]
+[ext_resource type="Script" uid="uid://yfnmvhksfrlg" path="res://PTE_V3_R/resources/int_parameter_def.gd" id="3_1gkcn"]
+
+[sub_resource type="Resource" id="Resource_howm4"]
+script = ExtResource("2_l3tis")
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[sub_resource type="Resource" id="Resource_d8yqr"]
+script = ExtResource("2_l3tis")
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[sub_resource type="Resource" id="Resource_jahst"]
+script = ExtResource("3_1gkcn")
+max_value = 6
+metadata/_custom_type_script = "uid://yfnmvhksfrlg"
 
 [resource]
 script = ExtResource("2_aloys")
 preview_shader = ExtResource("2_4adij")
+parameters = Dictionary[String, ExtResource("1_qog2d")]({
+"chaos": SubResource("Resource_d8yqr"),
+"numOctaves": SubResource("Resource_jahst"),
+"scale": SubResource("Resource_howm4")
+})
 metadata/_custom_type_script = "uid://b2t4rdfk1u1es"

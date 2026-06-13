@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dsodougrafvpx" path="res://PTE_V3_R/ui_controllers/generators_list_ui_controller.gd" id="1_imc5p"]
 
 [node name="GeneratorsListUI" type="PanelContainer" unique_id=656960307]
+custom_minimum_size = Vector2(256, 128)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -25,7 +26,6 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="GeneratorsContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=2007451466]
-custom_minimum_size = Vector2(0, 21.47)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
