@@ -6,10 +6,6 @@
 [ext_resource type="Script" uid="uid://vq2u6j364n55" path="res://PTE_V3_R/resources/float_parameter_def.gd" id="2_l3tis"]
 [ext_resource type="Script" uid="uid://yfnmvhksfrlg" path="res://PTE_V3_R/resources/int_parameter_def.gd" id="3_1gkcn"]
 
-[sub_resource type="Resource" id="Resource_howm4"]
-script = ExtResource("2_l3tis")
-metadata/_custom_type_script = "uid://vq2u6j364n55"
-
 [sub_resource type="Resource" id="Resource_d8yqr"]
 script = ExtResource("2_l3tis")
 metadata/_custom_type_script = "uid://vq2u6j364n55"
@@ -18,6 +14,10 @@ metadata/_custom_type_script = "uid://vq2u6j364n55"
 script = ExtResource("3_1gkcn")
 max_value = 6
 metadata/_custom_type_script = "uid://yfnmvhksfrlg"
+
+[sub_resource type="Resource" id="Resource_howm4"]
+script = ExtResource("2_l3tis")
+metadata/_custom_type_script = "uid://vq2u6j364n55"
 
 [resource]
 script = ExtResource("2_aloys")

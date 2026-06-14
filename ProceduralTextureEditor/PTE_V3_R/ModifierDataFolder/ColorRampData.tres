@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://k1esqyly0dfu"]
+
+[ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_hb2ue"]
+[ext_resource type="Script" uid="uid://db062eko2a4ko" path="res://PTE_V3_R/resources/modifier_data.gd" id="2_2321s"]
+
+[resource]
+script = ExtResource("2_2321s")
+metadata/_custom_type_script = "uid://db062eko2a4ko"

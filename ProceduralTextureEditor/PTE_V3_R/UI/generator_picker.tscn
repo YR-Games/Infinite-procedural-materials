@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://qxs5wmlwwjuv" path="res://PTE_V3_R/ui_controllers/generator_picker.gd" id="1_6e1qd"]
 
-[node name="GeneratorPicker" type="PopupPanel" unique_id=1109107214]
+[node name="ProjectGeneratorPicker" type="PopupPanel" unique_id=1109107214]
 oversampling_override = 1.0
 size = Vector2i(450, 400)
 visible = true

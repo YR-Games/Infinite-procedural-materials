@@ -1,4 +1,4 @@
-class_name ModifierData extends RefCounted
+class_name ModifierData extends Resource
 
 @export var dependencies: Dictionary
 ## GLSL function snippet to be inserted during code assembly

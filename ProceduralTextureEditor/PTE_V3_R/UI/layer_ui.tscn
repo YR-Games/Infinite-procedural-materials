@@ -42,10 +42,11 @@ layout_mode = 2
 layout_mode = 2
 text = "Generator:"
 
-[node name="GeneratorOption" type="OptionButton" parent="VBoxContainer" unique_id=379122920]
+[node name="SelectGeneratorButton" type="Button" parent="VBoxContainer" unique_id=1918657386]
 layout_mode = 2
+text = "Select generator"
 
-[node name="Button" type="Button" parent="VBoxContainer" unique_id=1777987136]
+[node name="AddModifierButton" type="Button" parent="VBoxContainer" unique_id=1777987136]
 layout_mode = 2
 text = "Add Modifier"
 
