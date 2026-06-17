@@ -4,16 +4,15 @@
 [ext_resource type="Script" uid="uid://cqa3gj0hajscv" path="res://PTE_V3_R/ui_controllers/modifier_ui_controller.gd" id="2_328r3"]
 
 [node name="BaseModifierUI" type="PanelContainer" unique_id=607833355]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 70.0
+offset_bottom = 36.0
 size_flags_horizontal = 3
+size_flags_vertical = 0
 theme_override_styles/panel = ExtResource("1_328r3")
 script = ExtResource("2_328r3")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1561880892]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 
 [node name="ModifierName" type="Label" parent="VBoxContainer" unique_id=1776101676]
@@ -21,10 +20,11 @@ layout_mode = 2
 text = "Modifier"
 
 [node name="ParameterScroll" type="ScrollContainer" parent="VBoxContainer" unique_id=1203837469]
+custom_minimum_size = Vector2(256, 128)
 layout_mode = 2
 size_flags_vertical = 3
 
 [node name="ParameterList" type="VBoxContainer" parent="VBoxContainer/ParameterScroll" unique_id=1467160272]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 2

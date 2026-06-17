@@ -7,6 +7,7 @@ var current: GeneratorUIController = null
 @onready var add_generator_button: Button = $VBoxContainer/AddGeneratorButton
 @onready var generators_container: VBoxContainer = $VBoxContainer/ScrollContainer/GeneratorsContainer
 
+signal generator_selected(generator_id: StringName)
 
 func _ready() -> void:
 	add_generator_button.pressed.connect(_on_add_generator_button_pressed)
@@ -16,16 +17,13 @@ func _on_add_generator_button_pressed() -> void:
 	var picker_scene = preload("res://PTE_V3_R/UI/generator_picker.tscn")
 	var picker = picker_scene.instantiate() as GeneratorPicker
 	add_child(picker)
-
 	picker.generator_selected.connect(_on_generator_selected)
 	picker.popup_centered()
 
 
-func _on_generator_selected(
-	gen_name: StringName
-) -> void:
-
+func _on_generator_selected(gen_name: StringName) -> void:
 	add_generator(gen_name)
+
 
 
 # ---------------------- Добавление генератора ----------------------
@@ -67,7 +65,7 @@ func _on_panel_gui_input(event: InputEvent,panel: GeneratorUIController) -> void
 
 	if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
 		select(panel)
-
+		generator_selected.emit(panel.generator_id)
 
 func select(panel: GeneratorUIController) -> void:
 

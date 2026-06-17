@@ -2,7 +2,15 @@
 
 [ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_hb2ue"]
 [ext_resource type="Script" uid="uid://db062eko2a4ko" path="res://PTE_V3_R/resources/modifier_data.gd" id="2_2321s"]
+[ext_resource type="Script" uid="uid://vq2u6j364n55" path="res://PTE_V3_R/resources/float_parameter_def.gd" id="2_u2ie2"]
+
+[sub_resource type="Resource" id="Resource_xckru"]
+script = ExtResource("2_u2ie2")
+metadata/_custom_type_script = "uid://vq2u6j364n55"
 
 [resource]
 script = ExtResource("2_2321s")
+parameters = Dictionary[String, ExtResource("1_hb2ue")]({
+"color": SubResource("Resource_xckru")
+})
 metadata/_custom_type_script = "uid://db062eko2a4ko"

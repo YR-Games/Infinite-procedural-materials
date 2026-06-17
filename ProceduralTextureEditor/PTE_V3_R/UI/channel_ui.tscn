@@ -3,13 +3,10 @@
 [ext_resource type="Script" uid="uid://2ds5pasptpv3" path="res://PTE_V3_R/ui_controllers/channel_ui_controller.gd" id="1_jxkin"]
 
 [node name="ChannelUI" type="PanelContainer" unique_id=1066877951]
-custom_minimum_size = Vector2(160, 0)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
+custom_minimum_size = Vector2(256, 0)
+offset_right = 256.0
+offset_bottom = 70.0
+size_flags_horizontal = 2
 size_flags_vertical = 3
 script = ExtResource("1_jxkin")
 
