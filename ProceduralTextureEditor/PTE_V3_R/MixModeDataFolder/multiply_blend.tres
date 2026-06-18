@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="MixModeData" format=3 uid="uid://cy4fdlna06pev"]
+
+[ext_resource type="Script" uid="uid://nqxxew5a2yux" path="res://PTE_V3_R/resources/mix_mode_data.gd" id="1_2liny"]
+
+[resource]
+script = ExtResource("1_2liny")
+function_name = "multiplyBlend"
+function = "vec4 multiplyBlend(vec4 base, vec4 blend) {
+    return base * blend;
+}"
+metadata/_custom_type_script = "uid://nqxxew5a2yux"

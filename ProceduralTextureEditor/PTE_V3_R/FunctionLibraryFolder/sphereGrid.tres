@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://cpolksgd37rtn"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_6ua5e"]
+
+[resource]
+script = ExtResource("1_6ua5e")
+function_name = "sphereGrid"
+code = "float sphereGrid(vec2 uv) {
+    vec2 squaregrid = fract(uv) - .5; //rectangular grid with center in the middle
+    float spheregrid = dot(squaregrid, squaregrid); //squared distance form scenter
+    return spheregrid;
+}"
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

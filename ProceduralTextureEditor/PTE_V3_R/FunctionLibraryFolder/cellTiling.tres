@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://d2h04y5vf4r00"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_ttbtx"]
+
+[resource]
+script = ExtResource("1_ttbtx")
+function_name = "cellTiling"
+code = "
+#define cos1            1.0049000034 //cos((pi * 24.)/180.)*1.1
+#define sin1            0.4474103074 //sin((pi * 24.)/180.)*1.1
+
+float cellTiling(vec2 uv) {
+    float c = sphereGrid(uv);// first grid
+        
+    mat2 m = mat2(vec2(cos1, -sin1),vec2(sin1, cos1)); // rotation/scale matric
+    
+    uv *= m; //each iteration gets rotated and scaled one addional time
+    //c = smin_cube_poly(c, sphereGrid(uv),0.0); // blending the voronoi with
+     c = min(c, sphereGrid(uv));
+    uv *= m; //each iteration gets rotated and scaled one addional time
+    //c = smin_cube_poly(c, sphereGrid(uv),0.0); // blending the voronoi with 
+    c = min(c, sphereGrid(uv));
+    return c; //sqrt for center distance, 1.5 for 0-1 range
+}"
+required_functions = ["sphereGrid"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

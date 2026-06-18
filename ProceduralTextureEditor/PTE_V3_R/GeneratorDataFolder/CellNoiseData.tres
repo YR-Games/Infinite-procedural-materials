@@ -8,20 +8,28 @@
 
 [sub_resource type="Resource" id="Resource_d8yqr"]
 script = ExtResource("2_l3tis")
+min_value = 0.01
 metadata/_custom_type_script = "uid://vq2u6j364n55"
 
 [sub_resource type="Resource" id="Resource_jahst"]
 script = ExtResource("3_1gkcn")
-max_value = 6
+min_value = 1
+max_value = 10
 metadata/_custom_type_script = "uid://yfnmvhksfrlg"
 
 [sub_resource type="Resource" id="Resource_howm4"]
 script = ExtResource("2_l3tis")
+max_value = 20.0
 metadata/_custom_type_script = "uid://vq2u6j364n55"
 
 [resource]
 script = ExtResource("2_aloys")
+function_name = "cellNoise"
 preview_shader = ExtResource("2_4adij")
+required_functions = ["cfbm"]
+function = "float cellNoise(in vec2 uv, float chaos, int numOctaves, float scale,){
+	return cfbm(uv*scale,chaos,numOctaves);
+}"
 parameters = Dictionary[String, ExtResource("1_qog2d")]({
 "chaos": SubResource("Resource_d8yqr"),
 "numOctaves": SubResource("Resource_jahst"),

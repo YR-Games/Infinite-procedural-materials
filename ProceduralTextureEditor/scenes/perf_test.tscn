@@ -1,14 +1,12 @@
 [gd_scene format=3 uid="uid://dn180m58cu7a1"]
 
-[ext_resource type="Shader" uid="uid://183wkkle0dwm" path="res://Shaders/example_sand.gdshader" id="1_02ok5"]
+[ext_resource type="Shader" path="res://Shaders/export_test.gdshader" id="1_02ok5"]
 [ext_resource type="Script" uid="uid://baa3lt0c3mrhk" path="res://camera_3d.gd" id="2_extcj"]
 [ext_resource type="Shader" uid="uid://b8wh3vaynkn8q" path="res://Shaders/wood_oko_veneer.gdshader" id="3_dtpgv"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ljjn8"]
 render_priority = 0
 shader = ExtResource("1_02ok5")
-shader_parameter/scale = Vector2(64, 64)
-shader_parameter/normal_power = 1.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_extcj"]
 size = Vector2(32, 32)
@@ -25,7 +23,7 @@ render_priority = 0
 shader = ExtResource("3_dtpgv")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" unique_id=1095576021]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.019113302, 0.095941305, 0.0004172325)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9605911, 0.05977416, -3.8112335)
 material_override = SubResource("ShaderMaterial_ljjn8")
 mesh = SubResource("PlaneMesh_extcj")
 

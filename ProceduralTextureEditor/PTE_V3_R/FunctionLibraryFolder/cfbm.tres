@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://d1k06kvsd3tb1"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_g1dtn"]
+
+[resource]
+script = ExtResource("1_g1dtn")
+function_name = "cfbm"
+code = "float cfbm( in vec2 x, in float H, in int numOct )
+{    
+    float G = exp2(-H);
+    float f = 1.0;
+    float a = 1.0;
+    float t = 0.0;
+    for( int i=0; i<numOct; i++ )
+    {
+        t += a*cellTiling(f*x);
+        f *= 2.;
+        a *= G;
+    }
+    return t;
+}
+"
+required_functions = ["cellTiling"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

@@ -7,5 +7,9 @@ extends abstract_parameter_def
 @export var max_value: float = 1.0
 @export var step: float = 0.01
 
-#func _to_string() -> String:
-#	return "{"+param_name +" val="+ str(default_value) + ", ("+ str(min_value) + ", " +str(max_value)+"), "+str(step)+"}"
+func value_to_glsl(value: Variant) -> String:
+	var f = float(value)
+	# Ensure decimal point to avoid integer type inference in GLSL
+	if f == floor(f) and not is_inf(f) and not is_nan(f):
+		return "%.1f" % f
+	return str(f)
