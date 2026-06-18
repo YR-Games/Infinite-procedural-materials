@@ -2,15 +2,16 @@
 
 [ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_hb2ue"]
 [ext_resource type="Script" uid="uid://db062eko2a4ko" path="res://PTE_V3_R/resources/modifier_data.gd" id="2_2321s"]
-[ext_resource type="Script" uid="uid://vq2u6j364n55" path="res://PTE_V3_R/resources/float_parameter_def.gd" id="2_u2ie2"]
+[ext_resource type="Gradient" uid="uid://cthnny8hkbh8v" path="res://PTE_V3_R/misc/default_gradient.tres" id="2_u2ie2"]
+[ext_resource type="Script" uid="uid://bmnt3ad4x20q1" path="res://PTE_V3_R/resources/gradient_parameter_def.gd" id="3_xckru"]
 
-[sub_resource type="Resource" id="Resource_xckru"]
-script = ExtResource("2_u2ie2")
-metadata/_custom_type_script = "uid://vq2u6j364n55"
+[sub_resource type="Resource" id="Resource_2fn0y"]
+script = ExtResource("3_xckru")
+metadata/_custom_type_script = "uid://bmnt3ad4x20q1"
 
 [resource]
 script = ExtResource("2_2321s")
 parameters = Dictionary[String, ExtResource("1_hb2ue")]({
-"color": SubResource("Resource_xckru")
+"ramp": SubResource("Resource_2fn0y")
 })
 metadata/_custom_type_script = "uid://db062eko2a4ko"

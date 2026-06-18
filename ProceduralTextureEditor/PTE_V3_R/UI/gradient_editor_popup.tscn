@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://xu1nv336nmfs"]
+
+[ext_resource type="Script" uid="uid://cja1yghf43tqs" path="res://PTE_V3_R/ui_controllers/gradient_editor_popup.gd" id="1_ppqii"]
+
+[node name="GradientEditorPopup" type="PopupPanel" unique_id=1109107214]
+oversampling_override = 1.0
+size = Vector2i(450, 400)
+visible = true
+script = ExtResource("1_ppqii")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1661544972]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 446.0
+offset_bottom = 396.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=256347835]
+layout_mode = 2
+
+[node name="AddStopButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=563339661]
+layout_mode = 2
+text = "Add stop"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=892709460]
+layout_mode = 2
+
+[node name="StopsList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=409177785]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1128142181]
+layout_mode = 2
+text = "Cancel"
+
+[node name="OkButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1694217127]
+layout_mode = 2
+text = "Ok"

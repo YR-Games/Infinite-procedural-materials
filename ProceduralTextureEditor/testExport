@@ -1,33 +1,18 @@
 shader_type spatial;
 render_mode blend_mix, depth_draw_opaque;
 
-#define cos1            1.0049000034 //cos((pi * 24.)/180.)*1.1#define sin1            0.4474103074 //sin((pi * 24.)/180.)*1.1float cellTiling(vec2 uv) {    float c = sphereGrid(uv);// first grid            mat2 m = mat2(vec2(cos1, -sin1),vec2(sin1, cos1)); // rotation/scale matric        uv *= m; //each iteration gets rotated and scaled one addional time    //c = smin_cube_poly(c, sphereGrid(uv),0.0); // blending the voronoi with     c = min(c, sphereGrid(uv));    uv *= m; //each iteration gets rotated and scaled one addional time    //c = smin_cube_poly(c, sphereGrid(uv),0.0); // blending the voronoi with     c = min(c, sphereGrid(uv));    return c; //sqrt for center distance, 1.5 for 0-1 range}
 
 
-float cfbm( in vec2 x, in float H, in int numOct ){        float G = exp2(-H);    float f = 1.0;    float a = 1.0;    float t = 0.0;    for( int i=0; i<numOct; i++ )    {        t += a*cellTiling(f*x);        f *= 2.;        a *= G;    }    return t;}
 
-
-float sphereGrid(vec2 uv) {    vec2 squaregrid = fract(uv) - .5; //rectangular grid with center in the middle    float spheregrid = dot(squaregrid, squaregrid); //squared distance form scenter    return spheregrid;}
-
-
-float cellNoise(vec2 uv, float scale, float chaos, int numOctaves) {
-    return cfbm(uv * scale, chaos, numOctaves);
+vec4 normalBlend(vec4 base, vec4 blend) {
+    return mix(base, blend, blend.a);
 }
-
-
-
 
 
 void fragment() {
 	vec2 uv = UV;
 
 	vec4 base_albedo = vec4(0.0);
-	float gen_val_layer_40445991_3710985259 = cellNoise(1.0, 1, 1.61);
-	vec4 layer_layer_40445991_3710985259 = vec4(vec3(gen_val_layer_40445991_3710985259), 1.0);
-	base_albedo = blend_normal(base_albedo, layer_layer_40445991_3710985259);
-	float gen_val_layer_46569051_2962496205 = cellNoise(1.0, 10, 10.71);
-	vec4 layer_layer_46569051_2962496205 = vec4(vec3(gen_val_layer_46569051_2962496205), 1.0);
-	base_albedo = blend_normal(base_albedo, layer_layer_46569051_2962496205);
 	ALBEDO = base_albedo.rgb;
 	ALPHA = base_albedo.a;
 

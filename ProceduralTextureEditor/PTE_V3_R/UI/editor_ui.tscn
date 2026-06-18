@@ -3,8 +3,23 @@
 [ext_resource type="PackedScene" uid="uid://duib2k2dsrbut" path="res://PTE_V3_R/UI/generators_list_ui.tscn" id="1_ovceq"]
 [ext_resource type="Script" uid="uid://bourkccrdip5e" path="res://PTE_V3_R/ui_controllers/editor_ui_controller.gd" id="1_yfcqk"]
 [ext_resource type="Script" uid="uid://da7m60llit8vk" path="res://PTE_V3_R/ui_controllers/channels_list_ui_controller.gd" id="3_nnwub"]
+[ext_resource type="Script" uid="uid://de6iegc2av1s2" path="res://PTE_V3_R/ui_controllers/preview_controller.gd" id="4_hi3c7"]
+[ext_resource type="Texture2D" uid="uid://glmiy2435yw7" path="res://SkyPanoramas/sky_sunny003_hdr.exr" id="4_nnwub"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_dugh4"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_nnwub"]
+viewport_path = NodePath("MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport")
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_yfcqk"]
+panorama = ExtResource("4_nnwub")
+
+[sub_resource type="Sky" id="Sky_nnwub"]
+sky_material = SubResource("PanoramaSkyMaterial_yfcqk")
+
+[sub_resource type="Environment" id="Environment_hi3c7"]
+background_mode = 2
+sky = SubResource("Sky_nnwub")
+
+[sub_resource type="SphereMesh" id="SphereMesh_nnwub"]
 
 [node name="EditorUI" type="Control" unique_id=1012165022]
 layout_mode = 3
@@ -73,10 +88,28 @@ script = ExtResource("3_nnwub")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
+script = ExtResource("4_hi3c7")
 
-[node name="PreviewRect" type="ColorRect" parent="MenuAndUI/UI/EditorPreviewSplit/Preview" unique_id=1747730227]
-material = SubResource("ShaderMaterial_dugh4")
+[node name="PreviewRect" type="TextureRect" parent="MenuAndUI/UI/EditorPreviewSplit/Preview" unique_id=1697785336]
 layout_mode = 2
-color = Color(0, 0, 0, 1)
+texture = SubResource("ViewportTexture_nnwub")
+
+[node name="SubViewport" type="SubViewport" parent="MenuAndUI/UI/EditorPreviewSplit/Preview" unique_id=1836795866]
+msaa_3d = 3
+size = Vector2i(768, 768)
+
+[node name="Camera3D" type="Camera3D" parent="MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport" unique_id=819459958]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport" unique_id=1779745795]
+environment = SubResource("Environment_hi3c7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport" unique_id=284651614]
+mesh = SubResource("SphereMesh_nnwub")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport" unique_id=1524382047]
+transform = Transform3D(0.52991945, 0.42402396, -0.7344311, 0, 0.8660253, 0.5, 0.848048, -0.2649597, 0.4589237, 0, 0, 0)
+light_color = Color(1, 0.9529412, 0.9019608, 1)
+light_energy = 3.0
 
 [node name="FileDialog" type="FileDialog" parent="." unique_id=1185718605]

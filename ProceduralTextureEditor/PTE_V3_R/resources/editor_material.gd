@@ -1,7 +1,7 @@
 class_name EditorMaterial
 extends RefCounted
 
-signal value_changed(path:Array[StringName], value:Variant)
+
 
 static var editorMaterialData := {
 	&"generators": {},
@@ -18,6 +18,9 @@ static var editorMaterialData := {
 		}
 	}
 }
+
+
+
 
 static func get_value(path:Array[StringName]) -> Variant:
 	var current = editorMaterialData
@@ -47,7 +50,7 @@ static func set_value(path:Array[StringName], value:Variant) -> void:
 		current = current[path[i]]
 
 	current[path[-1]] = value
-	
+	SignalBus.material_value_changed.emit(path, value)
 	
 	
 	# ---------------------- Слои ----------------------

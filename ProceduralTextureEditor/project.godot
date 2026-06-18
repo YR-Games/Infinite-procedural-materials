@@ -25,6 +25,10 @@ config/icon="res://icon.svg"
 
 driver/driver="Dummy"
 
+[autoload]
+
+SignalBus="*uid://cwysgaeshv4wm"
+
 [display]
 
 window/energy_saving/keep_screen_on=false
