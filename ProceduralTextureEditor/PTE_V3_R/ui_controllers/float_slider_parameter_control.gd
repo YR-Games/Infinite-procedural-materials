@@ -1,13 +1,13 @@
-class_name IntParameterControl
+class_name FloatParameterControl
 extends ParameterControl
 
 @onready var parameter_label: Label = $HBoxContainer/Label
 @onready var slider: Slider = $HBoxContainer/HSlider
-var param_def: int_parameter_def
+var param_def: floatParameterDef
 
 
 
-func setup(def: int_parameter_def, parameter_name: String) -> void:
+func setup(def: floatParameterDef, parameter_name: String) -> void:
 	param_def = def
 	parameter_label.text = parameter_name
 	_setup_ui()
@@ -26,8 +26,7 @@ func _update_from_data() -> void:
 	if val == null:
 		val = param_def.default_value
 
-	slider.value = int(val)
+	slider.value = float(val)
 
 func _on_spinbox_changed(new_val: float) -> void:
-	var int_val = int(round(new_val))
-	_on_ui_changed(int_val)
+	_on_ui_changed(new_val)

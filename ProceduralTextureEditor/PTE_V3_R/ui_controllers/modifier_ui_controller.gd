@@ -48,7 +48,7 @@ func _refresh_ui() -> void:
 
 	for param_name in modifier_data.parameters:
 
-		var def:abstract_parameter_def = (modifier_data.parameters[param_name])
+		var def:abstractParameterDef = (modifier_data.parameters[param_name])
 		var control := ParameterControlFactory.create(def)
 		if control == null:
 			continue

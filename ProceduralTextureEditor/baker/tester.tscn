@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://b2tmeou24qbuj"]
 
 [ext_resource type="Script" uid="uid://bss4ei7grmfxs" path="res://baker/generator_baker.gd" id="1_6avlx"]
-[ext_resource type="Resource" uid="uid://bmaq7tuu3rwdc" path="res://PTE_V3_R/VoronoiGeneratorData.tres" id="2_6avlx"]
+
+[sub_resource type="Resource" id="Resource_dw7mt"]
+metadata/__load_path__ = "res://PTE_V3_R/VoronoiGeneratorData.tres"
 
 [node name="Control" type="Control" unique_id=548366355]
 layout_mode = 3
@@ -11,7 +13,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6avlx")
-generator_data = ExtResource("2_6avlx")
+generator_data = SubResource("Resource_dw7mt")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=527157968]
 layout_mode = 1

@@ -47,8 +47,17 @@ float cellNoise(in vec2 uv, float chaos, int numOctaves, float scale,){
 }
 
 
-vec4 multiplyBlend(vec4 base, vec4 blend) {
-    return base * blend;
+vec4 colorRamp(float value, vec3 palette[8]) {
+    const int SIZE = 8;
+
+    float t = clamp(value, 0.0, 1.0) * float(SIZE - 1);
+
+    int i = int(floor(t));
+    i = clamp(i, 0, SIZE - 2);
+
+    float f = fract(t);
+
+    return vec4(mix(palette[i], palette[i + 1], f), 1.0);
 }
 
 
@@ -61,12 +70,16 @@ void fragment() {
 	vec2 uv = UV;
 
 	vec4 base_albedo = vec4(0.0);
-	float gen_val_layer_14846772_2500332088 = cellNoise(uv, 1.0, 1, 1.0);
-	vec4 layer_layer_14846772_2500332088 = vec4(vec3(gen_val_layer_14846772_2500332088), 1.0);
-	base_albedo = multiplyBlend(base_albedo, layer_layer_14846772_2500332088);
-	float gen_val_layer_15968733_3454246235 = cellNoise(uv, 0.38, 10, 8.75);
-	vec4 layer_layer_15968733_3454246235 = vec4(vec3(gen_val_layer_15968733_3454246235), 1.0);
-	base_albedo = normalBlend(base_albedo, layer_layer_15968733_3454246235);
+	float gen_val_layer_6458644_259489479 = cellNoise(uv, 1.000000, 1, 20.000000);
+	
+	
+	vec3 %s[%d] = vec3[](
+		%s
+	);
+	
+	vec4 mod_mod_13957749_2471323238 = colorRamp(gen_val_layer_6458644_259489479, mod_mod_13957749_2471323238_palette);
+	vec4 layer_layer_6458644_259489479 = mod_mod_13957749_2471323238;
+	base_albedo = normalBlend(base_albedo, layer_layer_6458644_259489479);
 	ALBEDO = base_albedo.rgb;
 	ALPHA = base_albedo.a;
 

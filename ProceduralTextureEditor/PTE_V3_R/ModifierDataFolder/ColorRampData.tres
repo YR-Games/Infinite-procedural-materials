@@ -2,16 +2,28 @@
 
 [ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_hb2ue"]
 [ext_resource type="Script" uid="uid://db062eko2a4ko" path="res://PTE_V3_R/resources/modifier_data.gd" id="2_2321s"]
-[ext_resource type="Gradient" uid="uid://cthnny8hkbh8v" path="res://PTE_V3_R/misc/default_gradient.tres" id="2_u2ie2"]
-[ext_resource type="Script" uid="uid://bmnt3ad4x20q1" path="res://PTE_V3_R/resources/gradient_parameter_def.gd" id="3_xckru"]
+[ext_resource type="Script" uid="uid://bmnt3ad4x20q1" path="res://PTE_V3_R/resources/palette_parameter_def.gd" id="2_u2ie2"]
 
-[sub_resource type="Resource" id="Resource_2fn0y"]
-script = ExtResource("3_xckru")
+[sub_resource type="Resource" id="Resource_hi3c7"]
+script = ExtResource("2_u2ie2")
 metadata/_custom_type_script = "uid://bmnt3ad4x20q1"
 
 [resource]
 script = ExtResource("2_2321s")
+function_name = "colorRamp"
+function = "vec4 colorRamp(float value, vec3 palette[8]) {
+    const int SIZE = 8;
+
+    float t = clamp(value, 0.0, 1.0) * float(SIZE - 1);
+
+    int i = int(floor(t));
+    i = clamp(i, 0, SIZE - 2);
+
+    float f = fract(t);
+
+    return vec4(mix(palette[i], palette[i + 1], f), 1.0);
+}"
 parameters = Dictionary[String, ExtResource("1_hb2ue")]({
-"ramp": SubResource("Resource_2fn0y")
+"palette": SubResource("Resource_hi3c7")
 })
 metadata/_custom_type_script = "uid://db062eko2a4ko"

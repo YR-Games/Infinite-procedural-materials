@@ -154,8 +154,19 @@ func generate_shader_code() -> String:
 			# Build argument list from generator parameters
 			var args := PackedStringArray(["uv"])
 			for param_name in gen_data.parameters:
-				var val = gen_params.get(param_name, gen_data.parameters[param_name].default_value)
-				args.append(gen_data.parameters[param_name].value_to_glsl(val))
+				var param_def: abstractParameterDef = gen_data.parameters[param_name]
+				var val = gen_params.get(param_name, param_def.get_default_value())
+
+				var var_name = "gen_%s_%s" % [layer.get("id", "layer"),param_name]
+
+				var declaration = param_def.generate_glsl_declaration(val,var_name)
+
+				if declaration.strip_edges() != "":
+					code.append("\t" + declaration.replace("\n", "\n\t"))
+					args.append(param_def.value_to_glsl(val, var_name))
+				else:
+					args.append(param_def.value_to_glsl(val))
+					
 			var call_str = "%s(%s)" % [gen_data.function_name, ", ".join(args)]
 			var current_val = "gen_val_" + str(layer.get("id", "gen"))
 			code.append("\t%s %s = %s;" % [gen_data.return_type, current_val, call_str])
@@ -172,9 +183,20 @@ func generate_shader_code() -> String:
 					continue
 
 				var mod_args := PackedStringArray([current_val])
+
 				for param_name in mod_data.parameters:
-					var val = mod_params.get(param_name, mod_data.parameters[param_name].default_value)
-					mod_args.append(mod_data.parameters[param_name].value_to_glsl(val))
+					var param_def: abstractParameterDef = mod_data.parameters[param_name]
+					var val = mod_params.get(param_name, param_def.get_default_value())
+
+					var var_name = "mod_%s_%s" % [mod_id,param_name]
+
+					var declaration = param_def.generate_glsl_declaration(val,var_name)
+
+					if declaration.strip_edges() != "":
+						code.append("\t" + declaration.replace("\n", "\n\t"))
+						mod_args.append(param_def.value_to_glsl(val, var_name))
+					else:
+						mod_args.append(param_def.value_to_glsl(val))
 				var mod_call = "%s(%s)" % [mod_data.function_name, ", ".join(mod_args)]
 				var new_val = "mod_" + str(mod_id)
 				code.append("\t%s %s = %s;" % [mod_data.return_type, new_val, mod_call])

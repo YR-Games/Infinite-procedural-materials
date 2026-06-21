@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dgaphwicgg5mm"]
 
-[ext_resource type="Script" uid="uid://cgwbvdaq6c3f0" path="res://PTE_V3_R/ui_controllers/float_parameter_control.gd" id="1_xm8nr"]
+[ext_resource type="Script" uid="uid://cgwbvdaq6c3f0" path="res://PTE_V3_R/ui_controllers/float_slider_parameter_control.gd" id="1_xm8nr"]
 
 [node name="FloatParameterUI" type="PanelContainer" unique_id=1600176633]
 custom_minimum_size = Vector2(0, 32)

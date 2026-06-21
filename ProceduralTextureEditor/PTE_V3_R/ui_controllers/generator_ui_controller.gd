@@ -56,7 +56,7 @@ func _refresh_ui() -> void:
 	param_controls.clear()
 	
 	for param_name in generator_data.parameters:
-		var def: abstract_parameter_def = generator_data.parameters[param_name]
+		var def: abstractParameterDef = generator_data.parameters[param_name]
 		var control = ParameterControlFactory.create(def)
 		if control == null:
 			continue

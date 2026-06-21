@@ -1,23 +1,22 @@
-[gd_scene format=3 uid="uid://dxi2rjsepkfep"]
+[gd_scene format=3 uid="uid://os60adfrsmke"]
 
-[ext_resource type="Script" uid="uid://o2c0vugukety" path="res://PTE_V3_R/ui_controllers/int_slider_parameter_control.gd" id="1_k3irn"]
+[ext_resource type="Script" uid="uid://bkbfs0ddpai74" path="res://PTE_V3_R/ui_controllers/float_spinbox_parameter_control.gd" id="1_aspla"]
 
-[node name="IntParameterUI" type="PanelContainer" unique_id=1101960727]
+[node name="FloatParameterUI" type="PanelContainer" unique_id=1600176633]
 custom_minimum_size = Vector2(0, 32)
 offset_right = 260.0
 offset_bottom = 32.0
 size_flags_horizontal = 2
 size_flags_vertical = 0
-script = ExtResource("1_k3irn")
+script = ExtResource("1_aspla")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1509167587]
-custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 
 [node name="Label" type="Label" parent="HBoxContainer" unique_id=2119446761]
 custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
 
-[node name="HSlider" type="HSlider" parent="HBoxContainer" unique_id=621021233]
+[node name="SpinBox" type="SpinBox" parent="HBoxContainer" unique_id=1627722912]
 custom_minimum_size = Vector2(128, 0)
 layout_mode = 2

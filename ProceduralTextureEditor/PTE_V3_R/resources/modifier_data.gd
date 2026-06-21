@@ -5,4 +5,4 @@ class_name ModifierData extends Resource
 @export var return_type: String = "vec4"
 @export var required_functions: PackedStringArray = []
 @export_multiline var function: String = ""
-@export var parameters: Dictionary[String, abstract_parameter_def]
+@export var parameters: Dictionary[String, abstractParameterDef]

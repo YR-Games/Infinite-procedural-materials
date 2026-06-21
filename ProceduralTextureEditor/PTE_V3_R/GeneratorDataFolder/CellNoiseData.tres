@@ -9,6 +9,7 @@
 [sub_resource type="Resource" id="Resource_d8yqr"]
 script = ExtResource("2_l3tis")
 min_value = 0.01
+editor_type = 1
 metadata/_custom_type_script = "uid://vq2u6j364n55"
 
 [sub_resource type="Resource" id="Resource_jahst"]
