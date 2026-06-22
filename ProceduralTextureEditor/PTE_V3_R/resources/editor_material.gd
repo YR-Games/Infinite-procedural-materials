@@ -20,8 +20,6 @@ static var editorMaterialData := {
 }
 
 
-
-
 static func get_value(path:Array[StringName]) -> Variant:
 	var current = editorMaterialData
 
@@ -33,16 +31,6 @@ static func get_value(path:Array[StringName]) -> Variant:
 
 	return current
 
-static func add_generator(id:StringName,generator_name:StringName,parameters:Dictionary):
-	editorMaterialData["generators"][id] = {
-		&"generator_name": generator_name,
-		&"parameters": parameters
-	}
-
-static func remove_generator(id:StringName):
-	editorMaterialData["generators"].erase(id)
-
-
 static func set_value(path:Array[StringName], value:Variant) -> void:
 	var current = editorMaterialData
 
@@ -50,28 +38,18 @@ static func set_value(path:Array[StringName], value:Variant) -> void:
 		current = current[path[i]]
 
 	current[path[-1]] = value
-	SignalBus.material_value_changed.emit(path, value)
-	
-	
-	# ---------------------- Слои ----------------------
+	SignalBus.material_value_changed.emit()
 
-static func add_layer(channel:StringName,layer_id:StringName) -> Dictionary:
-	print("channel =", channel)
-	print(editorMaterialData[&"channels"].keys())
-	var layer := {
-		&"id": layer_id,
-		&"name": "Layer",
-		&"generator_id": StringName(),
-		&"blend_mode": &"normal",
-		&"modifiers": {},
-		&"modifier_order": []
+static func add_generator(id:StringName,generator_name:StringName,parameters:Dictionary):
+	editorMaterialData["generators"][id] = {
+		&"generator_name": generator_name,
+		&"parameters": parameters
 	}
-	
-	editorMaterialData[&"channels"][channel][&"layers"][layer_id] = layer
-	editorMaterialData[&"channels"][channel][&"layer_order"].append(layer_id)
+	SignalBus.material_value_changed.emit()
 
-	return layer
-
+static func remove_generator(id:StringName):
+	editorMaterialData["generators"].erase(id)
+	SignalBus.material_value_changed.emit()
 
 static func get_generator(id:StringName) -> Dictionary:
 	return editorMaterialData["generators"].get(id,{})
@@ -88,35 +66,82 @@ static func get_generator_ids() -> Array[StringName]:
 
 	return result
 
-static func remove_layer(channel:StringName,layer_id:StringName) -> void:
-
-	var channel_data:Dictionary = editorMaterialData["channels"][channel]
-
-	channel_data["layers"].erase(layer_id)
-	channel_data["layer_order"].erase(layer_id)
 
 
-static func get_layer(channel:StringName,layer_id:StringName) -> Dictionary:
+	
+	
+	# ---------------------- Слои ----------------------
 
-	return editorMaterialData["channels"][channel]["layers"].get(layer_id,{})
+static func get_channel(channel:StringName) -> Dictionary:
+	return editorMaterialData[&"channels"].get(channel, {})
+
+static func get_channel_layers(channel:StringName) -> Dictionary:
+	var channel_data := get_channel(channel)
+
+	if channel_data.is_empty():
+		return {}
+
+	return channel_data[&"layers"]
+
+static func get_channel_layer_order(channel:StringName) -> Array:
+	var channel_data := get_channel(channel)
+
+	if channel_data.is_empty():
+		return []
+
+	return channel_data[&"layer_order"]
+
+static func add_layer(channel:StringName,layer_id:StringName) -> Dictionary:
+	var channel_data := get_channel(channel)
+	if channel_data.is_empty():
+		return {}
+	var layer := {
+		&"id": layer_id,
+		&"name": "Layer",
+		&"generator_id": StringName(),
+		&"blend_mode": &"normal",
+		&"modifiers": {},
+		&"modifier_order": []
+	}
+	
+	channel_data[&"layers"][layer_id] = layer
+	channel_data[&"layer_order"].append(layer_id)
+	SignalBus.material_value_changed.emit()
+	
+	return layer
+
+
+static func get_layer(channel:StringName, layer_id:StringName) -> Dictionary:
+	return get_channel_layers(channel).get(layer_id, {})
 
 
 static func get_layers(channel:StringName) -> Dictionary:
-	return editorMaterialData["channels"][channel]["layers"]
+	return get_channel_layers(channel)
+
+
+static func remove_layer(channel:StringName, layer_id:StringName) -> void:
+
+	var layers := get_channel_layers(channel)
+	var order := get_channel_layer_order(channel)
+
+	layers.erase(layer_id)
+	order.erase(layer_id)
+
+	SignalBus.material_value_changed.emit()
 
 
 static func get_layer_order(channel:StringName) -> Array:
-	return editorMaterialData["channels"][channel]["layer_order"]
+	return get_channel_layer_order(channel)
 
 
 static func get_layers_in_order(channel:StringName) -> Array[Dictionary]:
 
 	var result:Array[Dictionary] = []
 
-	var channel_data:Dictionary = editorMaterialData["channels"][channel]
+	var layers := get_channel_layers(channel)
 
-	for layer_id in channel_data["layer_order"]:
-		var layer:Dictionary = channel_data["layers"].get(layer_id)
+	for layer_id in get_channel_layer_order(channel):
+		var layer:Dictionary = layers.get(layer_id, {})
 
 		if not layer.is_empty():
 			result.append(layer)
@@ -125,8 +150,7 @@ static func get_layers_in_order(channel:StringName) -> Array[Dictionary]:
 
 
 static func move_layer(channel:StringName,from_index:int,to_index:int) -> void:
-
-	var order:Array = editorMaterialData["channels"][channel]["layer_order"]
+	var order := get_channel_layer_order(channel)
 
 	if from_index < 0 or from_index >= order.size():
 		return
@@ -139,6 +163,7 @@ static func move_layer(channel:StringName,from_index:int,to_index:int) -> void:
 	order.remove_at(from_index)
 	order.insert(to_index, layer_id)
 
+	SignalBus.material_value_changed.emit()
 
 # ---------------------- Модификаторы ----------------------
 
@@ -159,6 +184,8 @@ static func add_modifier(channel:StringName,layer_id:StringName,modifier_name:St
 
 	layer[&"modifiers"][modifier_id] = modifier
 	layer[&"modifier_order"].append(modifier_id)
+
+	SignalBus.material_value_changed.emit()
 
 	return modifier
 
@@ -230,3 +257,5 @@ static func move_modifier(channel:StringName,layer_id:StringName,from_index:int,
 
 	order.remove_at(from_index)
 	order.insert(to_index, modifier_id)
+
+	SignalBus.material_value_changed.emit()

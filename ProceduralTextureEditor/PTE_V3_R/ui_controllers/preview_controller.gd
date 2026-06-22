@@ -26,7 +26,7 @@ func _ready() -> void:
 	# Initial preview
 	_update_preview()
 
-func _on_material_changed(_path: Array[StringName], _value: Variant) -> void:
+func _on_material_changed() -> void:
 	# Restart the debounce timer every time something changes
 	update_timer.start()
 

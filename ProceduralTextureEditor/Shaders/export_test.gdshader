@@ -70,16 +70,20 @@ void fragment() {
 	vec2 uv = UV;
 
 	vec4 base_albedo = vec4(0.0);
-	float gen_val_layer_6458644_259489479 = cellNoise(uv, 1.000000, 1, 20.000000);
-	
-	
-	vec3 %s[%d] = vec3[](
-		%s
+	float gen_val_layer_3378228_1584141019 = cellNoise(uv, 1.000000, 1, 20.000000);
+	vec3 mod_mod_114334005_2579636177_palette[8] = vec3[](
+		vec3(1.000, 0.000, 0.000),
+		vec3(1.000, 1.000, 1.000),
+		vec3(0.0),
+		vec3(0.0),
+		vec3(0.0),
+		vec3(0.0),
+		vec3(0.0),
+		vec3(0.0)
 	);
-	
-	vec4 mod_mod_13957749_2471323238 = colorRamp(gen_val_layer_6458644_259489479, mod_mod_13957749_2471323238_palette);
-	vec4 layer_layer_6458644_259489479 = mod_mod_13957749_2471323238;
-	base_albedo = normalBlend(base_albedo, layer_layer_6458644_259489479);
+	vec4 mod_mod_114334005_2579636177 = colorRamp(gen_val_layer_3378228_1584141019, mod_mod_114334005_2579636177_palette);
+	vec4 layer_layer_3378228_1584141019 = mod_mod_114334005_2579636177;
+	base_albedo = normalBlend(base_albedo, layer_layer_3378228_1584141019);
 	ALBEDO = base_albedo.rgb;
 	ALPHA = base_albedo.a;
 

@@ -10,6 +10,9 @@ var _preview_material: ShaderMaterial
 static var pending_generator_layer: LayerUIController = null
 static var _generator_selection_handler_connected := false
 
+var modifier_controllers : Array[ModifierUIController] = []
+var current_modifier : ModifierUIController = null
+
 @onready var name_edit: LineEdit = $VBoxContainer/Header/LayerName
 @onready var generator_selector: Button = $VBoxContainer/SelectGeneratorButton
 @onready var blend_mode_selector: OptionButton = $VBoxContainer/BlendModeOption
@@ -20,16 +23,28 @@ static var _generator_selection_handler_connected := false
 
 @onready var generator_list: GeneratorListUIController = get_node("/root/EditorUI/MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit/Generators")
 
+var normal_style = preload("res://PTE_V3_R/styles/normal_style_box.tres")
+var highlight_style = preload("res://PTE_V3_R/styles/selected_style_box.tres")
+var owner_channel: ChannelUIController
 
-func setup(p_channel_name: StringName, p_layer_id: StringName) -> void:
+
+var is_selected := false:
+	set(value):
+		is_selected = value
+		_update_style()
+
+func setup(p_channel_name: StringName, p_layer_id: StringName, p_owner_channel: ChannelUIController) -> void:
 	channel_name = p_channel_name
 	layer_id = p_layer_id
 	layer_path = MaterialPath.new([&"channels", channel_name, &"layers", layer_id])
+	owner_channel = p_owner_channel
+
 	if is_inside_tree():
 		_refresh()
 
 
 func _ready() -> void:
+	add_theme_stylebox_override("panel",normal_style)
 	name_edit.text_changed.connect(_on_name_changed)
 	blend_mode_selector.item_selected.connect(_on_blend_mode_selected)
 	add_modifier_button.pressed.connect(_on_add_modifier_button_pressed)
@@ -134,7 +149,7 @@ func _refresh_generator_list() -> void:
 func _select_generator_in_list(generator_id: StringName) -> void:
 	for panel in generator_list.panels:
 		if panel.generator_id == generator_id:
-			generator_list.select(panel)
+			SelectionManager.select(panel)
 			break
 
 
@@ -171,7 +186,36 @@ func _create_modifier_ui(modifier_data: Dictionary) -> void:
 	var controller = scene.instantiate() as ModifierUIController
 	modifiers_container.add_child(controller)
 	controller.setup(channel_name, layer_id, modifier_data[&"id"])
+	
+	controller.gui_input.connect(_on_modifier_gui_input.bind(controller))
+	modifier_controllers.append(controller)
 
+func _on_modifier_gui_input(
+	event,
+	controller
+) -> void:
+
+	if event is InputEventMouseButton \
+	and event.button_index == MOUSE_BUTTON_LEFT \
+	and event.pressed:
+		SelectionManager.select(controller)
+
+
+
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_text_delete") \
+	and current_modifier:
+		_remove_modifier(current_modifier)
+
+func _remove_modifier(controller: ModifierUIController) -> void:
+
+	EditorMaterial.remove_modifier(channel_name,layer_id,controller.modifier_id)
+	modifier_controllers.erase(controller)
+
+	if current_modifier == controller:
+		current_modifier = null
+
+	controller.queue_free()
 
 func _on_add_modifier_button_pressed() -> void:
 	var names: PackedStringArray = ModifierLibrary.get_all_names()
@@ -196,6 +240,41 @@ func _on_modifier_type_selected(id: int, names: PackedStringArray, popup: PopupM
 	_on_add_modifier(type_name)
 	popup.queue_free()
 
+func _update_style() -> void:
+
+	var style = (highlight_style if is_selected else normal_style)
+
+	add_theme_stylebox_override("panel", style)
+
+func set_selected(selected: bool) -> void:
+	is_selected = selected
+
+func _get_drag_data(at_position):
+	var preview := duplicate()
+	set_drag_preview(preview)
+
+	return {
+		"type": "layer",
+		"layer_id": layer_id,
+		"channel": channel_name
+	}
+
+func _can_drop_data(at_position,data) -> bool:
+	return (
+		data is Dictionary and data.get("type") == "layer" and data.get("channel") == channel_name
+	)
+
+func _drop_data(at_position,data) -> void:
+	var source_id : StringName = data["layer_id"]
+	if source_id == layer_id:
+		return
+	var order = EditorMaterial.get_layer_order(channel_name)
+	var from_index = order.find(source_id)
+	var to_index = order.find(layer_id)
+
+	EditorMaterial.move_layer(channel_name,from_index,to_index)
+
+	owner_channel._refresh()
 
 func _on_add_modifier(modifier_type_name: StringName) -> void:
 	var modifier_data := EditorMaterial.add_modifier(channel_name, layer_id, modifier_type_name, {})
@@ -207,3 +286,7 @@ func _on_add_modifier(modifier_type_name: StringName) -> void:
 
 func _on_name_changed(new_text: String) -> void:
 	layer_path.child(&"name").set_value(new_text)
+	
+	
+func delete_self():
+	owner_channel._remove_layer(self)

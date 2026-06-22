@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://duib2k2dsrbut" path="res://PTE_V3_R/UI/generators_list_ui.tscn" id="1_ovceq"]
 [ext_resource type="Script" uid="uid://bourkccrdip5e" path="res://PTE_V3_R/ui_controllers/editor_ui_controller.gd" id="1_yfcqk"]
+[ext_resource type="Script" uid="uid://bok06nq8k3fxe" path="res://PTE_V3_R/ui_controllers/file_ui_controller.gd" id="2_o84eg"]
 [ext_resource type="Script" uid="uid://da7m60llit8vk" path="res://PTE_V3_R/ui_controllers/channels_list_ui_controller.gd" id="3_nnwub"]
 [ext_resource type="Script" uid="uid://de6iegc2av1s2" path="res://PTE_V3_R/ui_controllers/preview_controller.gd" id="4_hi3c7"]
 [ext_resource type="Texture2D" uid="uid://glmiy2435yw7" path="res://SkyPanoramas/sky_sunny003_hdr.exr" id="4_nnwub"]
@@ -55,6 +56,7 @@ layout_mode = 2
 item_count = 1
 item_0/text = "Export code"
 item_0/id = 0
+script = ExtResource("2_o84eg")
 
 [node name="Edit" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1840165740]
 
@@ -63,6 +65,9 @@ item_0/id = 0
 [node name="Tools" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1488132632]
 
 [node name="Help" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1996058615]
+
+[node name="FileDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1185718605]
+oversampling_override = 1.0
 
 [node name="UI" type="PanelContainer" parent="MenuAndUI" unique_id=209799095]
 layout_mode = 2
@@ -99,17 +104,16 @@ msaa_3d = 3
 size = Vector2i(768, 768)
 
 [node name="Camera3D" type="Camera3D" parent="MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport" unique_id=819459958]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport" unique_id=1779745795]
 environment = SubResource("Environment_hi3c7")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport" unique_id=284651614]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
 mesh = SubResource("SphereMesh_nnwub")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport" unique_id=1524382047]
 transform = Transform3D(0.52991945, 0.42402396, -0.7344311, 0, 0.8660253, 0.5, 0.848048, -0.2649597, 0.4589237, 0, 0, 0)
 light_color = Color(1, 0.9529412, 0.9019608, 1)
 light_energy = 3.0
-
-[node name="FileDialog" type="FileDialog" parent="." unique_id=1185718605]

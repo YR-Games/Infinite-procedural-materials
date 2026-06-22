@@ -52,7 +52,6 @@ func add_generator(generator_type_name: StringName) -> void:
 	controller.setup(generator_type_name,id)
 	controller.gui_input.connect(_on_panel_gui_input.bind(controller))
 	panels.append(controller)
-	select(controller)
 
 
 func _generate_unique_id() -> String:
@@ -64,19 +63,9 @@ func _generate_unique_id() -> String:
 func _on_panel_gui_input(event: InputEvent,panel: GeneratorUIController) -> void:
 
 	if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
-		select(panel)
+		SelectionManager.select(panel)
 		generator_selected.emit(panel.generator_id)
 
-func select(panel: GeneratorUIController) -> void:
-
-	if current == panel:
-		return
-	if current:
-		current.set_selected(false)
-	current = panel
-
-	if current:
-		current.set_selected(true)
 
 
 # ---------------------- Удаление ----------------------

@@ -28,6 +28,7 @@ driver/driver="Dummy"
 [autoload]
 
 SignalBus="*uid://cwysgaeshv4wm"
+SelectionManager="*uid://nptt2qnfeoox"
 
 [display]
 

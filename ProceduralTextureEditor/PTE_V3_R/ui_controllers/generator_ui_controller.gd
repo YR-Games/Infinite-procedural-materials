@@ -80,7 +80,8 @@ func _clear_parameter_ui() -> void:
 	for child in parameters_container.get_children():
 		child.queue_free()
 
-
+func delete_self():
+	get_parent().get_parent().get_parent().get_parent()._remove_panel(self)
 
 func _on_parameter_changed(new_value, param_name: String) -> void:
 	_material.set_shader_parameter(param_name, new_value)
