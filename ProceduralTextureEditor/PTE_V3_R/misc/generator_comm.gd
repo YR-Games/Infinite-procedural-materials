@@ -1,20 +1,13 @@
-extends Node
+class_name WSUtill
+#??? Мёртв?
 
-signal connected()
-signal disconnected()
-signal material_request_received(parameters: Dictionary, request_id: String)
-signal material_found(material_json: Dictionary)
-
-var _ws := WebSocketPeer.new()
-var _url := "ws://127.0.0.1:9090"   # configurable
-var _shared_folder := "user://shared/"   # should be an absolute system path in production
-var _request_counter := 0
+static var _ws := WebSocketPeer.new()
+static var _url := "ws://127.0.0.1:8765"   # configurable
+static var _shared_folder := "user://shared/"   # should be an absolute system path in production
+static var _request_counter := 0
 
 
-func _ready():
-	material_request_received.connect(_on_material_request_received)
-
-func _on_material_request_received(parameters: Dictionary, request_id: String):
+static func on_material_request_received(parameters: Dictionary, request_id: String):
 	# Apply parameters to EditorMaterial
 	for path_str in parameters.keys():
 		var path = _str_to_material_path(path_str)
@@ -27,7 +20,7 @@ func _on_material_request_received(parameters: Dictionary, request_id: String):
 	send_message("variation_done", {"request_id": request_id, "image_path": file_path})
 
 
-func connect_to_host(url: String = _url) -> int:
+static func connect_to_host(url: String = _url) -> int:
 	_ws.close()
 	var err = _ws.connect_to_url(url)
 	if err == OK:
@@ -42,12 +35,12 @@ func _process(_delta):
 	_ws.poll()
 	var state = _ws.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:
-		connected.emit()
+		print("connected")
 		while _ws.get_available_packet_count():
 			var packet = _ws.get_packet()
 			_handle_message(packet.get_string_from_utf8())
 	elif state == WebSocketPeer.STATE_CLOSED:
-		disconnected.emit()
+		print("disconnected")
 		set_process(false)
 
 func send_message(action: String, payload: Dictionary = {}):

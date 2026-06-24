@@ -1,0 +1,10 @@
+matplotlib
+opencv-python
+scikit-learn
+matplotlib
+numpy
+pytorch-metric-learning
+transformers
+pillow
+faiss-cpu
+websockets

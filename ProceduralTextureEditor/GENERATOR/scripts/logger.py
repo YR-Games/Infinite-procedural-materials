@@ -1,0 +1,55 @@
+"""Настройка логирования."""
+
+import logging
+import shutil
+import sys
+from datetime import datetime
+from pathlib import Path
+
+train_logger = logging.getLogger("training")
+preprocess_dataset_logger = logging.getLogger("preprocessing")
+lib_logger = logging.getLogger("lib")
+
+main_module = sys.modules["__main__"]
+assert main_module is not None and main_module.__file__ is not None
+
+main_dir: Path = Path(main_module.__file__).resolve().parent
+log_dir: Path = main_dir / "logs"
+if log_dir.exists():
+    shutil.rmtree(log_dir)
+log_dir.mkdir(parents=True, exist_ok=True)
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(message)s",
+    handlers=[logging.StreamHandler()],
+)
+
+train_logger.addHandler(
+    logging.FileHandler(
+        f"{log_dir}/training_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log",
+        encoding="utf-8",
+    )
+)
+
+preprocess_dataset_logger.addHandler(
+    logging.FileHandler(
+        f"{log_dir}/preprocess_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log",
+        encoding="utf-8",
+    )
+)
+
+file_handler = logging.FileHandler(
+    f"{log_dir}/{datetime.now().strftime('%Y%m%d_%H%M%S')}.log", encoding="utf-8"
+)
+file_handler.setLevel(logging.DEBUG)
+lib_logger.addHandler(file_handler)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+)
+stream_handler.setLevel(logging.DEBUG)
+lib_logger.addHandler(stream_handler)
+lib_logger.propagate = False
