@@ -51,9 +51,7 @@ func evalute()->void:
 	else:
 		for i in generator_data.parameters:
 			if i.default_value < i.max_value:
-				#??? Туть!
-				# Вариант 1
-				i.default_value += i.step
+				# Вариант 1 i.default_value += i.step - резервный
 				# Вариант 2
 				i.default_value += max((i.max_value-i.min_value)/10, i.step)
 			else:

@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://q21mccbjng2h"]
 
 [ext_resource type="PackedScene" uid="uid://duib2k2dsrbut" path="res://PTE_V3_R/UI/generators_list_ui.tscn" id="1_ovceq"]
-[ext_resource type="Script" uid="uid://bourkccrdip5e" path="res://PTE_V3_R/ui_controllers/editor_ui_controller.gd" id="1_yfcqk"]
+[ext_resource type="Script" uid="uid://c2i6ayaflr0s5" path="res://PTE_V3_R/UI/popup_ui.gd" id="2_2vb1g"]
+[ext_resource type="Script" uid="uid://xr3t3bde3734" path="res://PTE_V3_R/ui_controllers/GPM_controller.gd" id="2_i4lt2"]
 [ext_resource type="Script" uid="uid://bok06nq8k3fxe" path="res://PTE_V3_R/ui_controllers/file_ui_controller.gd" id="2_o84eg"]
 [ext_resource type="Script" uid="uid://da7m60llit8vk" path="res://PTE_V3_R/ui_controllers/channels_list_ui_controller.gd" id="3_nnwub"]
 [ext_resource type="Script" uid="uid://de6iegc2av1s2" path="res://PTE_V3_R/ui_controllers/preview_controller.gd" id="4_hi3c7"]
@@ -27,9 +28,12 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 78.0
+offset_right = 1.0
+offset_bottom = 78.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_yfcqk")
 
 [node name="MenuAndUI" type="VBoxContainer" parent="." unique_id=346902648]
 layout_mode = 1
@@ -68,6 +72,94 @@ script = ExtResource("2_o84eg")
 
 [node name="FileDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1185718605]
 oversampling_override = 1.0
+
+[node name="VSeparator" type="VSeparator" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer" unique_id=1280981140]
+layout_mode = 2
+
+[node name="Найти материал по изображжению 🔎" type="Button" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer" unique_id=1566213749]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Найти материал по изображжению 🔎"
+script = ExtResource("2_i4lt2")
+
+[node name="Window" type="Window" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎" unique_id=1960990049]
+disable_3d = true
+transparent_bg = true
+oversampling_override = 1.0
+title = "Генератор процедурных материалов"
+initial_position = 2
+size = Vector2i(800, 600)
+exclusive = true
+always_on_top = true
+transparent = true
+popup_window = true
+accessibility_name = "Генератор ПМ"
+accessibility_description = "Позволяет загрузить изображение и получить по нему список процедурных материалов, позволяющих его сгенерировать."
+script = ExtResource("2_2vb1g")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" unique_id=533739609]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer" unique_id=1335167463]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer" unique_id=30372709]
+layout_mode = 2
+text = "Выберите изображение:"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer" unique_id=266995984]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=1301430970]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Button" type="Button" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=613598062]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 18
+text = "обзор"
+
+[node name="FileDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer/HBoxContainer/Button" unique_id=1693969253]
+oversampling_override = 1.0
+title = "Open a File"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.png,*.jpg,*.jpeg;Файлы изображений;image/png,image/jpeg")
+
+[node name="TextureRect" type="TextureRect" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=2123365252]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+size_flags_horizontal = 10
+expand_mode = 3
+
+[node name="HSeparator" type="HSeparator" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer" unique_id=1662565397]
+custom_minimum_size = Vector2(0, 12.63)
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer" unique_id=713689220]
+layout_mode = 2
+
+[node name="FindedMaterials" type="VBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer" unique_id=1152643774]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/FindedMaterials" unique_id=1186266024]
+layout_mode = 2
+text = "Найденные материалы:"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/FindedMaterials" unique_id=1870137271]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Materials" type="VBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/FindedMaterials/ScrollContainer" unique_id=888687611]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="UI" type="PanelContainer" parent="MenuAndUI" unique_id=209799095]
 layout_mode = 2
@@ -117,3 +209,9 @@ mesh = SubResource("SphereMesh_nnwub")
 transform = Transform3D(0.52991945, 0.42402396, -0.7344311, 0, 0.8660253, 0.5, 0.848048, -0.2649597, 0.4589237, 0, 0, 0)
 light_color = Color(1, 0.9529412, 0.9019608, 1)
 light_energy = 3.0
+
+[connection signal="pressed" from="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎" to="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎" method="_on_pressed"]
+[connection signal="close_requested" from="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" to="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" method="_on_close_requested"]
+[connection signal="text_changed" from="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer/HBoxContainer/LineEdit" to="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" method="_on_line_edit_text_changed"]
+[connection signal="pressed" from="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer/HBoxContainer/Button" to="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" method="_on_button_pressed"]
+[connection signal="file_selected" from="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer/HBoxContainer/Button/FileDialog" to="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" method="_on_file_dialog_file_selected"]
