@@ -159,7 +159,7 @@ static func add_layer(channel:StringName,layer_id:StringName) -> Dictionary:
 	
 	channel_data[&"layers"][layer_id] = layer
 	channel_data[&"layer_order"].append(layer_id)
-	SignalBus.material_value_changed.emit()
+	SignalBus.layer_structure_changed.emit()
 	
 	return layer
 
@@ -180,7 +180,7 @@ static func remove_layer(channel:StringName, layer_id:StringName) -> void:
 	layers.erase(layer_id)
 	order.erase(layer_id)
 
-	SignalBus.material_value_changed.emit()
+	SignalBus.layer_structure_changed.emit()
 
 
 static func get_layer_order(channel:StringName) -> Array:
