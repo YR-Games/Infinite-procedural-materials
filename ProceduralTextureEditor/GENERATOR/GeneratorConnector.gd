@@ -2,7 +2,7 @@
 ##
 ## [br][color=yellow]Autor[/color] [url]https://github.com/Yaros1113[/url] [color=green](YR Games)[/color]
 
-class_name Connector extends Node
+extends Node #GConnector
 
 signal material_request_received(parameters: Dictionary, request_id: String)
 signal material_found(material_json: Dictionary)
@@ -20,7 +20,7 @@ func _ready() -> void:
 
 
 ## Запускает Python проект Генератора в фоне.
-func start_generator():
+func start_generator() -> void:
 	var project_dir := ProjectSettings.globalize_path("res://")
 
 	# Формируем реальные пути
@@ -61,27 +61,25 @@ func connect_to_host(url: String = _url) -> int:
 		print_rich("[color=red]Ошибка установки соединения с Python Генератором процедурных материалов: %d![/color]" % err)
 	return err
 
-func disconnect_host():
+func disconnect_host() -> void:
 	_ws.close()
 	set_process(false)
 	print_rich("[color=yellow]Разорвано соединение с Python Генератором процедурных материалов![/color]")
 
-func _process(_delta):
+func _process(_delta: float) -> void:
 	_ws.poll()
 	var state := _ws.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:
-		print("connected")
 		while _ws.get_available_packet_count():
 			var packet := _ws.get_packet()
 			_handle_message(packet.get_string_from_utf8())
 	elif state == WebSocketPeer.STATE_CLOSED and Engine.get_process_frames() % 512 == 0:
-		print("WebSocketPeer disconnected, попытка переподключения:")
-		connect_to_host()
+		print("WebSocketPeer disconnected")
 
 #endregion
 
 #region Функции обработки сигналов:
-static func _on_material_request_received(parameters: Dictionary, request_id: String):
+static func _on_material_request_received(parameters: Dictionary, request_id: String) -> void:
 	# Apply parameters to EditorMaterial
 	'''for path_str in parameters.keys():
 		var path := _str_to_material_path(path_str)
@@ -96,53 +94,142 @@ static func _on_material_request_received(parameters: Dictionary, request_id: St
 #endregion
 
 #region Message handlers
-func send_message(action: String, payload: Dictionary = {}):
+func send_message(type: String, payload: Dictionary = {}) -> void:
 	if _ws.get_ready_state() != WebSocketPeer.STATE_OPEN:
 		push_error("WebSocket not connected")
+		connect_to_host()
 		return
-	var msg := {"action": action}
-	msg.merge(payload)
-	#_ws.put_packet(msg.to_json().to_utf8_buffer())
 
-func _handle_message(raw: String):
+	var msg := {
+		"type": type,
+		"payload": payload
+	}
+
+	_ws.send_text(JSON.stringify(msg))
+
+	print_rich("[color=cyan]SEND > ", type)
+
+
+func _handle_message(raw: String) -> void:
+
+	print_rich("[color=cyan]RECV > ", raw)
+
 	var json := JSON.new()
-	var err := json.parse(raw)
-	if err != OK:
-		push_error("Invalid JSON from generator: ", raw)
+
+	if json.parse(raw) != OK:
+		push_error("Invalid JSON")
 		return
-	var data = json.get_data()
 
-	match data.get("action"):
-		"request_variation":
-			var params = data.get("parameters", {})
-			var req_id = data.get("request_id", "")
-			material_request_received.emit(params, req_id)
-		"material_found":
-			material_found.emit(data.get("material_json", {}))
-		"error":
-			push_error("Generator error: ", data.get("message", "unknown"))
+	var data: Dictionary = json.data
+
+	var type: String = data.get("type", "")
+	var payload: Dictionary = data.get("payload", {})
+
+	match type:
+
+		"material_add_accepted":
+			print("Generator accepted material") #???
+
+		"render_request":
+
+			print("Render requested") #???
+			var img = Image.load_from_file("res://textures/cgt1.jpg")
+			img.resize(518, 518)
+
+			send_message(
+				"render_result",
+				{
+					"image": image_to_base64(img)
+				}
+			)
+
+		"render_accepted": #???
+
+			print(
+				"Cluster:",
+				payload.get("cluster_id")
+			)
+
+		"material_add_completed": #???
+
+			print(
+				"Material completed"
+			)
+
+		"material_search_started": #???
+
+			print("Search started")
+
+		"search_progress": #???
+
+			print(
+				payload.get("checked"),
+				"/",
+				payload.get("total")
+			)
+
+		"material_match_found": #???
+
+			print(
+				"Found:",
+				payload.get("similarity")
+			)
+
+		"material_search_completed": #???
+
+			print(
+				"Search completed"
+			)
+
+		"error": #???
+
+			push_error(
+				payload.get("message")
+			)
+
 		_:
-			push_warning("Unknown action: ", data.get("action"))
+			push_warning(
+				"Unknown type: " + type
+			)
 
-# ---------- File helpers ----------
-func save_image_to_shared(image: Image, request_id: String) -> String:
-	var dir := DirAccess.open(_shared_folder)
-	if not dir:
-		dir.make_dir_recursive(_shared_folder)
-	var path := _shared_folder.path_join("request_%s.png" % request_id)
-	image.save_png(path)
-	return path
+# Отправка Материала при сохранении.??? Материалы не подключены
+func send_current_material() -> void:
 
-func send_current_material():
-	var data := EditorMaterial.editorMaterialData.duplicate(true)   # deep copy
-	send_message("send_material", {"material_json": data})
+	send_message(
+		"material_add_request",
+		{
+			"material": {}
+		}
+	)
 
-func request_find_material(image_path: String):
-	send_message("find_material", {"image_path": image_path})
+func request_find_material(image: Image) -> void:
+	image.resize(518, 518)
+
+	send_message(
+		"material_search_request",
+		{
+			"image": image_to_base64(image)
+		}
+	)
 
 func get_new_request_id() -> String:
 	_request_counter += 1
 	return str(_request_counter)
+
+
+func image_to_base64(image: Image) -> String:
+	var buffer := image.save_png_to_buffer()
+	return Marshalls.raw_to_base64(buffer)
+
+## ??? Лишнее скорее всего
+func base64_to_image(data: String) -> Image:
+	var image := Image.new()
+
+	var bytes := Marshalls.base64_to_raw(data)
+
+	image.load_png_from_buffer(bytes)
+
+	return image
 
 #endregion
 

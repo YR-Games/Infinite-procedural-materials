@@ -1,6 +1,7 @@
 extends Control
 
-
+## Кеш для обработки параметров.
+var material_data: Dictionary
 @export var generator_data: GeneratorData
 var _material: ShaderMaterial
 @onready var _add_to_node: VBoxContainer = $ScrollContainer/VBoxContainer

@@ -3,22 +3,27 @@ scripts/utils.py
 Вспомогательные функции
 """
 
+import base64
+from io import BytesIO
+
 import torch
 import torch.nn.functional as F
 from cv2 import COLOR_RGB2BGR, bilateralFilter, cvtColor
 from numpy import array as nparray
+from PIL import Image
 from torchvision import transforms
 from torchvision.transforms import functional as TF
 
 from .config import STANDARD_DEFINITION
 
 
-def get_next_int():
-    """"""
+def base64_to_pil(
+    data: str,
+) -> Image.Image:
 
+    image_bytes = base64.b64decode(data)
 
-def get_next_float():
-    """"""
+    return Image.open(BytesIO(image_bytes)).convert("RGB")
 
 
 def calculate_distance(
