@@ -20,6 +20,7 @@ var current_modifier : ModifierUIController = null
 @onready var add_modifier_button: Button = $VBoxContainer/AddModifierButton
 @onready var generator_name_label: Label = $VBoxContainer/LabelGeneratorName
 @onready var preview_rect: ColorRect = $VBoxContainer/Preview
+@onready var opacity_slider: HSlider = $VBoxContainer/OpacitySlider
 
 @onready var generator_list: GeneratorListUIController = get_node("/root/EditorUI/MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit/Generators")
 
@@ -44,6 +45,7 @@ func setup(p_channel_name: StringName, p_layer_id: StringName, p_owner_channel: 
 
 
 func _ready() -> void:
+	opacity_slider.value_changed.connect(_on_opacity_changed)
 	add_theme_stylebox_override("panel",normal_style)
 	name_edit.text_changed.connect(_on_name_changed)
 	blend_mode_selector.item_selected.connect(_on_blend_mode_selected)
@@ -91,7 +93,7 @@ func _refresh() -> void:
 	_refresh_generator_preview()
 	_refresh_blend_mode()
 	_refresh_modifiers()
-
+	opacity_slider.value = layer_data.get(&"opacity", 1.0)
 
 func _refresh_generator_preview() -> void:
 	if not preview_rect:
@@ -172,6 +174,8 @@ func _on_blend_mode_selected(index: int) -> void:
 	var mode_name := StringName(blend_mode_selector.get_item_text(index))
 	layer_path.child(&"blend_mode").set_value(mode_name)
 
+func _on_opacity_changed(value: float) -> void:
+	layer_path.child(&"opacity").set_value(value)
 
 # ---------------------- Modifiers ----------------------
 func _refresh_modifiers() -> void:

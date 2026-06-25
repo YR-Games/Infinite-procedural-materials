@@ -20,7 +20,7 @@ func setup(p_channel_name: StringName) -> void:
 
 func _ready() -> void:
 	add_layer_button.pressed.connect(_on_add_layer)
-
+	SignalBus.project_loaded.connect(_refresh)
 	if channel_name != StringName():
 		_refresh()
 

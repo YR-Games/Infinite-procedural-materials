@@ -212,13 +212,30 @@ func generate_shader_code() -> String:
 			else:
 				code.append("\tvec4 %s = vec4(vec3(%s), 1.0);" % [layer_color_var, current_val])
 
-			# Blend with base
+
+			# Blend with base + opacity
 			var blend_data = MixLibrary.get_blend_mode(blend_mode)
+			var opacity: float = layer.get("opacity", 1.0)
+
 			if blend_data:
-				var blend_call = "%s(%s, %s)" % [blend_data.function_name, base_var, layer_color_var]
-				code.append("\t%s = %s;" % [base_var, blend_call])
+				var blended_var = "blended_" + str(layer.get("id", "layer"))
+
+				var blend_call = "%s(%s, %s)" % [blend_data.function_name,base_var,layer_color_var]
+
+				code.append("\tvec4 %s = %s;" % [blended_var,blend_call])
+
+				code.append("\t%s = mix(%s, %s, %s.a * %.6f);" % [base_var,base_var,blended_var,layer_color_var,opacity])
+
 			else:
-				code.append("\t%s = mix(%s, %s, %s.a);" % [base_var, base_var, layer_color_var, layer_color_var])
+				code.append(
+					"\t%s = mix(%s, %s, %s.a * %.6f);" % [
+						base_var,
+						base_var,
+						layer_color_var,
+						layer_color_var,
+						opacity
+					]
+				)
 
 		# Write outputs
 		if channel == "albedo":

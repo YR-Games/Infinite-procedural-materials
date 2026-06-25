@@ -28,10 +28,6 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = 78.0
-offset_right = 1.0
-offset_bottom = 78.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -57,9 +53,15 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="File" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1057990025]
-item_count = 1
-item_0/text = "Export code"
+item_count = 4
+item_0/text = "New Project"
 item_0/id = 0
+item_1/text = "Load Project"
+item_1/id = 1
+item_2/text = "Save Project"
+item_2/id = 2
+item_3/text = "Export Shader code"
+item_3/id = 3
 script = ExtResource("2_o84eg")
 
 [node name="Edit" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1840165740]
@@ -70,8 +72,18 @@ script = ExtResource("2_o84eg")
 
 [node name="Help" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1996058615]
 
-[node name="FileDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1185718605]
+[node name="ExportDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1185718605]
 oversampling_override = 1.0
+access = 2
+
+[node name="OpenProjectDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1975484962]
+title = "Open a File"
+file_mode = 0
+access = 2
+
+[node name="SaveProjectDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=2010895981]
+oversampling_override = 1.0
+access = 2
 
 [node name="VSeparator" type="VSeparator" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer" unique_id=1280981140]
 layout_mode = 2
@@ -89,6 +101,7 @@ oversampling_override = 1.0
 title = "Генератор процедурных материалов"
 initial_position = 2
 size = Vector2i(800, 600)
+visible = false
 exclusive = true
 always_on_top = true
 transparent = true
@@ -190,10 +203,10 @@ script = ExtResource("4_hi3c7")
 [node name="PreviewRect" type="TextureRect" parent="MenuAndUI/UI/EditorPreviewSplit/Preview" unique_id=1697785336]
 layout_mode = 2
 texture = SubResource("ViewportTexture_nnwub")
+stretch_mode = 6
 
 [node name="SubViewport" type="SubViewport" parent="MenuAndUI/UI/EditorPreviewSplit/Preview" unique_id=1836795866]
 msaa_3d = 3
-size = Vector2i(768, 768)
 
 [node name="Camera3D" type="Camera3D" parent="MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport" unique_id=819459958]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)

@@ -33,7 +33,7 @@ text = "Opacity:"
 [node name="OpacitySlider" type="HSlider" parent="VBoxContainer" unique_id=2131348578]
 layout_mode = 2
 max_value = 1.0
-step = 0.01
+step = 0.004
 
 [node name="LabelBlend" type="Label" parent="VBoxContainer" unique_id=1805152174]
 layout_mode = 2

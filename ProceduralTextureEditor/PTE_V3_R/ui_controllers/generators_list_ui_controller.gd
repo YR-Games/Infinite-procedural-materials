@@ -11,7 +11,7 @@ signal generator_selected(generator_id: StringName)
 
 func _ready() -> void:
 	add_generator_button.pressed.connect(_on_add_generator_button_pressed)
-
+	SignalBus.project_loaded.connect(_refresh)
 
 func _on_add_generator_button_pressed() -> void:
 	var picker_scene = preload("res://PTE_V3_R/UI/generator_picker.tscn")
@@ -24,7 +24,29 @@ func _on_add_generator_button_pressed() -> void:
 func _on_generator_selected(gen_name: StringName) -> void:
 	add_generator(gen_name)
 
+func _refresh() -> void:
 
+	for child in generators_container.get_children():
+		child.queue_free()
+
+	panels.clear()
+	current = null
+
+	var controller_scene = preload("res://PTE_V3_R/UI/generator_ui.tscn")
+	for generator_id in EditorMaterial.get_generator_ids():
+		var generator := EditorMaterial.get_generator(generator_id)
+
+		var generator_name : StringName = generator.get("generator_name",StringName())
+
+		if generator_name.is_empty():
+			continue
+
+		var controller : GeneratorUIController = controller_scene.instantiate()
+		generators_container.add_child(controller)
+		controller.setup(generator_name,generator_id)
+		controller.gui_input.connect(_on_panel_gui_input.bind(controller))
+
+		panels.append(controller)
 
 # ---------------------- Добавление генератора ----------------------
 
