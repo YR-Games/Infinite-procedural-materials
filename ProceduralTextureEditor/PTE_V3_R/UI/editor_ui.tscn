@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://da7m60llit8vk" path="res://PTE_V3_R/ui_controllers/channels_list_ui_controller.gd" id="3_nnwub"]
 [ext_resource type="Script" uid="uid://de6iegc2av1s2" path="res://PTE_V3_R/ui_controllers/preview_controller.gd" id="4_hi3c7"]
 [ext_resource type="Texture2D" uid="uid://glmiy2435yw7" path="res://SkyPanoramas/sky_sunny003_hdr.exr" id="4_nnwub"]
+[ext_resource type="Script" uid="uid://4lmxuyirt8k4" path="res://PTE_V3_R/misc/material_baker.gd" id="8_i4lt2"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_nnwub"]
 viewport_path = NodePath("MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport")
@@ -224,6 +225,18 @@ mesh = SubResource("SphereMesh_nnwub")
 transform = Transform3D(0.52991945, 0.42402396, -0.7344311, 0, 0.8660253, 0.5, 0.848048, -0.2649597, 0.4589237, 0, 0, 0)
 light_color = Color(1, 0.9529412, 0.9019608, 1)
 light_energy = 3.0
+
+[node name="Node" type="Node" parent="." unique_id=2102814742]
+script = ExtResource("8_i4lt2")
+
+[node name="SubViewport" type="SubViewport" parent="Node" unique_id=1428011765]
+
+[node name="ColorRect" type="ColorRect" parent="Node/SubViewport" unique_id=577014155]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [connection signal="pressed" from="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎" to="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎" method="_on_pressed"]
 [connection signal="close_requested" from="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" to="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" method="_on_close_requested"]
