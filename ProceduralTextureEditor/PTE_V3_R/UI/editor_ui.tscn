@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://jno1lkl6j3g" path="res://PTE_V3_R/ui_controllers/materials_list_ui_controller.gd" id="4_i4lt2"]
 [ext_resource type="Texture2D" uid="uid://glmiy2435yw7" path="res://SkyPanoramas/sky_sunny003_hdr.exr" id="4_nnwub"]
 [ext_resource type="PackedScene" uid="uid://d0earg2bw4j6i" path="res://PTE_V3_R/UI/material_ui.tscn" id="5_xla1c"]
+[ext_resource type="Script" uid="uid://4lmxuyirt8k4" path="res://PTE_V3_R/misc/material_baker.gd" id="8_i4lt2"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_nnwub"]
 viewport_path = NodePath("MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport")
@@ -30,10 +31,6 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = 78.0
-offset_right = 1.0
-offset_bottom = 78.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -59,9 +56,15 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="File" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1057990025]
-item_count = 1
-item_0/text = "Export code"
+item_count = 4
+item_0/text = "New Project"
 item_0/id = 0
+item_1/text = "Load Project"
+item_1/id = 1
+item_2/text = "Save Project"
+item_2/id = 2
+item_3/text = "Export Shader code"
+item_3/id = 3
 script = ExtResource("2_o84eg")
 
 [node name="Edit" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1840165740]
@@ -72,8 +75,18 @@ script = ExtResource("2_o84eg")
 
 [node name="Help" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1996058615]
 
-[node name="FileDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1185718605]
+[node name="ExportDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1185718605]
 oversampling_override = 1.0
+access = 2
+
+[node name="OpenProjectDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1975484962]
+title = "Open a File"
+file_mode = 0
+access = 2
+
+[node name="SaveProjectDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=2010895981]
+oversampling_override = 1.0
+access = 2
 
 [node name="VSeparator" type="VSeparator" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer" unique_id=1280981140]
 layout_mode = 2
@@ -91,6 +104,7 @@ oversampling_override = 1.0
 title = "Генератор процедурных материалов"
 initial_position = 2
 size = Vector2i(800, 600)
+visible = false
 exclusive = true
 always_on_top = true
 transparent = true
@@ -196,10 +210,12 @@ script = ExtResource("4_hi3c7")
 [node name="PreviewRect" type="TextureRect" parent="MenuAndUI/UI/EditorPreviewSplit/Preview" unique_id=1697785336]
 layout_mode = 2
 texture = SubResource("ViewportTexture_nnwub")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="SubViewport" type="SubViewport" parent="MenuAndUI/UI/EditorPreviewSplit/Preview" unique_id=1836795866]
 msaa_3d = 3
-size = Vector2i(768, 768)
+size = Vector2i(1024, 1024)
 
 [node name="Camera3D" type="Camera3D" parent="MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport" unique_id=819459958]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)
@@ -215,6 +231,18 @@ mesh = SubResource("SphereMesh_nnwub")
 transform = Transform3D(0.52991945, 0.42402396, -0.7344311, 0, 0.8660253, 0.5, 0.848048, -0.2649597, 0.4589237, 0, 0, 0)
 light_color = Color(1, 0.9529412, 0.9019608, 1)
 light_energy = 3.0
+
+[node name="Node" type="Node" parent="." unique_id=2102814742]
+script = ExtResource("8_i4lt2")
+
+[node name="SubViewport" type="SubViewport" parent="Node" unique_id=1428011765]
+
+[node name="ColorRect" type="ColorRect" parent="Node/SubViewport" unique_id=577014155]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [connection signal="pressed" from="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎" to="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎" method="_on_pressed"]
 [connection signal="close_requested" from="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" to="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" method="_on_close_requested"]

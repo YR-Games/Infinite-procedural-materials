@@ -1,0 +1,177 @@
+{
+	"args": [
+		"sn:generators",
+		{
+			"args": [
+				"sn:gen_13846712_3778775785",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:CellNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:chaos",
+								"f:1.0",
+								"s:numOctaves",
+								"i:1",
+								"s:scale",
+								"f:20.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_30964634_110923140",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:CellNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:chaos",
+								"f:1.0",
+								"s:numOctaves",
+								"i:10",
+								"s:scale",
+								"f:1.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		},
+		"sn:channels",
+		{
+			"args": [
+				"sn:albedo",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [
+								"sn:layer_15393536_2824513217",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_15393536_2824513217",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_13846712_3778775785",
+										"sn:blend_mode",
+										"sn:multiply",
+										"sn:opacity",
+										"f:1.0",
+										"sn:modifiers",
+										{
+											"args": [
+												"sn:mod_17314313_1432138328",
+												{
+													"args": [
+														"sn:id",
+														"sn:mod_17314313_1432138328",
+														"sn:modifier_name",
+														"sn:ColorRamp",
+														"sn:parameters",
+														{
+															"args": [
+																"sn:palette",
+																{
+																	"args": [
+																		{
+																			"args": [
+																				1.0,
+																				0.0,
+																				0.0,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.21875,
+																				0.0,
+																				1.0,
+																				1.0
+																			],
+																			"type": "Color"
+																		}
+																	],
+																	"elem_type": "Color",
+																	"type": "Array"
+																}
+															],
+															"type": "Dictionary"
+														}
+													],
+													"type": "Dictionary"
+												}
+											],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[
+											"sn:mod_17314313_1432138328"
+										]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_29337553_2803839758",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_29337553_2803839758",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_30964634_110923140",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:0.768",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								}
+							],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[
+							"sn:layer_15393536_2824513217",
+							"sn:layer_29337553_2803839758"
+						]
+					],
+					"type": "Dictionary"
+				},
+				"sn:normal",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[]
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		}
+	],
+	"type": "Dictionary"
+}

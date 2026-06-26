@@ -33,7 +33,7 @@ text = "Opacity:"
 [node name="OpacitySlider" type="HSlider" parent="VBoxContainer" unique_id=2131348578]
 layout_mode = 2
 max_value = 1.0
-step = 0.01
+step = 0.004
 
 [node name="LabelBlend" type="Label" parent="VBoxContainer" unique_id=1805152174]
 layout_mode = 2
@@ -44,11 +44,11 @@ layout_mode = 2
 
 [node name="LabelGenerator" type="Label" parent="VBoxContainer" unique_id=1423958807]
 layout_mode = 2
-text = "Generator:"
+text = "Base texture function:"
 
 [node name="LabelGeneratorName" type="Label" parent="VBoxContainer" unique_id=1253873455]
 layout_mode = 2
-text = "GeneratorName"
+text = "BaseTextureFunctionName"
 
 [node name="Preview" type="ColorRect" parent="VBoxContainer" unique_id=1423664426]
 material = SubResource("ShaderMaterial_yrhy8")
@@ -57,7 +57,7 @@ layout_mode = 2
 
 [node name="SelectGeneratorButton" type="Button" parent="VBoxContainer" unique_id=1918657386]
 layout_mode = 2
-text = "Select generator"
+text = "Select base texture function"
 
 [node name="AddModifierButton" type="Button" parent="VBoxContainer" unique_id=1777987136]
 layout_mode = 2

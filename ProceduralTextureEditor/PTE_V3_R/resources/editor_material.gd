@@ -26,6 +26,58 @@ static var editorMaterialData := {
 	}
 }
 
+static func save_project(path:String) -> bool:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+
+	if file == null:
+		return false
+
+	var json_data = JSON.from_native(editorMaterialData)
+
+	file.store_string(JSON.stringify(json_data, "\t"))
+	file.close()
+
+	return true
+
+static func clear_project() -> void:
+	editorMaterialData = {
+		&"generators": {},
+		&"channels": {
+			&"albedo": {
+				&"layers": {},
+				&"layer_order": []
+			},
+			&"normal": {
+				&"layers": {},
+				&"layer_order": []
+			}
+		}
+	}
+	SignalBus.project_loaded.emit()
+	SignalBus.material_value_changed.emit()
+
+static func load_project(path:String) -> bool:
+
+	clear_project()
+	if not FileAccess.file_exists(path):
+		return false
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return false
+	var text := file.get_as_text()
+	var json := JSON.new()
+	var error := json.parse(text)
+	if error != OK:
+		push_error("Invalid project file")
+		return false
+
+	editorMaterialData = JSON.to_native(json.data)
+
+	SignalBus.project_loaded.emit()
+	SignalBus.material_value_changed.emit()
+
+	return true
+
 
 static func get_value(path:Array[StringName]) -> Variant:
 	var current = editorMaterialData
@@ -107,13 +159,14 @@ static func add_layer(channel:StringName,layer_id:StringName) -> Dictionary:
 		&"name": "Layer",
 		&"generator_id": StringName(),
 		&"blend_mode": &"normal",
+		&"opacity": 1.0,
 		&"modifiers": {},
 		&"modifier_order": []
 	}
 	
 	channel_data[&"layers"][layer_id] = layer
 	channel_data[&"layer_order"].append(layer_id)
-	SignalBus.material_value_changed.emit()
+	SignalBus.layer_structure_changed.emit()
 	
 	return layer
 
@@ -134,7 +187,7 @@ static func remove_layer(channel:StringName, layer_id:StringName) -> void:
 	layers.erase(layer_id)
 	order.erase(layer_id)
 
-	SignalBus.material_value_changed.emit()
+	SignalBus.layer_structure_changed.emit()
 
 
 static func get_layer_order(channel:StringName) -> Array:
