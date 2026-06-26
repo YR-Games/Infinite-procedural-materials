@@ -16,6 +16,13 @@ static var editorMaterialData := {
 			&"layers": {},
 			&"layer_order": []
 		}
+	},
+
+	&"metrics": {
+		#&"name"
+		&"similarity": 0.5,
+		&"complexity": -1,
+		&"size": -1,
 	}
 }
 

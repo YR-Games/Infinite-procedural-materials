@@ -1,5 +1,5 @@
 """
-lib/models_manager.py
+scripts/models_manager.py
 Управление моделями.
 Автоматически ищет модели в папке библиотеки. Если не найдены, копирует свежие версии из data/models.
 Возвращает загруженные модели.
@@ -12,7 +12,6 @@ import torch
 import torch.nn as nn
 from PIL import Image
 
-# from .seamese_network import SiameseNetwork
 from transformers import AutoImageProcessor, AutoModel
 
 from .config import STANDARD_DEFINITION
@@ -46,39 +45,20 @@ def get_embedding(image_path: str) -> torch.Tensor:  # numpy.ndarray
         torch.Tensor: ембеддинг
     """
     try:
-        # Загружаем и преобразуем изображение.
-        # image = Image.open(image_path).convert("RGB")
-        # inputs = processor(images=image, return_tensors="pt").to(device)
-
         # Получаем эмбеддинг.
         with torch.no_grad():
             outputs = _embedding_model(
                 load_and_transform_image(image_path)
-            )  # _embedding_model(**inputs)
+            )
 
         # Извлекаем эмбеддинг [CLS] токена (используется как представление всего изображения).
         embedding: torch.Tensor = outputs.last_hidden_state[:, 0, :].cpu()
-        # numpy_embedding: numpy.ndarray = embeddings.numpy().squeeze()  # Переобразуем в numpy массив, удаляем все единичные измерения.
-        return embedding  # Возвращаем одномерный массив (вектор)
-        """
-        Вариант для numpy массива:
-        from sklearn.metrics.pairwise import cosine_similarity
-
-        similarity = cosine_similarity([embedding1], [embedding2])
-        print(f"Косинусное сходство: {similarity[0][0]}")
-        
-        Лучше тем, что эффективнее хранится и такое представление как минимум придётся использовать в графе!
-        """
+        return embedding
     except Exception as e:
         lib_logger.error(
             f"Ошибка получения эмбеддинга для изображения '{image_path}': {e}"
         )
         raise
-
-
-# --- ПРИМЕР ИСПОЛЬЗОВАНИЯ ---
-# embedding_vector = get_embedding("path/to/your/texture_image.jpg")
-# print(f"Форма эмбеддинга: {embedding_vector.shape}")
 
 
 @lru_cache(maxsize=500)

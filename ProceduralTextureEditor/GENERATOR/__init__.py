@@ -5,7 +5,7 @@ MaterialAnalyzer - библиотека для анализа текстур и 
 
 from .scripts import models_manager
 
-from . import visualization
+from .scripts import visualization
 from .core import (
     # MetodParameters,
     # Embedding,

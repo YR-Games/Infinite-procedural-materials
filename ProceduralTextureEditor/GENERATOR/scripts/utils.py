@@ -13,14 +13,6 @@ from torchvision.transforms import functional as TF
 from .config import STANDARD_DEFINITION
 
 
-def get_next_int():
-    """"""
-
-
-def get_next_float():
-    """"""
-
-
 def calculate_distance(
     output1: torch.Tensor, output2: torch.Tensor, p: int = 2
 ) -> torch.Tensor:

@@ -1,5 +1,5 @@
 """
-lib/embedding_graph.py
+scripts/embedding_graph.py
 Структура данных для эффективного хранения и поиска кластеров эмбеддингов.
 """
 
@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any, Dict, List, Tuple
 
+from PIL import Image
 import faiss
 import numpy as np
 from sklearn.cluster import DBSCAN
@@ -39,19 +40,19 @@ class RenderNode:
 
     material_id: str
     embedding: np.ndarray
-    image_path: str  # ??? временно
+    rener_cache: Image
     parameters: dict[str, Any]
 
     def __init__(
         self,
         material_id: str,
         embedding: np.ndarray,
-        image_path: str,
+        rener_cache: Image,
         parameters: Dict[str, Any] = {},
     ) -> None:
         self.material_id = material_id
         self.embedding = embedding
-        self.image_path = image_path
+        self.rener_cache = rener_cache
         self.parameters = parameters
 
 
@@ -96,120 +97,6 @@ class AbstractGraph:
         self.index.add(self.embeddings)
         self.cluster_labels = labels
 
-    # Отладочные интерфейсы:
-    def visualize_clusters(self, output_dir: str = "data/input/visualizations"):
-        """
-        Универсальный метод для визуализации графов и входящих в них нод:
-        для каждого кластера создаёт коллаж из миниатюр,
-        а также общую MDS-карту расположения кластеров.
-
-        ??? Устарел и недописан!
-
-        Args:
-            output_dir: директория для сохранения изображений
-        """
-        import os
-
-        import matplotlib.pyplot as plt
-        import numpy as np
-        from PIL import Image
-
-        from .utils import tensor_to_pil
-
-        os.makedirs(output_dir, exist_ok=True)
-
-        if not self.clusters:
-            lib_logger.warning("⚠️Нет кластеров для визуализации.")
-            return
-
-        cluster_files = []
-        centroids = []
-
-        # Сортируем кластеры по id для стабильности
-        sorted_clusters = sorted(self.clusters.items(), key=lambda x: x[0])
-
-        for cluster_id, cluster_node in tqdm(
-            sorted_clusters, desc="Визуализация кластеров"
-        ):
-            # Пути к изображениям в кластере
-            paths = cluster_node.image_paths
-            if not paths:
-                continue
-
-            # Загружаем миниатюры
-            images = []
-            for path in paths:
-                try:
-                    # Применяем трансформацию (ресайз + тензор)
-                    # Превращаем обратно в PIL для вставки
-                    images.append(  # type: ignore
-                        tensor_to_pil(
-                            load_and_transform_image(
-                                path,
-                                self.preview_image_size,
-                                False,  # type: ignore
-                            )
-                        )
-                    )
-                except Exception as e:
-                    lib_logger.error(f"💥Ошибка загрузки {path}: {e}")
-
-            if not images:
-                continue
-
-            # Создаём сетку из миниатюр
-            cols = int(np.ceil(np.sqrt(len(images))))
-            rows = int(np.ceil(len(images) / cols))
-            cluster_img = Image.new(
-                "RGB",
-                (cols * self.preview_image_size, rows * self.preview_image_size),
-                (255, 255, 255),
-            )
-            for i, img_pil in enumerate(images):
-                x = (i % cols) * self.preview_image_size
-                y = (i // cols) * self.preview_image_size
-                cluster_img.paste(img_pil, (x, y))
-
-            # Сохраняем коллаж
-            cluster_filename = f"cluster_{cluster_id}.png"
-            cluster_img.save(os.path.join(output_dir, cluster_filename))
-            cluster_files.append(cluster_filename)
-            centroids.append(cluster_node.centroid)
-
-        # Построение MDS карты расположения кластеров
-        n_clusters = len(centroids)
-        if n_clusters == 0:
-            return
-
-        # Вычисляем попарные расстояния между центроидами
-        distances = np.zeros((n_clusters, n_clusters))
-        for i in range(n_clusters):
-            for j in range(i + 1, n_clusters):
-                # Косинусное расстояние
-                sim = np.dot(centroids[i], centroids[j])
-                dist = 1.0 - sim
-                distances[i, j] = dist
-                distances[j, i] = dist
-
-        # MDS для 2D размещения
-        if n_clusters > 1:
-            from sklearn.manifold import MDS
-
-            mds = MDS(n_components=2, dissimilarity="precomputed", random_state=42)
-            coords = mds.fit_transform(distances)
-        else:
-            coords = np.array([[0, 0]])
-
-        # Визуализация общего расположения
-        plt.figure(figsize=(10, 10))
-        for i, (x, y) in enumerate(coords):
-            plt.scatter(x, y, s=100)
-            plt.text(x, y, cluster_files[i], fontsize=12, ha="center", va="center")
-        plt.title("Расположение кластеров по текстуре")
-        plt.axis("off")
-        plt.savefig(os.path.join(output_dir, "overview.png"), bbox_inches="tight")
-        plt.close()
-
 
 # Основные графы:
 class MaterialGraph(AbstractGraph):
@@ -234,8 +121,14 @@ class MaterialGraph(AbstractGraph):
         self.embeddings: list[np.ndarray] = []
         self.cluster_labels: np.ndarray = []
 
-    def add_image(self, image_path: str) -> int:
-        """Добавляет изображение в граф и возвращает ID кластера."""
+    def add_render(self, image: Image.Image) -> bool:
+        """??? УСТАРЕЛ и не доделан!
+        Добавляет рендер в граф Материала и возвращает истину, если он добавлен в новый кластер,
+        ложь - пропущен, так как слишком похож на уже добавленные.
+
+        Если расстояние до соседей меньше cluster_threshold, то такое изображение пропускается,
+        если больше, то оно добавляется в граф Материала.
+        """
         global cluster_threshold
         embedding = self._get_norm_embedding(image_path)
 
@@ -269,9 +162,9 @@ class MaterialGraph(AbstractGraph):
                 )
                 self.clusters[self.next_cluster_id] = new_cluster
                 self.next_cluster_id += 1
-                return new_cluster.id
+                return True
         else:
-            return 0
+            return False
 
     # Отладочные интерфейсы:
     def build_from_images(self, image_paths: List[str]):
@@ -357,7 +250,7 @@ class EmbeddingGraph(AbstractGraph):
         super().__init__()
         self.preview_image_size: int = 256
 
-    def _add_nods(self, material_graph: MaterialGraph):
+    def add_nods(self, material_graph: MaterialGraph):
         """
         Дополняет/создаёт кластеры с использованием DBSCAN из графа рендеров материала.
         ??? Код устарел, не дописан!

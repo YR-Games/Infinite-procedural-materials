@@ -21,6 +21,12 @@ func _on_close_requested() -> void:
 
 
 func _on_button_pressed() -> void:
+	if reference:#??? для тестов
+		GConnector.add_material(EditorMaterial.editorMaterialData)
+		reference = false
+	else:
+		GConnector.search_by_image("res://textures/cgt1.jpg")
+		reference = true
 	file_dialog.show()
 
 
