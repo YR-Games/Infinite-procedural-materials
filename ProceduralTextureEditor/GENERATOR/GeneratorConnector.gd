@@ -103,7 +103,7 @@ func _process(delta: float) -> void:
 			while send_queue.size() > 0:
 				var msg = send_queue.pop_front()
 				var json_str = JSON.stringify(msg) + "\n"
-				print_rich("[color=cyan][GConnector] Sending: ", json_str.strip_edges())
+				print_rich("[color=cyan][GConnector] Sending: ", json_str.strip_edges().substr(0, 100))
 				var bytes = json_str.to_utf8_buffer()
 				var err = stream.put_data(bytes)
 				if err != OK:
@@ -189,7 +189,7 @@ func send_message(msg: Dictionary, callback: Callable = Callable()) -> void:
 			"original_msg": msg.duplicate()
 		}
 	send_queue.append(msg)
-	print_rich("[color=light blue][GConnector] Message queued: ", [msg.type, msg.id])
+	print_rich("[color=light blue][GConnector] Message queued: ", [msg.type, id])
 
 
 func _handle_message(msg: Dictionary) -> void:
