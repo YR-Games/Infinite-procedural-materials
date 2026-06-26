@@ -22,10 +22,10 @@ func _on_close_requested() -> void:
 
 func _on_button_pressed() -> void:
 	if reference:#??? для тестов
-		GConnector.send_current_material()
+		GConnector.add_material(EditorMaterial.editorMaterialData)
 		reference = false
 	else:
-		GConnector.request_find_material(Image.load_from_file("res://textures/cgt1.jpg"))
+		GConnector.search_by_image("res://textures/cgt1.jpg")
 		reference = true
 	file_dialog.show()
 

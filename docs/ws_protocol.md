@@ -1,42 +1,68 @@
-# Generator ↔ Editor WebSocket Protocol
+# Протокол общения Godot ↔ Python Generator (TCP)
 
-## Общий формат сообщения
+## Общая информация
 
-Все сообщения передаются в формате JSON.
+- **Транспорт**: TCP
+- **Хост**: 127.0.0.1
+- **Порт**: 8765
+- **Кодировка**: UTF-8 для JSON, бинарные данные для изображений
+
+## Формат пакета
+
+Все сообщения передаются в следующем формате:
+
+```
+┌──────────────┬────────────────────┬─────────────────────────┐
+│ uint32 LE    │ JSON UTF-8 bytes   │ Бинарные данные (опц.)  │
+├──────────────┼────────────────────┼─────────────────────────┤
+│ json_length  │ metadata           │ payload (image, etc.)   │
+└──────────────┴────────────────────┴─────────────────────────┘
+```
+
+- **json_length** (4 байта, little-endian): размер JSON-метаданных
+- **metadata**: JSON-объект с полями `type` и `payload`
+- **binary data** (опционально): дополнительные бинарные данные (изображения)
+
+## Жизненный цикл соединения
+
+1. **Установка соединения**: Godot подключается к серверу
+2. **Handshake**: Сервер отправляет `hello` для подтверждения готовности
+3. **Обмен сообщениями**: Клиент и сервер обмениваются сообщениями
+4. **Закрытие**: Любая сторона может закрыть соединение
+
+## Сообщения
+
+### Handshake
+
+#### Server → Client: `hello`
 
 ```json
 {
-  "type": "message_type",
-  "payload": {}
+  "type": "hello",
+  "payload": {
+    "message": "Connected to Generator TCP Server",
+    "timestamp": "2026-06-26T15:09:19",
+    "client_id": 1654330950720
+  }
 }
 ```
 
----
+### Добавление материала
 
-# Добавление материала
-
-## Editor → Generator
-
-Запрос на добавление нового материала.
+#### Client → Server: `material_add_request`
 
 ```json
 {
   "type": "material_add_request",
   "payload": {
-    "material": {}
+    "material": {
+      // JSON-представление материала
+    }
   }
 }
 ```
 
-После отправки Editor ожидает подтверждение.
-
-Если в течение 10 секунд подтверждение не получено — запрос отправляется повторно.
-
----
-
-## Generator → Editor
-
-Подтверждение получения материала и начала обработки.
+#### Server → Client: `material_add_accepted`
 
 ```json
 {
@@ -45,11 +71,7 @@
 }
 ```
 
----
-
-## Generator → Editor
-
-Материал не может быть обработан.
+#### Server → Client: `material_add_rejected`
 
 ```json
 {
@@ -60,57 +82,54 @@
 }
 ```
 
----
+### Генерация рендеров
 
-# Генерация рендеров
-
-## Generator → Editor
-
-Запрос на генерацию следующего рендера.
+#### Server → Client: `render_request`
 
 ```json
 {
   "type": "render_request",
   "payload": {
-    "parameters": {}
+    "parameters": {
+      "seed": 1
+    }
   }
 }
 ```
 
-Поле `parameters` содержит значения параметров материала, которые необходимо применить перед рендерингом.
+#### Client → Server: `render_result`
 
----
+**Бинарный формат:**
 
-## Editor → Generator
-
-Результат генерации рендера.
-
-```json
-{
-  "type": "render_result"
-}
 ```
-BINARY
-<jpg bytes>
+┌──────────────┬────────────────────┬─────────────────────────┐
+│ uint32 LE    │ JSON UTF-8 bytes   │ JPEG bytes              │
+├──────────────┼────────────────────┼─────────────────────────┤
+│ json_length  │ metadata           │ image                   │
+└──────────────┴────────────────────┴─────────────────────────┘
+```
 
----
-
-## Generator → Editor
-
-Рендер добавлен в новый кластер.
+**metadata:**
 
 ```json
 {
-  "type": "render_accepted",
+  "type": "render_result",
   "payload": {}
 }
 ```
 
----
+#### Server → Client: `render_accepted`
 
-## Generator → Editor
+```json
+{
+  "type": "render_accepted",
+  "payload": {
+    "cluster_id": 1
+  }
+}
+```
 
-Рендер относится к уже существующему кластеру.
+#### Server → Client: `render_rejected`
 
 ```json
 {
@@ -119,42 +138,21 @@ BINARY
 }
 ```
 
----
+### Завершение добавления материала
 
-# Завершение пополнения графа материала
-
-## Editor → Generator
-
-Сообщение о том, что пространство параметров полностью перебрано.
-
-```json
-{
-  "type": "parameter_space_exhausted",
-  "payload": {}
-}
-```
-
----
-
-## Generator → Editor
-
-Материал успешно добавлен.
+#### Server → Client: `material_add_completed`
 
 ```json
 {
   "type": "material_add_completed",
   "payload": {
-    "clusters_added": 24,
-    "renders_checked": 631
+    "clusters_added": 5,
+    "renders_checked": 5
   }
 }
 ```
 
----
-
-## Generator → Editor
-
-Добавление материала остановлено из-за большого числа повторов.
+#### Server → Client: `material_add_stopped`
 
 ```json
 {
@@ -165,35 +163,30 @@ BINARY
 }
 ```
 
-Причина остановки:
+### Поиск материала
 
-* 10 подряд рендеров попали в уже существующие кластеры.
+#### Client → Server: `material_search_request`
 
----
+**Бинарный формат:**
 
-# Поиск материала по изображению
+```
+┌──────────────┬────────────────────┬─────────────────────────┐
+│ uint32 LE    │ JSON UTF-8 bytes   │ JPEG bytes              │
+├──────────────┼────────────────────┼─────────────────────────┤
+│ json_length  │ metadata           │ image                   │
+└──────────────┴────────────────────┴─────────────────────────┘
+```
 
-## Editor → Generator
-
-Запрос поиска материала.
+**metadata:**
 
 ```json
 {
   "type": "material_search_request",
+  "payload": {}
 }
 ```
-BINARY
-<jpg bytes>
 
-После отправки Editor ожидает подтверждение.
-
-Если в течение 10 секунд подтверждение не получено — запрос отправляется повторно.
-
----
-
-## Generator → Editor
-
-Подтверждение начала поиска.
+#### Server → Client: `material_search_started`
 
 ```json
 {
@@ -202,76 +195,46 @@ BINARY
 }
 ```
 
----
-
-# Прогресс поиска
-
-## Generator → Editor
-
-Информация о ходе поиска.
+#### Server → Client: `search_progress`
 
 ```json
 {
   "type": "search_progress",
   "payload": {
-    "checked": 370,
-    "total": 1000
+    "checked": 5,
+    "total": 10
   }
 }
 ```
 
-Где:
-
-* `checked` — количество уже проверенных материалов;
-* `total` — общее количество материалов.
-
----
-
-# Найденный материал
-
-## Generator → Editor
-
-Сообщение отправляется каждый раз при обнаружении подходящего материала.
+#### Server → Client: `material_match_found`
 
 ```json
 {
   "type": "material_match_found",
   "payload": {
-    "similarity": 0.92,
-    "material": {}
+    "similarity": 0.95,
+    "material": {
+      "id": "material_123"
+    }
   }
 }
 ```
 
-Где:
-
-* `similarity` — степень сходства от 0.0 до 1.0;
-* `material` — JSON-представление материала.
-
-Editor должен добавлять материал в список результатов и пересортировывать список по мере поступления новых совпадений.
-
----
-
-# Завершение поиска
-
-## Generator → Editor
-
-Поиск завершён.
+#### Server → Client: `material_search_completed`
 
 ```json
 {
   "type": "material_search_completed",
   "payload": {
-    "matches_found": 47
+    "matches_found": 3
   }
 }
 ```
 
----
+### Ошибки
 
-# Ошибки
-
-## Generator → Editor
+#### Любая сторона: `error`
 
 ```json
 {
@@ -282,27 +245,51 @@ Editor должен добавлять материал в список резу
 }
 ```
 
----
+## Ограничения
 
-## Editor → Generator
+- Максимальный размер JSON: 1 МБ
+- Максимальный размер изображения: 10 МБ
+- Рекомендуемый размер изображения: 512x512 пикселей
+- Качество JPEG: 85% (оптимальный баланс размера/качества)
 
-```json
-{
-  "type": "error",
-  "payload": {
-    "message": "Description of error"
-  }
-}
+## Таймауты
+
+- Ожидание handshake: 5 секунд
+- Ожидание ответа на запрос: 10 секунд
+- Интервал переподключения: 2 секунды
+- Максимум попыток переподключения: 5
+
+## Примеры
+
+### Успешный поиск материала
+
+```
+1. Client → Server: material_search_request (с изображением)
+2. Server → Client: material_search_started
+3. Server → Client: search_progress (checked: 1, total: 10)
+4. Server → Client: search_progress (checked: 2, total: 10)
+5. Server → Client: material_match_found (similarity: 0.95)
+6. Server → Client: search_progress (checked: 10, total: 10)
+7. Server → Client: material_search_completed (matches_found: 3)
 ```
 
----
+### Добавление материала
 
-# Ограничения протокола
+```
+1. Client → Server: material_add_request
+2. Server → Client: material_add_accepted
+3. Server → Client: render_request (seed: 1)
+4. Client → Server: render_result (с изображением)
+5. Server → Client: render_accepted (cluster_id: 1)
+6. Server → Client: render_request (seed: 2)
+7. Client → Server: render_result (с изображением)
+8. Server → Client: render_accepted (cluster_id: 2)
+9. Server → Client: material_add_completed (clusters_added: 2, renders_checked: 2)
+```
 
-Для одного WebSocket подключения одновременно допускается:
+## Примечания
 
-* не более одного добавляемого материала;
-* не более одного активного поиска;
-* не более одного ожидающего рендера.
-
-Состояние обработки хранится на стороне Generator внутри сессии клиента.
+1. Все сообщения должны быть валидным JSON
+2. Бинарные данные всегда идут после JSON-метаданных
+3. Клиент должен дождаться `hello` от сервера перед отправкой запросов
+4. При потере соединения клиент должен переподключиться автоматически

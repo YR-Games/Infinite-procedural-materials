@@ -13,6 +13,8 @@ from scripts.embedding_graph import (
     material_graph,
 )
 
+from PIL import Image
+
 
 def compare_images(image_path1: str, image_path2: str) -> float:
     """??? УСТАРЕЛО: Должен работать с изображениями, а не путями!
@@ -88,6 +90,6 @@ def init_material_adding(material: dict):
     # раз подряд приходят не в новые кластеры.
 
 
-def add_render(image):
+def add_render(image: Image.Image)->bool:
     """Должен принимать PIL изображение и передавать его в граф Материала на дальнейшёю обработку"""
-    material_graph.add_render(image)
+    return material_graph.add_render(image)

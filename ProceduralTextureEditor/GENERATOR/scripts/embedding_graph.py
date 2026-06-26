@@ -121,7 +121,7 @@ class MaterialGraph(AbstractGraph):
         self.embeddings: list[np.ndarray] = []
         self.cluster_labels: np.ndarray = []
 
-    def add_render(self, image) -> bool:
+    def add_render(self, image: Image.Image) -> bool:
         """??? УСТАРЕЛ и не доделан!
         Добавляет рендер в граф Материала и возвращает истину, если он добавлен в новый кластер,
         ложь - пропущен, так как слишком похож на уже добавленные.
