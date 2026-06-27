@@ -1,49 +1,40 @@
 class_name MaterialCodeGenerator extends RefCounted
 
-# ---------------------------------------------------------------------------
-# One ShaderCache instance lives for the lifetime of this generator.
-# If you make MaterialCodeGenerator a singleton/autoload, so does the cache.
-# ---------------------------------------------------------------------------
+
+# Кэш кодогенератора
 var _cache := ShaderCache.new()
 
 func _init() -> void:
-	# Topo-sort runs exactly once here.
+	# Топологическая сортировка
 	_cache.warm_up_library()
 
-	# Connect to the two relevant signals so the cache knows what to invalidate.
-	# "layer_structure_changed" fires when layers are added/removed or a
-	# generator/modifier *type* is swapped — preamble may differ.
-	# "material_value_changed" fires for parameter/opacity/order edits —
-	# only the fragment needs rebuilding.
-	#
-	# If your SignalBus only has material_value_changed today you can route
-	# both through it by checking a dirty-flag set before emitting, but having
-	# two distinct signals is cleaner.
+	# Подсоединение двух сигналов для.
+	# "layer_structure_changed" Срабатывает при удалении/добавлении слоя
+	# "material_value_changed" Срабатывает при изменении параметров 
 	SignalBus.layer_structure_changed.connect(_on_structure_changed)
 	SignalBus.material_value_changed.connect(_on_value_changed)
 
 
 # ---------------------------------------------------------------------------
-# Signal handlers
+# Обработчки сигналов
 # ---------------------------------------------------------------------------
 
 func _on_structure_changed() -> void:
-	# The set of used resource types may have changed → preamble is stale.
+
 	_cache.invalidate_preamble()
-	# Fragment is also stale (new layer may have appeared / disappeared).
+
 	_cache.invalidate_fragment()
 
 
 func _on_value_changed() -> void:
-	# Parameter / opacity / order change — preamble bodies are unchanged.
 	_cache.invalidate_fragment()
 
 
 # ---------------------------------------------------------------------------
-# Main entry point — called by the preview renderer.
+# Основная функция вызываемая рендерером превью.
 # ---------------------------------------------------------------------------
 func generate_shader_code() -> String:
-	# Collect active resource names (cheap — no string building).
+	# Сбор ресурсов.
 	var used_generators: Array[String] = []
 	var used_modifiers: Array[String] = []
 	var used_blend_modes: Array[String] = []
@@ -62,10 +53,6 @@ func generate_shader_code() -> String:
 	)
 
 
-# ---------------------------------------------------------------------------
-# Resource collection — identical logic to the original, extracted so it can
-# be called cheaply before deciding what to rebuild.
-# ---------------------------------------------------------------------------
 func _collect_used_resources(
 		out_generators: Array[String],
 		out_modifiers: Array[String],
@@ -90,11 +77,6 @@ func _collect_used_resources(
 					out_modifiers.append(mod_name)
 
 
-# ---------------------------------------------------------------------------
-# Fragment builder — called by the cache only when _fragment_dirty is true.
-# Logic is identical to the original generate_shader_code() fragment section;
-# nothing has been changed here except it now lives in its own function.
-# ---------------------------------------------------------------------------
 
 const _NORMAL_FROM_HEIGHT_GLSL := """vec3 normalFromHeight(vec2 uv, float offset, float mlp) {
 \tvec2 nuv = vec2(uv.x + offset, uv.y);
@@ -124,12 +106,11 @@ func _build_fragment() -> String:
 		code.append(_NORMAL_FROM_HEIGHT_GLSL)
 		code.append("")
 
-	# --- Fragment entry point ---
+
 	code.append("void fragment() {")
 	code.append("\tvec2 uv = UV;")
 	code.append("")
 
-	# Albedo channel — inline as before
 	var albedo_layers := EditorMaterial.get_layers_in_order("albedo")
 	if not albedo_layers.is_empty():
 		code.append("\tvec4 base_albedo = vec4(0.0);")
@@ -138,7 +119,7 @@ func _build_fragment() -> String:
 		code.append("\tALPHA = base_albedo.a;")
 		code.append("")
 
-	# Normal channel — delegate entirely to the generated functions
+
 	if not normal_layers.is_empty():
 		code.append("\tNORMAL_MAP = normalFromHeight(uv, 0.001, 0.1);")
 		code.append("")
@@ -146,9 +127,7 @@ func _build_fragment() -> String:
 	code.append("}")
 	return "\n".join(code)
 	
-# Appends the layer iteration lines into `code`.
-# `base_var` is the name of the vec4 accumulator already declared by the caller.
-# Indentation prefix is always one tab (works for both a function body and fragment body).
+
 func _append_channel_body(
 		code: PackedStringArray,
 		channel: String,

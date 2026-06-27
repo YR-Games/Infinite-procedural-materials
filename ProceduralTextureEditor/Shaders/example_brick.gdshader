@@ -1,5 +1,5 @@
 shader_type spatial;
-//render_mode depth_draw_always;
+render_mode unshaded;
 uniform vec2 scale;
 uniform float normal_power;
 

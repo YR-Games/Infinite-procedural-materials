@@ -48,7 +48,7 @@ func _refresh() -> void:
 
 		panels.append(controller)
 
-# ---------------------- Добавление генератора ----------------------
+
 
 func add_generator(generator_type_name: StringName) -> void:
 
@@ -80,7 +80,7 @@ func _generate_unique_id() -> String:
 	return "gen_%d_%d" % [Time.get_ticks_usec(),randi()]
 
 
-# ---------------------- Выделение ----------------------
+
 
 func _on_panel_gui_input(event: InputEvent,panel: GeneratorUIController) -> void:
 
@@ -90,7 +90,7 @@ func _on_panel_gui_input(event: InputEvent,panel: GeneratorUIController) -> void
 
 
 
-# ---------------------- Удаление ----------------------
+
 
 func _unhandled_input(event: InputEvent) -> void:
 

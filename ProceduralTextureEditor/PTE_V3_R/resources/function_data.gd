@@ -1,8 +1,8 @@
 class_name FunctionData extends Resource
 
-## Must match the GLSL function name exactly.
+## Имя должно совпадать с именем функции в блоке кода.
 @export var function_name: String = ""
-## The complete GLSL code block (including any #defines).
+## Блок кода на GLSL.
 @export_multiline var code: String = ""
-## Names of other ShaderFunctionResources (from the same library) that this function calls.
+## Имена зависимостей ShaderFunctionResource.
 @export var required_functions: PackedStringArray = []

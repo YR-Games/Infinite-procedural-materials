@@ -1,9 +1,10 @@
 class_name GeneratorLibrary extends RefCounted
 
 #Подгружать ресурсы через preload .tres
-#хранить через store var, load var. спросить нейронку про сейв лоад словаря
+#хранить через store var, load var.
 static var Generators:Dictionary = {
-	"CellNoise":preload("res://PTE_V3_R/GeneratorDataFolder/CellNoiseData.tres")
+	"CellNoise":preload("res://PTE_V3_R/GeneratorDataFolder/CellNoiseData.tres"),
+	"FbmNoise":preload("res://PTE_V3_R/GeneratorDataFolder/FbmNoiseData.tres")
 }
 
 
@@ -16,7 +17,7 @@ static func get_all_names() -> PackedStringArray:
 		names.append(key)
 	return names
 
-#сгенерированные нейросетью шаблоны функций сохранения/загрузки
+
 # Сохранить Generators в файл (например, user://generators.cfg)
 static func save_to_file(path: String = "user://generators.cfg") -> void:
 	var config = ConfigFile.new()

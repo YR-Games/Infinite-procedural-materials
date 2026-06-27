@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://da2wdrkga3ens"]
+
+[ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_q5mm6"]
+[ext_resource type="Script" uid="uid://db062eko2a4ko" path="res://PTE_V3_R/resources/modifier_data.gd" id="2_r2g10"]
+
+[resource]
+script = ExtResource("2_r2g10")
+function_name = "multiplyByConstant"
+return_type = "float"
+function = "float multiplyByConstant(float value,float cons) {
+    return value+cons;
+}"
+metadata/_custom_type_script = "uid://db062eko2a4ko"

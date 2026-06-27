@@ -40,16 +40,16 @@ float vcm(vec2 uv, float time) {
 
 
 void fragment() {
-	vec2 uv = UV*vec2(8.,64.);
+	vec2 uv = UV*vec2(32.,32.);
 
 
-	float coord = vcm(uv,0.1)*6.;//vec2(clrnc,midsurf);
+	float coord = vcm(uv,0.1);//vec2(clrnc,midsurf);
 	float noise =bn(uv*32.);
-	float w=frand(coord);
+	float w=grand(coord*4.);
 	ROUGHNESS=1.-w*0.4;
-	w+=noise*0.3;
+	//w+=noise*0.3;
 	
-	ALBEDO = colorize(w,vec3(0.454,0.26666,0.203),vec3(0.1),vec3(0.2),vec3(0.3));//vec3(sin(tbf*32.)*sin(clrnc*16.));//vec3(smoothstep(0.,0.5,a));
+	ALBEDO = colorize(w,vec3(0.454,0.26666,0.203),vec3(0.2),vec3(0.3),vec3(0.4));//vec3(sin(tbf*32.)*sin(clrnc*16.));//vec3(smoothstep(0.,0.5,a));
 
 }
 

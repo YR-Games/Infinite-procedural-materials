@@ -16,7 +16,7 @@ float brand( in float x )
     float s = sign(fract(x/2.0)-0.5);
 
     // use some hash to create a random value k in [0..1] from i
-  //float k = hash(uint(i));
+    //float k = hash(uint(i));
   //float k = 0.5+0.5*sin(i);
     float k = fract(i*.1731);
 

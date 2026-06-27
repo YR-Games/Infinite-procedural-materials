@@ -1,7 +1,8 @@
 class_name ModifierLibrary extends RefCounted
 
 static var Modifiers := {
-	&"ColorRamp":preload("res://PTE_V3_R/ModifierDataFolder/ColorRampData.tres")
+	&"ColorRamp":preload("res://PTE_V3_R/ModifierDataFolder/ColorRampData.tres"),
+	&"addConstant":preload("res://PTE_V3_R/ModifierDataFolder/addConstantData.tres")
 }
 
 

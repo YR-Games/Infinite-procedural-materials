@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://43ea2fyq6w4x"]
+
+[ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_xur8a"]
+[ext_resource type="Script" uid="uid://db062eko2a4ko" path="res://PTE_V3_R/resources/modifier_data.gd" id="2_epf8o"]
+[ext_resource type="Script" uid="uid://vq2u6j364n55" path="res://PTE_V3_R/resources/float_parameter_def.gd" id="2_m1p2m"]
+
+[sub_resource type="Resource" id="Resource_k0x6t"]
+script = ExtResource("2_m1p2m")
+min_value = -1.0
+editor_type = 1
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[resource]
+script = ExtResource("2_epf8o")
+function_name = "addConstant"
+return_type = "float"
+function = "float addConstant(float value,float cons) {
+    return value+cons;
+}"
+parameters = Dictionary[String, ExtResource("1_xur8a")]({
+"cons": SubResource("Resource_k0x6t")
+})
+metadata/_custom_type_script = "uid://db062eko2a4ko"

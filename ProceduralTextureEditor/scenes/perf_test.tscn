@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://dn180m58cu7a1"]
 
-[ext_resource type="Shader" path="res://Shaders/export_test.gdshader" id="1_02ok5"]
+[ext_resource type="Shader" uid="uid://dduhgk6g07p0p" path="res://Shaders/nice_wood_texture.gdshader" id="1_02ok5"]
 [ext_resource type="Script" uid="uid://baa3lt0c3mrhk" path="res://camera_3d.gd" id="2_extcj"]
 [ext_resource type="Shader" uid="uid://b8wh3vaynkn8q" path="res://Shaders/wood_oko_veneer.gdshader" id="3_dtpgv"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ljjn8"]
 render_priority = 0
 shader = ExtResource("1_02ok5")
+shader_parameter/xc = 0.0
+shader_parameter/yc = 0.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_extcj"]
 size = Vector2(32, 32)

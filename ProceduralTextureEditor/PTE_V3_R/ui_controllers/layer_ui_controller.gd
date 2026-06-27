@@ -6,7 +6,7 @@ var layer_id: StringName
 var layer_path: MaterialPath
 var _preview_material: ShaderMaterial
 
-# Статические переменные для механизма ожидания выбора генератора
+
 static var pending_generator_layer: LayerUIController = null
 static var _generator_selection_handler_connected := false
 
@@ -155,7 +155,7 @@ func _select_generator_in_list(generator_id: StringName) -> void:
 			break
 
 
-# ---------------------- Blend mode ----------------------
+
 func _fill_blend_modes() -> void:
 	blend_mode_selector.clear()
 	for mode_name in MixLibrary.MixModes.keys():
@@ -177,7 +177,7 @@ func _on_blend_mode_selected(index: int) -> void:
 func _on_opacity_changed(value: float) -> void:
 	layer_path.child(&"opacity").set_value(value)
 
-# ---------------------- Modifiers ----------------------
+
 func _refresh_modifiers() -> void:
 	for child in modifiers_container.get_children():
 		child.queue_free()
