@@ -5,13 +5,13 @@ scripts/models_manager.py
 Возвращает загруженные модели.
 """
 
-import os
+import base64
 from functools import lru_cache
+from io import BytesIO
 
 import torch
 import torch.nn as nn
 from PIL import Image
-
 from transformers import AutoImageProcessor, AutoModel
 
 from .config import STANDARD_DEFINITION
@@ -33,10 +33,16 @@ _embedding_model: nn.Module = AutoModel.from_pretrained(model_name).to(device)  
 _embedding_model.eval()  # type: ignore # Переводим модель в режим "оценки"
 
 
-@lru_cache(maxsize=500)
-def get_embedding(image_path: str) -> torch.Tensor:  # numpy.ndarray
+@lru_cache(maxsize=1000)
+def base64_to_pil(data: str) -> Image.Image:
+    image_bytes = base64.b64decode(data)
+    return Image.open(BytesIO(image_bytes)).convert("RGB")
+
+
+@lru_cache(maxsize=1000)
+def get_embedding(image: str) -> torch.Tensor:  # numpy.ndarray
     """
-    Загружает изображение, пропускает через модель и возвращает эмбеддинг.
+    Пропускает изображение через модель и возвращает эмбеддинг.
 
     Args:
         image_path: путь к изображению
@@ -47,30 +53,28 @@ def get_embedding(image_path: str) -> torch.Tensor:  # numpy.ndarray
     try:
         # Получаем эмбеддинг.
         with torch.no_grad():
-            outputs = _embedding_model(
-                load_and_transform_image(image_path)
-            )
+            outputs = _embedding_model(load_and_transform_image(image))
 
         # Извлекаем эмбеддинг [CLS] токена (используется как представление всего изображения).
         embedding: torch.Tensor = outputs.last_hidden_state[:, 0, :].cpu()
         return embedding
     except Exception as e:
         lib_logger.error(
-            f"Ошибка получения эмбеддинга для изображения '{image_path}': {e}"
+            f"Ошибка получения эмбеддинга для изображения '{image[:100]}': {e}"
         )
         raise
 
 
-@lru_cache(maxsize=500)
+@lru_cache(maxsize=1000)
 def load_and_transform_image(
-    image_path: str, definition: int = STANDARD_DEFINITION, to_device: bool = True
+    image: str, definition: int = STANDARD_DEFINITION, to_device: bool = True
 ) -> torch.Tensor:
     """Загрузка и трансформация изображения с кэшированием"""
-    if not os.path.exists(image_path):
-        raise FileNotFoundError(f"Image not found: {image_path}")
+    # if not os.path.exists(image_path):
+    #    raise FileNotFoundError(f"Image not found: {image_path}")
 
     transform = get_base_transform(definition)
-    img = Image.open(image_path).convert("RGB")
+    img = base64_to_pil(image)  # Image.open(image_path).convert("RGB")
 
     """# Визуализация изображений ???
     import matplotlib.pyplot as plt

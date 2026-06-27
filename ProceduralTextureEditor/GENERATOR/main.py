@@ -5,10 +5,10 @@ main.py
 """
 
 import json
-import random
 import socket
-import time
+from typing import Any
 
+from core import add_nodes, add_render, find_similar_clusters
 from scripts.logger import lib_logger
 
 
@@ -18,22 +18,23 @@ class CoreMock:
     Потом должно считаться в графе Материала!
     """
 
-    def __init__(self, threshold: int = 10):
+    def __init__(self, threshold: int = 200):
         self.non_unique_count = 0
         self.threshold = threshold
 
-    def add_render(self, image_data: str) -> bool:
+    def add_render(self, image_data: str, material: str) -> bool:
         """
         Имитирует добавление рендера.
         Возвращает True, если рендер уникален, иначе False.
         Увеличивает счётчик неуникальных при False.
         """
-        # случайным образом определяем уникальность (для демонстрации)
-        unique = random.random() > 0.3
+
+        unique = add_render(image_data, material)
         if not unique:
             self.non_unique_count += 1
             lib_logger.info(f"Non-unique render, count={self.non_unique_count}")
         else:
+            self.non_unique_count = 0
             lib_logger.info("Unique render")
         return unique
 
@@ -41,7 +42,7 @@ class CoreMock:
 core = CoreMock()
 
 
-def recv_message(sock: socket.socket) -> dict | None:
+def recv_message(sock: socket.socket) -> dict[str, Any] | None:
     """
     Читает из сокета одно сообщение (до символа '\n'),
     декодирует JSON и возвращает словарь.
@@ -58,7 +59,7 @@ def recv_message(sock: socket.socket) -> dict | None:
             data += chunk
             lib_logger.info(f"Received {len(chunk)} bytes")
         line, _ = data.split(b"\n", 1)
-        lib_logger.info(f"Full message: {line}")
+        lib_logger.info(f"Full message: {line[:100]}")
         return json.loads(line.decode("utf-8"))
     except Exception as e:
         lib_logger.error(f"Error receiving message: {e}")
@@ -75,7 +76,7 @@ def send_message(sock: socket.socket, msg: dict) -> None:
         lib_logger.error(f"Error sending message: {e}")
 
 
-def handle_add_material(sock: socket.socket, data: dict, msg_id: str) -> None:
+def handle_add_material(sock: socket.socket, data: dict[str, Any], msg_id: str) -> None:
     """
     Обрабатывает запрос на добавление материала.
     Отправляет ack, затем в цикле запрашивает рендеры через render_request,
@@ -84,25 +85,26 @@ def handle_add_material(sock: socket.socket, data: dict, msg_id: str) -> None:
     После перебора всех параметров отправляет финальный render_request с finished=True
     и ожидает add_material_complete.
     """
-    material = data.get("material", {})
-    lib_logger.info(
-        f"Handling add_material id={msg_id}, material={material.get('id', 'unknown')}"
-    )
+    material: str = data.get("material", "")
+    lib_logger.info(f"Handling add_material id={msg_id}, material={material[:100]}")
 
     # Подтверждение получения
-    ack = {"type": "add_material_ack", "id": msg_id, "data": {"status": "processing"}}
+    ack: dict[str, Any] = {
+        "type": "add_material_ack",
+        "id": msg_id,
+        "data": {"status": "processing"},
+    }
     send_message(sock, ack)
 
-    # Имитация перебора параметров – фиксированное количество рендеров
-    max_renders = 20
+    # Фиксированное количество рендеров, не более:
+    max_renders = 300
     for i in range(max_renders):
         # Запрос рендера
-        req = {
+        req: dict[str, Any] = {
             "type": "render_request",
             "id": f"render_{i}",
             "data": {
-                "material_id": material.get("id", "unknown"),
-                "params": {"index": i, "param": f"value_{i}"},
+                "material": material,
                 "finished": False,
             },
         }
@@ -115,27 +117,33 @@ def handle_add_material(sock: socket.socket, data: dict, msg_id: str) -> None:
             lib_logger.error("Connection closed while waiting for render_response")
             break
         if resp.get("type") == "render_response":
-            image_data = resp.get("data", {}).get("image", "")
-            unique = core.add_render(image_data)
+            data: dict[str, Any] = resp.get("data", {})
+            material: str = data.get("material", "")
+            image_data: str = data.get("image", "")
+            unique = core.add_render(image_data, material)
             if not unique and core.non_unique_count > core.threshold:
-                stop_msg = {
+                stop_msg: dict[str, Any] = {
                     "type": "add_material_stop",
-                    "data": {"reason": "too_many_non_unique"},
+                    "data": {"reason": "too many non unique"},
                 }
                 send_message(sock, stop_msg)
                 lib_logger.warning(
                     "Stopping material addition due to too many non-unique renders"
                 )
-                return
+                break
+        elif resp.get("type") == "renders_is_ower":
+            lib_logger.info("Stopping material addition due to all renders sent")
+            break
         else:
             lib_logger.warning(f"Unexpected response type: {resp.get('type')}")
             continue
 
-    # Все параметры перебраны – отправляем финальный запрос
-    finish_req = {
+    # Все параметры перебраны – отправляем финальный запрос и производим слияние графов.
+    add_nodes()
+    finish_req: dict[str, Any] = {
         "type": "render_request",
         "id": "finish",
-        "data": {"finished": True, "material_id": material.get("id", "unknown")},
+        "data": {"finished": True, "material": material},
     }
     send_message(sock, finish_req)
     lib_logger.info("Sent final render_request with finished=True")
@@ -152,53 +160,54 @@ def handle_add_material(sock: socket.socket, data: dict, msg_id: str) -> None:
         )
 
 
-def handle_search_request(sock: socket.socket, data: dict, msg_id: str) -> None:
+def handle_search_request(
+    sock: socket.socket, data: dict[str, Any], msg_id: str
+) -> None:
     """
     Обрабатывает запрос на поиск по эталонному изображению.
     Отправляет search_ack, затем периодически отправляет search_progress
     и search_result, в конце отправляет search_done.
     """
-    image_path = data.get("image_path", "")
-    lib_logger.info(f"Handling search_request id={msg_id}, image_path={image_path}")
+    image_data = data.get("image", "")
+    lib_logger.info(
+        f"Handling search_request id={msg_id}, image_data={image_data[:100]}"
+    )
 
-    ack = {"type": "search_ack", "id": msg_id, "data": {"status": "processing"}}
+    ack: dict[str, Any] = {
+        "type": "search_ack",
+        "id": msg_id,
+        "data": {"status": "processing"},
+    }
     send_message(sock, ack)
 
-    # Имитация процесса поиска
-    for progress in [0.1, 0.3, 0.5, 0.7, 0.9]:
-        time.sleep(0.5)  # имитация работы
-        prog_msg = {
+    # Имитация процесса поиска для красивого прогресс бара)
+    prog_msg: dict[str, Any] = {
+        "type": "search_progress",
+        "id": msg_id,
+        "data": {"progress": 0.9},
+    }
+    send_message(sock, prog_msg)
+
+    materials = find_similar_clusters(image_data)
+    for material in materials:
+        # Отправляем найденные материалы
+        result_msg: dict[str, Any] = {
+            "type": "search_result",
+            "id": msg_id,
+            "data": {"material": material[0], "similarity": material[1]},
+        }
+        send_message(sock, result_msg)
+        lib_logger.info(f"Sent search_result {material}")
+
+        prog_msg: dict[str, Any] = {
             "type": "search_progress",
             "id": msg_id,
-            "data": {"progress": progress},
+            "data": {"progress": 10},
         }
         send_message(sock, prog_msg)
-        lib_logger.info(f"Sent progress {progress}")
-
-        # Отправляем несколько найденных материалов
-        for i in range(2):
-            material = {
-                "generators": {},
-                "channels": {
-                    "albedo": {"layers": {}, "layer_order": []},
-                    "normal": {"layers": {}, "layer_order": []},
-                },
-                "metrics": {
-                    "similarity": 0.5 + progress * 0.4 + i * 0.05,
-                    "complexity": 10 + i * 5,
-                    "size": 1024 + i * 100,
-                },
-            }
-            result_msg = {
-                "type": "search_result",
-                "id": msg_id,
-                "data": {"material": material, "metrics": material["metrics"]},
-            }
-            send_message(sock, result_msg)
-            lib_logger.info(f"Sent search_result {i}")
 
     # Завершение поиска
-    done_msg = {"type": "search_done", "id": msg_id, "data": {}}
+    done_msg: dict[str, Any] = {"type": "search_done", "id": msg_id, "data": {}}
     send_message(sock, done_msg)
     lib_logger.info("Search finished")
 
@@ -223,22 +232,32 @@ def main() -> None:
 
     with conn:
         while True:
-            msg = recv_message(conn)
-            if msg is None:
-                lib_logger.info("Connection closed by client")
-                break
+            try:
+                msg = recv_message(conn)
+                if msg is None:
+                    lib_logger.info("Connection closed by client")
+                    break
 
-            msg_type = msg.get("type")
-            msg_id = msg.get("id")
-            data = msg.get("data", {})
-            lib_logger.info(f"Received message type={msg_type}, id={msg_id}")
+                msg_type = msg.get("type")
+                msg_id = msg.get("id")
+                data = msg.get("data", {})
+                lib_logger.info(f"Received message type={msg_type}, id={msg_id}")
 
-            if msg_type == "add_material":
-                handle_add_material(conn, data, msg_id)
-            elif msg_type == "search_request":
-                handle_search_request(conn, data, msg_id)
-            else:
-                lib_logger.warning(f"Unhandled message type: {msg_type}")
+                if msg_type == "add_material":
+                    handle_add_material(conn, data, msg_id)
+                elif msg_type == "search_request":
+                    handle_search_request(conn, data, msg_id)
+                elif msg_type == "ping":
+                    prog_msg: dict[str, Any] = {
+                        "type": "ping",
+                        "data": "0.0001 mc",
+                    }
+                    send_message(conn, prog_msg)
+                else:
+                    lib_logger.warning(f"Unhandled message type: {msg_type}")
+
+            except Exception as e:
+                lib_logger.error(f"Error: {e}")
 
 
 if __name__ == "__main__":

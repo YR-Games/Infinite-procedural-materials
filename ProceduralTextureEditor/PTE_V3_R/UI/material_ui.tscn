@@ -26,7 +26,7 @@ text = "MaterialName"
 [node name="PreviewContainer" type="PanelContainer" parent="VBoxContainer" unique_id=1622747468]
 layout_mode = 2
 
-[node name="Preview" type="ColorRect" parent="VBoxContainer/PreviewContainer" unique_id=178683292]
+[node name="Preview" type="TextureRect" parent="VBoxContainer/PreviewContainer" unique_id=714743258]
 material = SubResource("ShaderMaterial_j64ke")
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
@@ -65,3 +65,5 @@ text = "Применить📨"
 
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer" unique_id=1876511292]
 layout_mode = 2
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Button" to="." method="_on_button_pressed"]

@@ -48,3 +48,11 @@ func generate_glsl_declaration(value: Variant, var_name: String) -> String:
 
 func value_to_glsl(value: Variant,var_name: String = "") -> String:
 	return var_name
+
+
+func get_min()->int:
+	return 0
+func get_max()->int:
+	return 0
+func get_step()->int:
+	return 0

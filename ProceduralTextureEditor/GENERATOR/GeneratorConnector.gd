@@ -7,6 +7,9 @@
 
 extends Node #GConnector
 
+var interface: Window
+var baker: ImageBaker
+
 ## Запускает Python проект Генератора в фоне
 func start_generator() -> void:
 	var project_dir := ProjectSettings.globalize_path("res://")
@@ -44,11 +47,13 @@ var stream: StreamPeerTCP = null
 var send_queue: Array = []                # очередь сообщений на отправку
 var recv_buffer: String = ""              # буфер для накопления входящих данных
 var pending_requests: Dictionary = {}     # id -> {callback, retries, timer_start, original_msg}
-var materials_list: Array = []            # список материалов для результатов поиска
 var reconnect_timer: float = 0.0
 
 
 func _ready() -> void:
+	interface = get_node(^"/root/EditorUI/MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window")
+	baker = get_node(^"/root/EditorUI/Node")
+
 	#set_physics_process(false)
 	#set_process_input(false)
 
@@ -153,7 +158,6 @@ func _disconnect() -> void:
 	# (можно оставить, если нужно повторить после переподключения)
 	send_queue.clear()
 	pending_requests.clear()
-	materials_list.clear()
 	print_rich("[color=light red][GConnector] Disconnected")
 
 
@@ -163,7 +167,7 @@ func _receive_messages() -> void:
 		var data = stream.get_data(stream.get_available_bytes())
 		if data[0] == OK:
 			var text = data[1].get_string_from_utf8()
-			print_rich("[color=cyan][GConnector] Received raw data: ", text)
+			print_rich("[GConnector] Received raw data: ", text.substr(0, 150))
 			recv_buffer += text
 			while recv_buffer.find("\n") != -1:
 				var line = recv_buffer.substr(0, recv_buffer.find("\n"))
@@ -197,10 +201,11 @@ func _handle_message(msg: Dictionary) -> void:
 	var msg_type = msg.get("type")
 	var msg_id = msg.get("id")
 	var data = msg.get("data", {})
-	print_rich("[color=cyan][GConnector] Received message: ", msg_type, " id: ", msg_id)
+	print_rich("[GConnector] Received message: ", msg_type, " id: ", msg_id)
 
 	match msg_type:
 		"add_material_ack":
+			# Пока ничего полезного не делает, заглушка н абудущее.
 			if pending_requests.has(msg_id):
 				var req = pending_requests[msg_id]
 				var callback = req.callback
@@ -209,32 +214,40 @@ func _handle_message(msg: Dictionary) -> void:
 					callback.call(OK, data)
 
 		"render_request":
-			var material_id = data.get("material_id", "")
+			var material: String = data.get("material", "")
 			var finished = data.get("finished", false)
 			if finished:
 				var complete_msg = {
 					"type": "add_material_complete",
-					"data": {"material_id": material_id}
+					"data": {"material": material}
 				}
 				send_message(complete_msg)
-				print_rich("[color=cyan][GConnector] Sent add_material_complete for material ", material_id)
+				print_rich("[color=cyan][GConnector] Sent add_material_complete for material: ", material.substr(0, 100))
 			else:
-				var params = data.get("params", {})
-				var image = _generate_render(material_id, params)
-				var img_base64 = _image_to_base64(image)
-				var response = {
-					"type": "render_response",
-					"id": msg_id,
-					"data": {
-						"material_id": material_id,
-						"image": img_base64,
-						"unique": true
+				var image := await _generate_render(material)
+				if image and not image.is_empty():
+					var img_base64 := _image_to_base64(image)
+					var response = {
+						"type": "render_response",
+						"id": msg_id,
+						"data": {
+							"material": material,
+							"image": img_base64,
+						}
 					}
-				}
-				send_message(response)
-				print_rich("[color=cyan][GConnector] Sent render_response for material ", material_id)
+					send_message(response)
+					print_rich("[color=cyan][GConnector] Sent %d render_response for material: %s" % [baker.step, material.substr(0, 100)])
+				else:
+					var response = {
+						"type": "renders_is_ower",
+						"id": msg_id,
+					}
+					send_message(response)
+					print_rich("[color=cyan][GConnector] Sent renders_is_ower for material: ", material.substr(0, 100))
 
 		"search_ack":
+			interface.update_progress_bar(1)
+			# Пока ничего полезного не делает, заглушка н абудущее.
 			if pending_requests.has(msg_id):
 				var req = pending_requests[msg_id]
 				var callback = req.callback
@@ -243,51 +256,56 @@ func _handle_message(msg: Dictionary) -> void:
 					callback.call(OK, data)
 
 		"search_progress":
-			var progress = data.get("progress", 0.0)
+			var progress := data.get("progress", 0.0) as float
+			interface.update_progress_bar(progress)
 			print_rich("[color=cyan][GConnector] Search progress: ", progress)
 
 		"search_result":
-			var material = data.get("material", {})
-			var metrics = data.get("metrics", {})
-			materials_list.append({"material": material, "metrics": metrics})
-			materials_list.sort_custom(func(a, b):
-				return a.metrics.similarity > b.metrics.similarity
-			)
-			print_rich("[color=cyan][GConnector] Materials list updated, size: ", materials_list.size())
+			var material: String = data.get("material", "")
+			var similarity: float = data.get("similarity", 0.5)
+			interface.add_material(material, similarity)
+			print_rich("[color=cyan][GConnector] Materials list updated, similarity: ", similarity)
 
 		"search_done":
+			interface.update_progress_bar(100, true)
 			print_rich("[color=light green][GConnector] Search completed")
 
 		"add_material_stop":
 			var reason = data.get("reason", "")
-			print_rich("[color=cyan][GConnector] Add material stopped: ", reason)
+			print_rich("[color=light yellow][GConnector] Add material stopped: ", reason)
 
 		"add_material_complete":
 			print_rich("[color=light green][GConnector] Add material complete received")
 
 		"ping":
+			interface.get_parent().get_parent().get_child(3).hide()
+			interface.get_parent().show()
 			print_rich("[GConnector] Ping response: ", data)
 
 		_:
 			print_rich("[color=light red][GConnector] Unhandled message type: ", msg_type)
 
 
-func _generate_render(material_id: String, params: Dictionary) -> Image:
-	## Генерирует фиктивное изображение для демонстрации.
-	var img = Image.create(518, 518, false, Image.FORMAT_RGBA8)
-	img.fill(Color(randf(), randf(), randf(), 1.0))
+## Генерирует изображение для материала.
+func _generate_render(material: String) -> Image:
+	#var img = Image.create(518, 518, false, Image.FORMAT_RGBA8)
+	#img.fill(Color(randf(), randf(), randf(), 1.0))
+	var img: Image = await baker.bake(material)
 	return img
 
 
+## Кодирует изображение в base64 (PNG).
 func _image_to_base64(image: Image) -> String:
-	## Кодирует изображение в base64 (PNG).
+	if image.get_size() != Vector2i(518, 518):
+		image.resize(518, 518)
+
 	var png_data = image.save_png_to_buffer()
 	return Marshalls.raw_to_base64(png_data)
 
 
 # ---------- Публичные методы ----------
 
-func add_material(material_data: Dictionary, callback: Callable = Callable()) -> void:
+func add_material(material_data: String, callback: Callable = Callable()) -> void:
 	## Отправляет запрос на добавление материала.
 	var msg = {
 		"type": "add_material",
@@ -297,16 +315,12 @@ func add_material(material_data: Dictionary, callback: Callable = Callable()) ->
 	send_message(msg, callback)
 
 
-func search_by_image(image_path: String, callback: Callable = Callable()) -> void:
+func search_by_image(image: Image, callback: Callable = Callable()) -> void:
 	## Отправляет запрос на поиск по изображению.
 	var msg = {
 		"type": "search_request",
 		"id": str(randi()),
-		"data": {"image_path": image_path}
+		"data": {"image": _image_to_base64(image)}
 	}
 	send_message(msg, callback)
-
-
-func get_materials() -> Array:
-	## Возвращает текущий список найденных материалов.
-	return materials_list
+	interface.update_progress_bar()

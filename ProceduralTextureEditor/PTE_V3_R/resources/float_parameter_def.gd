@@ -30,3 +30,11 @@ enum EditorType {
 }
 
 @export var editor_type: EditorType
+
+
+func get_min()->float:
+	return min_value
+func get_max()->float:
+	return max_value
+func get_step()->float:
+	return step

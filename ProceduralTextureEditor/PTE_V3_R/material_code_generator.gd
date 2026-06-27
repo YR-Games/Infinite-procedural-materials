@@ -42,12 +42,12 @@ func _on_value_changed() -> void:
 # ---------------------------------------------------------------------------
 # Main entry point — called by the preview renderer.
 # ---------------------------------------------------------------------------
-func generate_shader_code() -> String:
+func generate_shader_code(material_data: Dictionary = EditorMaterial.editorMaterialData) -> String:
 	# Collect active resource names (cheap — no string building).
 	var used_generators: Array[String] = []
 	var used_modifiers: Array[String] = []
 	var used_blend_modes: Array[String] = []
-	_collect_used_resources(used_generators, used_modifiers, used_blend_modes)
+	_collect_used_resources(used_generators, used_modifiers, used_blend_modes, material_data)
 
 	var preamble_key := PreambleBuilder.make_preamble_key(
 			used_generators, used_modifiers, used_blend_modes)
@@ -58,7 +58,7 @@ func generate_shader_code() -> String:
 			return PreambleBuilder.build(
 					used_generators, used_modifiers, used_blend_modes, _cache),
 		func() -> String:
-			return _build_fragment()
+			return _build_fragment(material_data)
 	)
 
 
@@ -69,13 +69,14 @@ func generate_shader_code() -> String:
 func _collect_used_resources(
 		out_generators: Array[String],
 		out_modifiers: Array[String],
-		out_blend_modes: Array[String]
+		out_blend_modes: Array[String],
+		material_data: Dictionary
 ) -> void:
 	for channel in ["albedo", "normal"]:
-		for layer in EditorMaterial.get_layers_in_order(channel):
+		for layer in EditorMaterial.get_layers_in_order(channel, material_data):
 			var gen_id: StringName = layer.get("generator_id", "")
 			if gen_id != "":
-				var gen := EditorMaterial.get_generator(gen_id)
+				var gen := EditorMaterial.get_generator(gen_id, material_data)
 				var gen_name: String = gen.get("generator_name", "")
 				if gen_name != "" and gen_name not in out_generators:
 					out_generators.append(gen_name)
@@ -84,7 +85,7 @@ func _collect_used_resources(
 			if blend not in out_blend_modes:
 				out_blend_modes.append(blend)
 
-			for mod in EditorMaterial.get_modifiers_in_order(channel, layer.get("id", "")):
+			for mod in EditorMaterial.get_modifiers_in_order(channel, layer.get("id", ""), material_data):
 				var mod_name: String = mod.get("modifier_name", "")
 				if mod_name != "" and mod_name not in out_modifiers:
 					out_modifiers.append(mod_name)
@@ -108,16 +109,16 @@ const _NORMAL_FROM_HEIGHT_GLSL := """vec3 normalFromHeight(vec2 uv, float offset
 \treturn 0.5 + normalize(cross(fa - fb * vec3(1., 0., 1.), fc - fd * vec3(0., 1., 1.))) * vec3(1., -1., 1.);
 }"""
 
-func _build_fragment() -> String:
+func _build_fragment(material_data: Dictionary) -> String:
 	var code := PackedStringArray()
 
 	# --- Normal channel: emit as a height() function above fragment ---
-	var normal_layers := EditorMaterial.get_layers_in_order("normal")
+	var normal_layers := EditorMaterial.get_layers_in_order("normal", material_data)
 	if not normal_layers.is_empty():
 		code.append("float height(vec2 uv) {")
 		code.append("\tvec4 base_normal = vec4(0.0);")
 		code.append("")
-		_append_channel_body(code, "normal", normal_layers, "base_normal")
+		_append_channel_body(code, "normal", normal_layers, "base_normal", material_data)
 		code.append("\treturn base_normal.r;")
 		code.append("}")
 		code.append("")
@@ -130,10 +131,10 @@ func _build_fragment() -> String:
 	code.append("")
 
 	# Albedo channel — inline as before
-	var albedo_layers := EditorMaterial.get_layers_in_order("albedo")
+	var albedo_layers := EditorMaterial.get_layers_in_order("albedo", material_data)
 	if not albedo_layers.is_empty():
 		code.append("\tvec4 base_albedo = vec4(0.0);")
-		_append_channel_body(code, "albedo", albedo_layers, "base_albedo")
+		_append_channel_body(code, "albedo", albedo_layers, "base_albedo", material_data)
 		code.append("\tALBEDO = base_albedo.rgb;")
 		code.append("\tALPHA = base_albedo.a;")
 		code.append("")
@@ -153,12 +154,13 @@ func _append_channel_body(
 		code: PackedStringArray,
 		channel: String,
 		layers: Array[Dictionary],
-		base_var: String
+		base_var: String,
+		material_data: Dictionary
 ) -> void:
 	for layer in layers:
 		var gen_id: StringName       = layer.get("generator_id", "")
 		var blend_mode: String       = layer.get("blend_mode", "normal")
-		var gen_instance             := EditorMaterial.get_generator(gen_id)
+		var gen_instance             := EditorMaterial.get_generator(gen_id, material_data)
 		var gen_name: String         = gen_instance.get("generator_name", "")
 		var gen_params: Dictionary   = gen_instance.get("parameters", {})
 
@@ -185,8 +187,8 @@ func _append_channel_body(
 		code.append("\t%s %s = %s(%s);" % [
 				current_type, current_val, gen_data.function_name, ", ".join(args)])
 
-		for mod_id in EditorMaterial.get_modifier_order(channel, layer.get("id", "")):
-			var mod              := EditorMaterial.get_modifier(channel, layer.get("id", ""), mod_id)
+		for mod_id in EditorMaterial.get_modifier_order(channel, layer.get("id", ""), material_data):
+			var mod := EditorMaterial.get_modifier(channel, layer.get("id", ""), mod_id, material_data)
 			var mod_name: String  = mod.get("modifier_name", "")
 			var mod_params: Dictionary = mod.get("parameters", {})
 			var mod_data: ModifierData = ModifierLibrary.get_modifier_data(mod_name)

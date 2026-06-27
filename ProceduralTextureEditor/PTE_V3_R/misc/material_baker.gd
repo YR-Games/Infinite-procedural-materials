@@ -69,7 +69,7 @@ func _build_viewport_tree() -> void:
 ## [param size] controls the output resolution (default 1024×1024).
 ## Returns an Error code: OK on success, or a specific ERR_* constant on failure.
 ## This function is async — always await it.
-func bake(
+func _bake(
 		project_path: String,
 		output_path: String,
 		size: Vector2i = DEFAULT_SIZE
@@ -85,6 +85,103 @@ func bake(
 	var result := await _run_bake(project_path, output_path, size)
 	_bake_lock = false
 	return result
+
+
+var current_material: String
+var current_material_data: Dictionary
+var step: int = 0
+var final_counter: int = 0
+var params_count: int = 0
+const MAX_BRUT_FORCE_STEP_COUNT = 10
+
+func bake(material: String)->Image:
+	if material != current_material:
+		current_material = material
+		current_material_data = EditorMaterial.parce_json_string_to_dict(material)
+		step = 0
+		final_counter = 0
+		params_count = (
+			EditorMaterial.get_generators_params_count(current_material_data)
+			+ EditorMaterial.get_modifers_params_count(current_material_data)
+		)
+
+	if not evalute():
+		return Image.new()
+
+	var generator = MaterialCodeGenerator.new()
+	var code = generator.generate_shader_code(current_material_data)
+
+	var shader := Shader.new()
+	shader.code = code
+	_shader_material.shader = shader
+	_color_rect.material = _shader_material
+
+	_viewport.size = Vector2(518, 518)
+	_color_rect.size = Vector2(518, 518)
+
+	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+	await RenderingServer.frame_post_draw
+
+	return _viewport.get_texture().get_image()
+
+
+## Подставляет следующие параметры для обрабатываемого материала.
+func evalute()->bool:
+	if final_counter >= params_count:
+		return false
+
+	step += 1
+	
+	for channel in current_material_data.get(&"channels"):
+		for layer in EditorMaterial.get_layers(channel, current_material_data):
+			var gen_id: StringName = EditorMaterial.get_layer(channel, layer, current_material_data).get("generator_id", "")
+			var gen_instance := EditorMaterial.get_generator(gen_id, current_material_data)
+			var gen_name: String = gen_instance.get("generator_name", "")
+			var gen_params: Dictionary = gen_instance.get("parameters", {})
+
+			if gen_name == "":
+				continue
+			var gen_data: GeneratorData = GeneratorLibrary.get_generator_data(gen_name)
+			if not gen_data:
+				continue
+
+			for param_name in gen_data.parameters:
+				var param_def: abstractParameterDef = gen_data.parameters[param_name]
+				if not param_def is PaletteParameterDef:
+					if step == 1 or gen_params[param_name] >= param_def.get_max():
+						gen_params[param_name] = param_def.get_min()
+					else:
+						# Вариант 1 i.default_value += i.step - резервный
+						# Вариант 2
+						gen_params[param_name] += max(
+							(param_def.get_max()-param_def.get_min())/MAX_BRUT_FORCE_STEP_COUNT,
+							param_def.get_step(),
+						)
+
+			for mod_id in EditorMaterial.get_modifier_order(channel, layer, current_material_data):
+				var mod := EditorMaterial.get_modifier(channel, layer, mod_id, current_material_data)
+				var mod_name: String  = mod.get("modifier_name", "")
+				var mod_params: Dictionary = mod.get("parameters", {})
+				var mod_data: ModifierData = ModifierLibrary.get_modifier_data(mod_name)
+				if not mod_data:
+					continue
+
+				for param_name in mod_data.parameters:
+					var param_def: abstractParameterDef = mod_data.parameters[param_name]
+					if not param_def is PaletteParameterDef:
+						if step == 1 or mod_params[param_name] >= param_def.get_max():
+							mod_params[param_name] = param_def.get_min()
+						else:
+							# Вариант 1 i.default_value += i.step - резервный
+							# Вариант 2
+							mod_params[param_name] += max(
+								(param_def.get_max()-param_def.get_min())/MAX_BRUT_FORCE_STEP_COUNT,
+								param_def.get_step(),
+							)
+
+			EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.2, 1.0)
+
+	return true
 
 
 # ---------------------------------------------------------------------------

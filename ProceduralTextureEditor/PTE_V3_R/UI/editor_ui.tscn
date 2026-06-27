@@ -8,7 +8,6 @@
 [ext_resource type="Script" uid="uid://de6iegc2av1s2" path="res://PTE_V3_R/ui_controllers/preview_controller.gd" id="4_hi3c7"]
 [ext_resource type="Script" uid="uid://jno1lkl6j3g" path="res://PTE_V3_R/ui_controllers/materials_list_ui_controller.gd" id="4_i4lt2"]
 [ext_resource type="Texture2D" uid="uid://glmiy2435yw7" path="res://SkyPanoramas/sky_sunny003_hdr.exr" id="4_nnwub"]
-[ext_resource type="PackedScene" uid="uid://d0earg2bw4j6i" path="res://PTE_V3_R/UI/material_ui.tscn" id="5_xla1c"]
 [ext_resource type="Script" uid="uid://4lmxuyirt8k4" path="res://PTE_V3_R/misc/material_baker.gd" id="8_i4lt2"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_nnwub"]
@@ -92,6 +91,7 @@ access = 2
 layout_mode = 2
 
 [node name="Найти материал по изображжению 🔎" type="Button" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer" unique_id=1566213749]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 text = "Найти материал по изображжению 🔎"
@@ -178,8 +178,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="MaterialUI" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/FindedMaterials/ScrollContainer/Materials" unique_id=607833355 instance=ExtResource("5_xla1c")]
+[node name="Label" type="Label" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer" unique_id=1565702208]
 layout_mode = 2
+size_flags_horizontal = 6
+text = "Генератор загружается ⚙️"
 
 [node name="UI" type="PanelContainer" parent="MenuAndUI" unique_id=209799095]
 layout_mode = 2

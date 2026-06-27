@@ -6,7 +6,7 @@ extends Window
 @onready var reference_miniature: TextureRect = $VBoxContainer/VBoxContainer/HBoxContainer/TextureRect
 @onready var progress_bar: ProgressBar = $VBoxContainer/ProgressBar
 @onready var finded_materials_block: VBoxContainer = $VBoxContainer/FindedMaterials
-@onready var materials_container: VBoxContainer = $VBoxContainer/FindedMaterials/ScrollContainer/Materials
+@onready var materials_container: ScrollContainer = $VBoxContainer/FindedMaterials/ScrollContainer
 
 
 var reference_path: String
@@ -21,12 +21,6 @@ func _on_close_requested() -> void:
 
 
 func _on_button_pressed() -> void:
-	if reference:#??? для тестов
-		GConnector.add_material(EditorMaterial.editorMaterialData)
-		reference = false
-	else:
-		GConnector.search_by_image("res://textures/cgt1.jpg")
-		reference = true
 	file_dialog.show()
 
 
@@ -43,3 +37,33 @@ func set_path(path: String)->void:
 			reference_path = path
 			path_to_reference.text = path
 			reference_miniature.texture = ImageTexture.create_from_image(img)
+			GConnector.search_by_image(img)
+			progress_bar.show()
+
+
+# Публичный API управления интерфейсовм:
+func clear()->void:
+	finded_materials_block.hide()
+	progress_bar.hide()
+	hide()
+	for c: Node in materials_container.get_child(0).get_children():
+		c.queue_free()
+
+
+func update_progress_bar(val: float = 0.1, final: bool = false)->void:
+	if not final:
+		progress_bar.value = lerp(
+			progress_bar.value,
+			progress_bar.value+val,
+			1-progress_bar.value/progress_bar.max_value
+		)
+		return
+	progress_bar.value = progress_bar.max_value
+
+
+func add_material(material: String, sim: float)->void:
+	var new_f: bool = false
+	if not finded_materials_block.visible:
+		finded_materials_block.show()
+		new_f = true
+	materials_container.add_material(material, sim, new_f)
