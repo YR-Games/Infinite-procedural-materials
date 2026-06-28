@@ -287,10 +287,10 @@ func _handle_message(msg: Dictionary) -> void:
 
 
 ## Генерирует изображение для материала.
-func _generate_render(material: String) -> Image:
+func _generate_render(material: String, anyway: bool = false) -> Image:
 	#var img = Image.create(518, 518, false, Image.FORMAT_RGBA8)
 	#img.fill(Color(randf(), randf(), randf(), 1.0))
-	var img: Image = await baker.bake(material)
+	var img: Image = await baker.bake(material, anyway)
 	return img
 
 

@@ -94,18 +94,19 @@ var final_counter: int = 0
 var params_count: int = 0
 const MAX_BRUT_FORCE_STEP_COUNT = 10
 
-func bake(material: String)->Image:
+func bake(material: String, anyway: bool = false)->Image:
 	if material != current_material:
 		current_material = material
 		current_material_data = EditorMaterial.parce_json_string_to_dict(material)
-		step = 0
-		final_counter = 0
-		params_count = (
-			EditorMaterial.get_generators_params_count(current_material_data)
-			+ EditorMaterial.get_modifers_params_count(current_material_data)
-		)
+		if not anyway:
+			step = 0
+			final_counter = 0
+			params_count = (
+				EditorMaterial.get_generators_params_count(current_material_data)
+				+ EditorMaterial.get_modifers_params_count(current_material_data)
+			)
 
-	if not evalute():
+	if not anyway and not evalute():
 		return Image.new()
 
 	var generator = MaterialCodeGenerator.new()

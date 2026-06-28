@@ -43,7 +43,7 @@ func setup(_material_data: String, similarity: float, id: int) -> void:
 	var sz = material_data.get(&"size", -1)
 	size_label.text = "Вес: %s Кб" % (get_material_size() if sz == -1 else str(sz))
 
-	var image := await GConnector._generate_render(_material_data)
+	var image := await GConnector._generate_render(_material_data, true)
 	preview_rect.texture = ImageTexture.create_from_image(image)
 
 
