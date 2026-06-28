@@ -58,7 +58,7 @@ func get_complexity()->String:
 ## Один символ = 4 байта.
 func get_material_size()->String:
 	return str(
-		len(shader_code) * 256  # Количество символов в строковом представлении шейдера * 256 = Кб
+		len(shader_code) / 256  # Количество символов в строковом представлении шейдера * 256 = Кб
 	)
 
 

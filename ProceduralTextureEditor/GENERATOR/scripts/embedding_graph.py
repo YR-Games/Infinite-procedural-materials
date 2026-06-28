@@ -16,7 +16,7 @@ from .logger import lib_logger
 from .models_manager import get_embedding
 
 # Глобальные параметры.
-cluster_threshold: float = 0.7
+cluster_threshold: float = 0.9
 
 
 # Вспомогательные классы.

@@ -8,7 +8,6 @@
 [ext_resource type="Script" uid="uid://de6iegc2av1s2" path="res://PTE_V3_R/ui_controllers/preview_controller.gd" id="4_hi3c7"]
 [ext_resource type="Script" uid="uid://jno1lkl6j3g" path="res://PTE_V3_R/ui_controllers/materials_list_ui_controller.gd" id="4_i4lt2"]
 [ext_resource type="Texture2D" uid="uid://glmiy2435yw7" path="res://SkyPanoramas/sky_sunny003_hdr.exr" id="4_nnwub"]
-[ext_resource type="Script" uid="uid://dblqe30xa1i6g" path="res://PTE_V3_R/ui_controllers/material_ui_controller.gd" id="5_1523j"]
 [ext_resource type="Script" uid="uid://4lmxuyirt8k4" path="res://PTE_V3_R/misc/material_baker.gd" id="8_i4lt2"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_nnwub"]
@@ -178,7 +177,6 @@ script = ExtResource("4_i4lt2")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("5_1523j")
 
 [node name="Label" type="Label" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer" unique_id=1565702208]
 layout_mode = 2
