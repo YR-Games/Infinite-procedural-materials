@@ -5,12 +5,24 @@ import subprocess
 def build_windows():
     # 1. Экспорт Godot
     subprocess.run(
-        ["godot", "--headless", "--export-release", "Windows", "build/windows/game.exe"]
+        [
+            "C:/Games/Godot Engine/Godot_v4.7-stable_win64.exe",
+            "--headless",
+            "--path ./ProceduralTextureEditor",
+            "--export-release",
+            "Windows",  # "Windows Desktop"
+            "build/windows/program.exe",
+        ]
     )
 
-    # 2. Упаковка Python
     subprocess.run(
-        ["pyinstaller", "--onefile", "--name", "python_server", "python_server/main.py"]
+        [
+            "pyinstaller",
+            "--onefile",
+            "--name",
+            "python_server",
+            "ProceduralTextureEditor/GENERATOR/main.py",
+        ]
     )
 
     # 3. Копирование
@@ -25,5 +37,8 @@ def create_launcher(path: str):
         f.write("""@echo off
 start "" python_server.exe
 timeout /t 2
-start "" game.exe
+start "" program.exe
 """)
+
+
+build_windows()
