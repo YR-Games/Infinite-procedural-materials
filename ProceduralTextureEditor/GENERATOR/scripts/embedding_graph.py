@@ -6,7 +6,7 @@ scripts/embedding_graph.py
 import pickle
 from dataclasses import dataclass
 from functools import lru_cache
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 import faiss
 import numpy as np
@@ -16,7 +16,8 @@ from .logger import lib_logger
 from .models_manager import get_embedding
 
 # Глобальные параметры.
-cluster_threshold: float = 0.9
+cluster_threshold: float = 0.8
+all_added_materials: list[str] = []
 
 
 # Вспомогательные классы.
@@ -168,7 +169,9 @@ class MaterialGraph(AbstractGraph):
         cluster_id = self.next_cluster_id
         self.next_cluster_id += 1
         node = RenderNode(material, embedding)
-        cluster = ClusterNode(id=cluster_id, centroid=embedding, nodes=[node], size=1)
+        cluster = ClusterNode(
+            id=cluster_id, centroid=embedding, nodes=[node], size=1
+        )
         self.clusters[cluster_id] = cluster
 
         # Добавляем центроид в индекс
@@ -189,13 +192,13 @@ class EmbeddingGraph(AbstractGraph):
         """
         Дополняет/создаёт кластеры с использованием DBSCAN из графа рендеров материала.
         """
-        global cluster_threshold
+        global cluster_threshold, all_added_materials
 
         lib_logger.info("Объединение графов... ⚙️")
 
         # Собираем все эмбеддинги и соответствующие RenderNode из material_graph
         embeddings_list = []
-        nodes_list = []  # список RenderNode
+        nodes_list: list[RenderNode] = []  # список RenderNode
         for cluster in material_graph.clusters.values():
             # каждый кластер содержит один RenderNode
             if cluster.nodes:
@@ -249,6 +252,7 @@ class EmbeddingGraph(AbstractGraph):
         # Перестраиваем индекс
         self._rebuild_index()
         lib_logger.info(f"Создано {len(self.clusters)} кластеров 🗜️")
+        all_added_materials.append(nodes_list[0].material)
         self.save()
 
     # Функции сохранения:
@@ -256,11 +260,12 @@ class EmbeddingGraph(AbstractGraph):
         """
         Сохраняет граф в файл (без FAISS индекса, он будет перестроен).
         """
-        global cluster_threshold
-        data = {
+        global cluster_threshold, all_added_materials
+        data: dict[str, Any] = {
             "clusters": self.clusters,
             "next_cluster_id": self.next_cluster_id,
             "cluster_threshold": cluster_threshold,
+            "all_added_materials": all_added_materials,
         }
         with open(filepath, "wb") as f:
             pickle.dump(data, f)
@@ -268,7 +273,7 @@ class EmbeddingGraph(AbstractGraph):
 
     def load(self, filepath: str = "embedding_graph.pkl"):
         """Загружает граф из файла и перестраивает FAISS индекс. Должна вызываться при загрузке файла."""
-        global cluster_threshold
+        global cluster_threshold, all_added_materials
         try:
             with open(filepath, "rb") as f:
                 data = pickle.load(f)
@@ -276,6 +281,7 @@ class EmbeddingGraph(AbstractGraph):
             self.clusters = data["clusters"]
             self.next_cluster_id = data["next_cluster_id"]
             cluster_threshold = data.get("cluster_threshold", 0.75)
+            all_added_materials = data.get("all_added_materials", [])
 
             # Перестраиваем FAISS индекс
             self._rebuild_index()
@@ -290,6 +296,10 @@ class EmbeddingGraph(AbstractGraph):
             self.next_cluster_id = 0
             self.index = None
             self._cluster_ids = []
+
+
+def is_material_already_added(material: str)->bool:
+    return material not in all_added_materials
 
 
 # Основной граф.

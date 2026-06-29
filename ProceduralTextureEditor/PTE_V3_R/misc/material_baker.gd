@@ -59,6 +59,7 @@ func _build_viewport_tree() -> void:
 
 	_shader_material = ShaderMaterial.new()
 	_color_rect.material = _shader_material
+	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 
 
 # ---------------------------------------------------------------------------
@@ -117,10 +118,6 @@ func bake(material: String, anyway: bool = false)->Image:
 	_shader_material.shader = shader
 	_color_rect.material = _shader_material
 
-	_viewport.size = Vector2(518, 518)
-	_color_rect.size = Vector2(518, 518)
-
-	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	await RenderingServer.frame_post_draw
 
 	return _viewport.get_texture().get_image()
@@ -130,6 +127,8 @@ func bake(material: String, anyway: bool = false)->Image:
 func evalute()->bool:
 	if final_counter >= params_count:
 		return false
+	else:
+		print("iterating parameters progress: %d/%d" % [final_counter, params_count])
 
 	step += 1
 	

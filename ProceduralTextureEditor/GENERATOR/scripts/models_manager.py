@@ -7,7 +7,6 @@ scripts/models_manager.py
 
 import base64
 from functools import lru_cache
-from io import BytesIO
 
 import torch
 import torch.nn as nn
@@ -35,8 +34,14 @@ _embedding_model.eval()  # type: ignore # Переводим модель в р�
 
 @lru_cache(maxsize=1000)
 def base64_to_pil(data: str) -> Image.Image:
-    image_bytes = base64.b64decode(data)
-    return Image.open(BytesIO(image_bytes)).convert("RGB")
+    # Декодируем base64 обратно в байты
+    raw_bytes = base64.b64decode(data)
+
+    # Создаём PIL Image из сырых байтов
+
+    return Image.frombytes("RGB", (518, 518), raw_bytes)
+    # image_bytes = #base64.b64decode(data)
+    # return Image.open(BytesIO(image_bytes)).convert("RGB")
 
 
 @lru_cache(maxsize=1000)

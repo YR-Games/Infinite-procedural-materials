@@ -17,23 +17,17 @@ if log_dir.exists():
     shutil.rmtree(log_dir)
 log_dir.mkdir(parents=True, exist_ok=True)
 
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(message)s",
-    handlers=[logging.StreamHandler()],
-)
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
 file_handler = logging.FileHandler(
     f"{log_dir}/{datetime.now().strftime('%Y%m%d_%H%M%S')}.log", encoding="utf-8"
 )
+file_handler.setFormatter(formatter)
 file_handler.setLevel(logging.DEBUG)
 lib_logger.addHandler(file_handler)
 
 stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-)
+stream_handler.setFormatter(formatter)
 stream_handler.setLevel(logging.DEBUG)
 lib_logger.addHandler(stream_handler)
 lib_logger.propagate = False

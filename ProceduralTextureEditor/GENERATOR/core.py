@@ -9,6 +9,7 @@ from scripts.compare import compare
 from scripts.embedding_graph import (
     embedding_graph,
     material_graph,
+    is_material_already_added
 )
 
 
@@ -45,3 +46,7 @@ def save():
 
 def find_similar_clusters(str_image: str) -> List[Tuple[str, float]]:
     return embedding_graph.find_similar_clusters(str_image)
+
+
+def is_can_add_material(material: str)->bool:
+    return is_material_already_added(material)

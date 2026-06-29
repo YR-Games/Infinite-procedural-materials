@@ -8,7 +8,7 @@ import json
 import socket
 from typing import Any
 
-from core import add_nodes, add_render, find_similar_clusters
+from core import add_nodes, add_render, find_similar_clusters, is_can_add_material
 from scripts.logger import lib_logger
 
 
@@ -18,7 +18,7 @@ class CoreMock:
     Потом должно считаться в графе Материала!
     """
 
-    def __init__(self, threshold: int = 200):
+    def __init__(self, threshold: int = 40):
         self.non_unique_count = 0
         self.threshold = threshold
 
@@ -50,14 +50,15 @@ def recv_message(sock: socket.socket) -> dict[str, Any] | None:
     """
     try:
         data = b""
+        lib_logger.info("Waiting for data...")
         while b"\n" not in data:
-            lib_logger.info("Waiting for data...")
+            # lib_logger.info("Waiting for chunk data...")
             chunk = sock.recv(4096)
             if not chunk:
                 lib_logger.info("Connection closed by peer")
                 return None
             data += chunk
-            lib_logger.info(f"Received {len(chunk)} bytes")
+            # lib_logger.debug(f"Received {len(chunk)} bytes")
         line, _ = data.split(b"\n", 1)
         lib_logger.info(f"Full message: {line[:100]}")
         return json.loads(line.decode("utf-8"))
@@ -96,68 +97,71 @@ def handle_add_material(sock: socket.socket, data: dict[str, Any], msg_id: str) 
     }
     send_message(sock, ack)
 
-    # Фиксированное количество рендеров, не более:
-    max_renders = 300
-    for i in range(max_renders):
-        # Запрос рендера
-        req: dict[str, Any] = {
-            "type": "render_request",
-            "id": f"render_{i}",
-            "data": {
-                "material": material,
-                "finished": False,
-            },
-        }
-        send_message(sock, req)
-        lib_logger.info(f"Sent render_request {i}")
+    if is_can_add_material(material):
+        # Фиксированное количество рендеров, не более:
+        max_renders = 300
+        for i in range(max_renders):
+            # Запрос рендера
+            req: dict[str, Any] = {
+                "type": "render_request",
+                "id": f"render_{i}",
+                "data": {
+                    "material": material,
+                    "finished": False,
+                },
+            }
+            send_message(sock, req)
+            lib_logger.info(f"Sent render_request {i}")
 
-        # Ожидание ответа render_response
-        resp = recv_message(sock)
-        if resp is None:
-            lib_logger.error("Connection closed while waiting for render_response")
-            break
-        if resp.get("type") == "render_response":
-            data: dict[str, Any] = resp.get("data", {})
-            material: str = data.get("material", "")
-            image_data: str = data.get("image", "")
-            unique = core.add_render(image_data, material)
-            if not unique and core.non_unique_count > core.threshold:
-                stop_msg: dict[str, Any] = {
-                    "type": "add_material_stop",
-                    "data": {"reason": "too many non unique"},
-                }
-                send_message(sock, stop_msg)
-                lib_logger.warning(
-                    "Stopping material addition due to too many non-unique renders"
-                )
+            # Ожидание ответа render_response
+            resp = recv_message(sock)
+            if resp is None:
+                lib_logger.error("Connection closed while waiting for render_response")
                 break
-        elif resp.get("type") == "renders_is_ower":
-            lib_logger.info("Stopping material addition due to all renders sent")
-            break
+            if resp.get("type") == "render_response":
+                data: dict[str, Any] = resp.get("data", {})
+                material: str = data.get("material", "")
+                image_data: str = data.get("image", "")
+                unique = core.add_render(image_data, material)
+                if not unique and core.non_unique_count > core.threshold:
+                    stop_msg: dict[str, Any] = {
+                        "type": "add_material_stop",
+                        "data": {"reason": "too many non unique"},
+                    }
+                    send_message(sock, stop_msg)
+                    lib_logger.warning(
+                        "Stopping material addition due to too many non-unique renders"
+                    )
+                    break
+            elif resp.get("type") == "renders_is_ower":
+                lib_logger.info("Stopping material addition due to all renders sent")
+                break
+            else:
+                lib_logger.warning(f"Unexpected response type: {resp.get('type')}")
+                continue
+
+        # Все параметры перебраны – отправляем финальный запрос и производим слияние графов.
+        add_nodes()
+        finish_req: dict[str, Any] = {
+            "type": "render_request",
+            "id": "finish",
+            "data": {"finished": True, "material": material},
+        }
+        send_message(sock, finish_req)
+        lib_logger.info("Sent final render_request with finished=True")
+
+        # Ожидаем add_material_complete
+        complete_resp = recv_message(sock)
+        if complete_resp and complete_resp.get("type") == "add_material_complete":
+            lib_logger.info(
+                "Received add_material_complete, addition finished successfully."
+            )
         else:
-            lib_logger.warning(f"Unexpected response type: {resp.get('type')}")
-            continue
-
-    # Все параметры перебраны – отправляем финальный запрос и производим слияние графов.
-    add_nodes()
-    finish_req: dict[str, Any] = {
-        "type": "render_request",
-        "id": "finish",
-        "data": {"finished": True, "material": material},
-    }
-    send_message(sock, finish_req)
-    lib_logger.info("Sent final render_request with finished=True")
-
-    # Ожидаем add_material_complete
-    complete_resp = recv_message(sock)
-    if complete_resp and complete_resp.get("type") == "add_material_complete":
-        lib_logger.info(
-            "Received add_material_complete, addition finished successfully."
-        )
+            lib_logger.error(
+                "Expected add_material_complete but got something else or timeout"
+            )
     else:
-        lib_logger.error(
-            "Expected add_material_complete but got something else or timeout"
-        )
+        lib_logger.warning("Material already added, SKIPPED!")
 
 
 def handle_search_request(

@@ -298,9 +298,13 @@ func _generate_render(material: String, anyway: bool = false) -> Image:
 func _image_to_base64(image: Image) -> String:
 	if image.get_size() != Vector2i(518, 518):
 		image.resize(518, 518)
+	if image.get_format() != Image.FORMAT_RGB8:
+		image.convert(Image.FORMAT_RGB8)
 
-	var png_data = image.save_png_to_buffer()
-	return Marshalls.raw_to_base64(png_data)
+	#var png_data := image.save_png_to_buffer()
+	#return Marshalls.raw_to_base64(png_data)
+	var raw_data := image.get_data()
+	return Marshalls.raw_to_base64(raw_data)
 
 
 # ---------- Публичные методы ----------
