@@ -16,7 +16,7 @@ from .logger import lib_logger
 from .models_manager import get_embedding
 
 # Глобальные параметры.
-cluster_threshold: float = 0.8
+cluster_threshold: float = 0.75
 all_added_materials: list[str] = []
 
 
