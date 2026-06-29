@@ -93,7 +93,7 @@ var current_material_data: Dictionary
 var step: int = 0
 var final_counter: int = 0
 var params_count: int = 0
-const MAX_BRUT_FORCE_STEP_COUNT = 10
+const MAX_BRUT_FORCE_STEP_COUNT = 20
 
 func bake(material: String, anyway: bool = false)->Array:
 	if material != current_material:
@@ -101,11 +101,11 @@ func bake(material: String, anyway: bool = false)->Array:
 		current_material_data = EditorMaterial.parce_json_string_to_dict(material)
 		if not anyway:
 			step = 0
-			final_counter = 0
 			params_count = (
 				EditorMaterial.get_generators_params_count(current_material_data)
 				+ EditorMaterial.get_modifers_params_count(current_material_data)
-			)
+			) * 5
+			final_counter = -params_count
 
 	if not anyway and not evalute():
 		return [Image.new(), ""]
@@ -126,9 +126,10 @@ func bake(material: String, anyway: bool = false)->Array:
 ## Подставляет следующие параметры для обрабатываемого материала.
 func evalute()->bool:
 	if final_counter >= params_count:
+		
 		return false
 	else:
-		print("iterating parameters progress: %d/%d" % [final_counter, params_count])
+		print_rich("[color=white][b]iterating parameters progress: %d/%d" % [final_counter, params_count])
 
 	step += 1
 	
@@ -147,9 +148,10 @@ func evalute()->bool:
 
 			for param_name in gen_data.parameters:
 				var param_def: abstractParameterDef = gen_data.parameters[param_name]
-				if not param_def is PaletteParameterDef:
+				if not param_def is PaletteParameterDef and randf() > 0.5:
 					if step == 1 or gen_params[param_name] >= param_def.get_max():
 						gen_params[param_name] = param_def.get_min()
+						final_counter+=1
 					else:
 						# Вариант 1 i.default_value += i.step - резервный
 						# Вариант 2
@@ -168,9 +170,10 @@ func evalute()->bool:
 
 				for param_name in mod_data.parameters:
 					var param_def: abstractParameterDef = mod_data.parameters[param_name]
-					if not param_def is PaletteParameterDef:
+					if not param_def is PaletteParameterDef and randf() > 0.5:
 						if step == 1 or mod_params[param_name] >= param_def.get_max():
 							mod_params[param_name] = param_def.get_min()
+							final_counter+=1
 						else:
 							# Вариант 1 i.default_value += i.step - резервный
 							# Вариант 2

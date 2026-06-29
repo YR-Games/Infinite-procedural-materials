@@ -10,6 +10,9 @@ extends Node #GConnector
 var interface: Window
 var baker: ImageBaker
 
+var maaterial_add_queue: Array[Callable]
+var material_adding_finished: bool = true
+
 ## Запускает Python проект Генератора в фоне
 func start_generator() -> void:
 	var project_dir := ProjectSettings.globalize_path("res://")
@@ -120,6 +123,10 @@ func _process(delta: float) -> void:
 				else:
 					print_rich("[color=light green][GConnector] Message sent successfully")
 
+			# Проверка очереди задач на добавление материалов
+			if material_adding_finished and not maaterial_add_queue.is_empty():
+				maaterial_add_queue.pop_back().call()
+
 			# Приём данных
 			_receive_messages()
 
@@ -223,6 +230,11 @@ func _handle_message(msg: Dictionary) -> void:
 				}
 				send_message(complete_msg)
 				print_rich("[color=cyan][GConnector] Sent add_material_complete for material: ", material.substr(0, 100))
+				if not maaterial_add_queue.is_empty():
+					maaterial_add_queue.pop_back().call()
+				else:
+					material_adding_finished = true
+				
 			else:
 				var baked: Array = await baker.bake(material, false)
 				var image:Image = baked[0]
@@ -238,7 +250,7 @@ func _handle_message(msg: Dictionary) -> void:
 						}
 					}
 					send_message(response)
-					print_rich("[color=cyan][GConnector] Sent %d render_response for material: %s" % [baker.step, material.substr(0, 100)])
+					print_rich("[color=cyan][GConnector] Sent %d render_response for material" % baker.step)
 				else:
 					var response = {
 						"type": "renders_is_ower",
@@ -312,13 +324,19 @@ func _image_to_base64(image: Image) -> String:
 # ---------- Публичные методы ----------
 
 func add_material(material_data: String, callback: Callable = Callable()) -> void:
+	print_rich("[color=yellow][b][GConnector] Material add task is added to queue")
+	maaterial_add_queue.append(_add_material.bind(material_data, callback))
+
+func _add_material(material_data: String, callback: Callable = Callable()) -> void:
 	## Отправляет запрос на добавление материала.
+	print_rich("[color=yellow][b][GConnector] Start execute material add task")
 	var msg = {
 		"type": "add_material",
 		"id": str(randi()),
 		"data": {"material": material_data}
 	}
 	send_message(msg, callback)
+	material_adding_finished = false
 
 
 func search_by_image(image: Image, callback: Callable = Callable()) -> void:
