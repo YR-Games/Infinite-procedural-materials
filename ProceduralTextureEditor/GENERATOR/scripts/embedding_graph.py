@@ -84,13 +84,14 @@ class AbstractGraph:
         self.index.add(centroid_norm)
         self._cluster_ids.append(cluster_id)
 
-    def find_similar_clusters(self, image: str, k: int = 0) -> List[Tuple[str, float]]:
+    def find_similar_clusters(
+        self, image: str, limit: int = 10
+    ) -> List[Tuple[str, float]]:
         """
         Находит до k (по умолчанию 10, но не более 10) наиболее похожих материалов,
         рассматривая не более 4 кластеров с наиболее похожими центроидами.
         Возвращает список кортежей (material, similarity) отсортированных по убыванию similarity.
         """
-        limit = 10 if k <= 0 else min(k, 10)
         max_clusters = 4
 
         embedding = self._get_norm_embedding(image)
@@ -102,7 +103,7 @@ class AbstractGraph:
         num_to_search = min(max_clusters, self.index.ntotal)
         similarities, indices = self.index.search(query, num_to_search)
 
-        candidates = []
+        candidates: List[Tuple[str, float]] = []
         for i in range(num_to_search):
             idx = indices[0][i]
             if idx < len(self._cluster_ids):
@@ -169,9 +170,7 @@ class MaterialGraph(AbstractGraph):
         cluster_id = self.next_cluster_id
         self.next_cluster_id += 1
         node = RenderNode(material, embedding)
-        cluster = ClusterNode(
-            id=cluster_id, centroid=embedding, nodes=[node], size=1
-        )
+        cluster = ClusterNode(id=cluster_id, centroid=embedding, nodes=[node], size=1)
         self.clusters[cluster_id] = cluster
 
         # Добавляем центроид в индекс
@@ -298,7 +297,7 @@ class EmbeddingGraph(AbstractGraph):
             self._cluster_ids = []
 
 
-def is_material_already_added(material: str)->bool:
+def is_material_already_added(material: str) -> bool:
     return material not in all_added_materials
 
 
