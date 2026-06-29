@@ -2,10 +2,32 @@ class_name GeneratorLibrary extends RefCounted
 
 #Подгружать ресурсы через preload .tres
 #хранить через store var, load var. спросить нейронку про сейв лоад словаря
-static var Generators:Dictionary = {
-	"CellNoise":preload("res://PTE_V3_R/GeneratorDataFolder/CellNoiseData.tres")
-}
+static var Generators:Dictionary = _load_all_from_folder("res://PTE_V3_R/GeneratorDataFolder/")
 
+static func _load_all_from_folder(folder_path: String) -> Dictionary:
+	var result = {}
+	var dir = DirAccess.open(folder_path)
+	if not dir:
+		push_error("Could not open folder: ", folder_path)
+		return result
+
+	dir.list_dir_begin()
+	var file_name = dir.get_next()
+	while file_name != "":
+		if not dir.current_is_dir():
+			var ext = file_name.get_extension().to_lower()
+			if ext in ["tres", "res", "tscn", "scn"]:   # add other extensions if needed
+				var full_path = folder_path.path_join(file_name)
+				var resource = load(full_path)
+				if resource:
+					# Use the file name (without extension) as the dictionary key
+					var key = file_name.get_basename()
+					result[key] = resource
+				else:
+					push_warning("Failed to load: ", full_path)
+		file_name = dir.get_next()
+	dir.list_dir_end()
+	return result
 
 static func get_generator_data(name: StringName) -> GeneratorData:
 	return Generators.get(name)

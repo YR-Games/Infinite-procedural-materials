@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://wkqkxlo0uhbv"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_r8qca"]
+
+[resource]
+script = ExtResource("1_r8qca")
+function_name = "mod289_2d"
+code = "vec2 mod289_2d(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }"
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

@@ -8,3 +8,4 @@ pillow
 faiss-cpu
 websockets
 pyinstaller
+transformers

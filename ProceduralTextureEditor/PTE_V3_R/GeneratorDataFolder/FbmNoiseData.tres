@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="GeneratorData" format=3 uid="uid://bogcvuncit15h"]
+
+[ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_htevk"]
+[ext_resource type="Script" uid="uid://vq2u6j364n55" path="res://PTE_V3_R/resources/float_parameter_def.gd" id="2_1wdr2"]
+[ext_resource type="Script" uid="uid://yfnmvhksfrlg" path="res://PTE_V3_R/resources/int_parameter_def.gd" id="3_h4c2b"]
+[ext_resource type="Shader" uid="uid://bpmy2oj2b7300" path="res://PTE_V3_R/PreviewShaders/FbmNoisePreview.gdshader" id="4_htevk"]
+[ext_resource type="Script" uid="uid://b2t4rdfk1u1es" path="res://PTE_V3_R/resources/generator_data.gd" id="5_1suv1"]
+
+[sub_resource type="Resource" id="Resource_d8yqr"]
+script = ExtResource("2_1wdr2")
+min_value = 0.01
+editor_type = 1
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[sub_resource type="Resource" id="Resource_jahst"]
+script = ExtResource("3_h4c2b")
+min_value = 1
+max_value = 10
+metadata/_custom_type_script = "uid://yfnmvhksfrlg"
+
+[sub_resource type="Resource" id="Resource_howm4"]
+script = ExtResource("2_1wdr2")
+max_value = 20.0
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[resource]
+script = ExtResource("5_1suv1")
+function_name = "fbmNoise"
+preview_shader = ExtResource("4_htevk")
+required_functions = ["fbm"]
+function = "float fbmNoise(in vec2 uv, float chaos, int numOctaves, float scale,){
+	return fbm(uv*scale,chaos,numOctaves);
+}"
+parameters = Dictionary[String, ExtResource("1_htevk")]({
+"chaos": SubResource("Resource_d8yqr"),
+"numOctaves": SubResource("Resource_jahst"),
+"scale": SubResource("Resource_howm4")
+})
+metadata/_custom_type_script = "uid://b2t4rdfk1u1es"

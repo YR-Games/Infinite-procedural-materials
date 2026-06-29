@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://des1daonw7m2b"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_o0wft"]
+
+[resource]
+script = ExtResource("1_o0wft")
+function_name = "permute_3d"
+code = "vec3 permute_3d(const in vec3 v) { return mod289_3d(((v * 34.0) + 1.0) * v); }"
+required_functions = ["mod289_3d"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"
