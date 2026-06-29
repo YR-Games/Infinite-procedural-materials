@@ -15,6 +15,16 @@ static var editorMaterialData := {
 		&"normal": {
 			&"layers": {},
 			&"layer_order": []
+		},
+		
+		&"roughness": {
+			&"layers": {},
+			&"layer_order": []
+		},
+
+		&"metallic": {
+			&"layers": {},
+			&"layer_order": []
 		}
 	}
 }

@@ -42,23 +42,25 @@ func _on_value_changed() -> void:
 # ---------------------------------------------------------------------------
 # Main entry point — called by the preview renderer.
 # ---------------------------------------------------------------------------
-func generate_shader_code(material_data: Dictionary = EditorMaterial.editorMaterialData) -> String:
-	# Collect active resource names (cheap — no string building).
+func generate_shader_code(
+		material_data: Dictionary = EditorMaterial.editorMaterialData,
+		shader_type: String = "spatial"
+) -> String:
 	var used_generators: Array[String] = []
 	var used_modifiers: Array[String] = []
 	var used_blend_modes: Array[String] = []
 	_collect_used_resources(used_generators, used_modifiers, used_blend_modes, material_data)
 
 	var preamble_key := PreambleBuilder.make_preamble_key(
-			used_generators, used_modifiers, used_blend_modes)
+			used_generators, used_modifiers, used_blend_modes, shader_type)  # <-- +shader_type
 
 	return _cache.get_shader(
 		preamble_key,
 		func() -> String:
 			return PreambleBuilder.build(
-					used_generators, used_modifiers, used_blend_modes, _cache),
+					used_generators, used_modifiers, used_blend_modes, _cache, shader_type),  # <-- +shader_type
 		func() -> String:
-			return _build_fragment(material_data)
+			return _build_fragment(material_data, shader_type)  # <-- +shader_type
 	)
 
 
@@ -72,7 +74,7 @@ func _collect_used_resources(
 		out_blend_modes: Array[String],
 		material_data: Dictionary
 ) -> void:
-	for channel in ["albedo", "normal"]:
+	for channel in ["albedo", "normal", "roughness", "metallic"]:
 		for layer in EditorMaterial.get_layers_in_order(channel, material_data):
 			var gen_id: StringName = layer.get("generator_id", "")
 			if gen_id != "":
@@ -109,40 +111,64 @@ const _NORMAL_FROM_HEIGHT_GLSL := """vec3 normalFromHeight(vec2 uv, float offset
 \treturn 0.5 + normalize(cross(fa - fb * vec3(1., 0., 1.), fc - fd * vec3(0., 1., 1.))) * vec3(1., -1., 1.);
 }"""
 
-func _build_fragment(material_data: Dictionary) -> String:
+# _build_fragment — add shader_type parameter, branch on output variable names
+func _build_fragment(material_data: Dictionary, shader_type: String = "spatial") -> String:
+	var is_canvas := shader_type == "canvas_item"
 	var code := PackedStringArray()
 
-	# --- Normal channel: emit as a height() function above fragment ---
-	var normal_layers := EditorMaterial.get_layers_in_order("normal", material_data)
+	# --- Channels that generate a helper function above fragment() ---
+	# Normal, roughness, and metallic all become float-returning functions
+	# so the same height()/normalFromHeight() pattern applies to all three.
+	var normal_layers    := EditorMaterial.get_layers_in_order("normal",    material_data)
+	var roughness_layers := EditorMaterial.get_layers_in_order("roughness", material_data)
+	var metallic_layers  := EditorMaterial.get_layers_in_order("metallic",  material_data)
+
 	if not normal_layers.is_empty():
-		code.append("float height(vec2 uv) {")
-		code.append("\tvec4 base_normal = vec4(0.0);")
-		code.append("")
-		_append_channel_body(code, "normal", normal_layers, "base_normal", material_data)
-		code.append("\treturn base_normal.r;")
-		code.append("}")
-		code.append("")
+		_append_scalar_function(code, "height",    "normal",    normal_layers,    material_data)
 		code.append(_NORMAL_FROM_HEIGHT_GLSL)
 		code.append("")
+
+	if not roughness_layers.is_empty():
+		_append_scalar_function(code, "roughness", "roughness", roughness_layers, material_data)
+
+	if not metallic_layers.is_empty():
+		_append_scalar_function(code, "metallic",  "metallic",  metallic_layers,  material_data)
+
 
 	# --- Fragment entry point ---
 	code.append("void fragment() {")
 	code.append("\tvec2 uv = UV;")
 	code.append("")
 
-	# Albedo channel — inline as before
+	# Albedo / COLOR
 	var albedo_layers := EditorMaterial.get_layers_in_order("albedo", material_data)
 	if not albedo_layers.is_empty():
 		code.append("\tvec4 base_albedo = vec4(0.0);")
 		_append_channel_body(code, "albedo", albedo_layers, "base_albedo", material_data)
-		code.append("\tALBEDO = base_albedo.rgb;")
-		code.append("\tALPHA = base_albedo.a;")
+		if is_canvas:
+			code.append("\tCOLOR = base_albedo;")
+		else:
+			code.append("\tALBEDO = base_albedo.rgb;")
+			code.append("\tALPHA = base_albedo.a;")
 		code.append("")
 
-	# Normal channel — delegate entirely to the generated functions
+	# Normal — assign only in spatial
 	if not normal_layers.is_empty():
-		code.append("\tNORMAL_MAP = normalFromHeight(uv, 0.001, 0.1);")
-		code.append("")
+		if not is_canvas:
+			code.append("\tNORMAL_MAP = normalFromHeight(uv, 0.001, 0.1);")
+			code.append("")
+
+	# Roughness — assign only in spatial
+	if not roughness_layers.is_empty():
+		if not is_canvas:
+			code.append("\tROUGHNESS = roughness(uv);")
+			code.append("")
+
+	# Metallic — assign only in spatial
+	if not metallic_layers.is_empty():
+		if not is_canvas:
+			code.append("\tMETALLIC = metallic(uv);")
+			code.append("")
 
 	code.append("}")
 	return "\n".join(code)
@@ -150,6 +176,22 @@ func _build_fragment(material_data: Dictionary) -> String:
 # Appends the layer iteration lines into `code`.
 # `base_var` is the name of the vec4 accumulator already declared by the caller.
 # Indentation prefix is always one tab (works for both a function body and fragment body).
+
+func _append_scalar_function(
+		code: PackedStringArray,
+		func_name: String,
+		channel: String,
+		layers: Array[Dictionary],
+		material_data: Dictionary
+) -> void:
+	code.append("float %s(vec2 uv) {" % func_name)
+	code.append("\tvec4 base = vec4(0.0);")
+	code.append("")
+	_append_channel_body(code, channel, layers, "base", material_data)
+	code.append("\treturn base.r;")
+	code.append("}")
+	code.append("")
+
 func _append_channel_body(
 		code: PackedStringArray,
 		channel: String,

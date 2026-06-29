@@ -110,7 +110,7 @@ func bake(material: String, anyway: bool = false)->Image:
 		return Image.new()
 
 	var generator = MaterialCodeGenerator.new()
-	var code = generator.generate_shader_code(current_material_data)
+	var code = generator.generate_shader_code(current_material_data,"canvas_item")
 
 	var shader := Shader.new()
 	shader.code = code

@@ -9,7 +9,8 @@ var channels: Array[ChannelUIController] = []
 func _ready() -> void:
 	add_channel(&"albedo")
 	add_channel(&"normal")
-
+	add_channel(&"roughness")
+	add_channel(&"metallic")
 
 func add_channel(channel_name: StringName) -> void:
 

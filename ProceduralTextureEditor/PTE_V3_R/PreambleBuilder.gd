@@ -17,13 +17,20 @@ static func build(
 		used_generators: Array[String],
 		used_modifiers: Array[String],
 		used_blend_modes: Array[String],
-		cache: ShaderCache
+		cache: ShaderCache,
+		shader_type: String = "spatial" 
 ) -> String:
 	var code := PackedStringArray()
 
 	# ---- 1. Shader header ----
-	code.append("shader_type spatial;")
-	code.append("render_mode blend_mix, depth_draw_opaque;")
+	code.append("shader_type %s;" % shader_type)  # <-- was hardcoded "spatial"
+	match shader_type:
+		"spatial":
+			code.append("render_mode blend_mix, depth_draw_opaque;")
+		"canvas_item":
+			code.append("render_mode blend_mix;")
+		_:
+			code.append("render_mode blend_mix;")
 	code.append("")
 
 	# ---- 2. Helper functions (pre-sorted by ShaderCache.warm_up_library) ----
@@ -125,7 +132,8 @@ static func _collect_needed_function_names(
 static func make_preamble_key(
 		used_generators: Array[String],
 		used_modifiers: Array[String],
-		used_blend_modes: Array[String]
+		used_blend_modes: Array[String],
+		shader_type: String = "spatial"  # <-- new
 ) -> String:
 	var parts := PackedStringArray()
 	var gens := used_generators.duplicate()
@@ -134,6 +142,7 @@ static func make_preamble_key(
 	mods.sort()
 	var blends := used_blend_modes.duplicate()
 	blends.sort()
+	parts.append("T:" + shader_type)        # <-- new: type prefix first
 	parts.append("G:" + ",".join(gens))
 	parts.append("M:" + ",".join(mods))
 	parts.append("B:" + ",".join(blends))
