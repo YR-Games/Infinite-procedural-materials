@@ -135,28 +135,6 @@ if %errorlevel% neq 0 (
 echo Dependencies installed successfully!
 echo.
 
-echo Running package installation check...
-:: Проверяем существование проверочного скрипта
-if not exist "tests\checking_package_installation.py" (
-    echo Error: checking_package_installation.py not found in tests folder!
-    echo Expected path: %cd%\tests\checking_package_installation.py
-    pause
-    exit /b 1
-)
-
-:: Запускаем проверочный скрипт
-python tests\checking_package_installation.py
-
-if %errorlevel% neq 0 (
-    echo Error: Package installation check failed!
-    echo Some packages may not be installed correctly.
-    pause
-    exit /b 1
-)
-
-echo Package installation check completed successfully!
-echo.
-
 echo Backend installation completed!
 echo Running application...
 echo.

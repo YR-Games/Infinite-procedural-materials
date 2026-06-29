@@ -239,6 +239,7 @@ script = ExtResource("8_i4lt2")
 
 [node name="SubViewport" type="SubViewport" parent="Node" unique_id=1428011765]
 size = Vector2i(518, 518)
+render_target_update_mode = 4
 
 [node name="ColorRect" type="ColorRect" parent="Node/SubViewport" unique_id=577014155]
 anchors_preset = 15

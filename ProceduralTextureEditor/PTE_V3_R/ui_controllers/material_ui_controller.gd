@@ -3,12 +3,12 @@ class_name MaterialUIController extends PanelContainer
 var material_data: Dictionary
 var shader_code: String
 
-@onready var name_line: Label = $VBoxContainer/MaterialName
-@onready var preview_rect: TextureRect = $VBoxContainer/PreviewContainer/Preview
-@onready var similarity_label: Label = $VBoxContainer/HBoxContainer/Sim
-@onready var complexity_label: Label = $VBoxContainer/HBoxContainer/Complexity
-@onready var size_label: Label = $VBoxContainer/HBoxContainer/Size
-@onready var apply_button: Button = $VBoxContainer/HBoxContainer/Button
+@onready var name_line: Label = $HBoxContainer/VBoxContainer/MaterialName
+@onready var preview_rect: ColorRect = $HBoxContainer/VBoxContainer/PreviewContainer/Preview
+@onready var similarity_label: Label = $HBoxContainer/HBoxContainer/Sim
+@onready var complexity_label: Label = $HBoxContainer/HBoxContainer/Complexity
+@onready var size_label: Label = $HBoxContainer/HBoxContainer/Size
+@onready var apply_button: Button = $HBoxContainer/HBoxContainer/Button
 
 var normal_style = preload("res://PTE_V3_R/styles/normal_style_box.tres")
 var highlight_style = preload("res://PTE_V3_R/styles/selected_style_box.tres")
@@ -33,7 +33,7 @@ func _ready() -> void:
 func setup(_material_data: String, similarity: float, id: int) -> void:
 	material_data = EditorMaterial.parce_json_string_to_dict(_material_data)
 
-	var generator = MaterialCodeGenerator.new()
+	var generator := MaterialCodeGenerator.new()
 	shader_code = generator.generate_shader_code(material_data)
 
 	name_line.text = material_data.get(&"name", "Material %d"%id)
@@ -43,8 +43,16 @@ func setup(_material_data: String, similarity: float, id: int) -> void:
 	var sz = material_data.get(&"size", -1)
 	size_label.text = "Вес: %s Кб" % (get_material_size() if sz == -1 else str(sz))
 
-	var image := await GConnector._generate_render(_material_data, true)
-	preview_rect.texture = ImageTexture.create_from_image(image)
+	#var image := await GConnector._generate_render(_material_data, true)
+	#preview_rect.texture = ImageTexture.create_from_image(image)
+	var _shader_material := ShaderMaterial.new()
+	generator._cache.invalidate_fragment()
+	var code := generator.generate_shader_code(material_data,"canvas_item")
+
+	var shader := Shader.new()
+	shader.code = code
+	_shader_material.shader = shader
+	preview_rect.material = _shader_material
 
 
 func get_complexity()->String:

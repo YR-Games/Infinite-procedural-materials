@@ -95,7 +95,7 @@ var final_counter: int = 0
 var params_count: int = 0
 const MAX_BRUT_FORCE_STEP_COUNT = 10
 
-func bake(material: String, anyway: bool = false)->Image:
+func bake(material: String, anyway: bool = false)->Array:
 	if material != current_material:
 		current_material = material
 		current_material_data = EditorMaterial.parce_json_string_to_dict(material)
@@ -108,10 +108,10 @@ func bake(material: String, anyway: bool = false)->Image:
 			)
 
 	if not anyway and not evalute():
-		return Image.new()
+		return [Image.new(), ""]
 
-	var generator = MaterialCodeGenerator.new()
-	var code = generator.generate_shader_code(current_material_data,"canvas_item")
+	var generator := MaterialCodeGenerator.new()
+	var code := generator.generate_shader_code(current_material_data,"canvas_item")
 
 	var shader := Shader.new()
 	shader.code = code
@@ -120,7 +120,7 @@ func bake(material: String, anyway: bool = false)->Image:
 
 	await RenderingServer.frame_post_draw
 
-	return _viewport.get_texture().get_image()
+	return [_viewport.get_texture().get_image(), EditorMaterial.get_material_json_string(current_material_data)]
 
 
 ## Подставляет следующие параметры для обрабатываемого материала.

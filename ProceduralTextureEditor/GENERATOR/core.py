@@ -32,12 +32,12 @@ def add_nodes():
     embedding_graph.add_nodes(material_graph)
 
 
-def add_render(str_image: str, material: str) -> bool:
+def add_render(str_image: str, material: str, material_params: str) -> bool:
     """
     Принимает base64 изображение, преобразовывает его в PIL
     и передавает в граф Материала на дальнейшёю обработку.
     """
-    return material_graph.add_render(str_image, material)
+    return material_graph.add_render(str_image, material, material_params)
 
 
 def save():

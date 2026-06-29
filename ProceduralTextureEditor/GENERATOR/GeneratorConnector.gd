@@ -224,7 +224,8 @@ func _handle_message(msg: Dictionary) -> void:
 				send_message(complete_msg)
 				print_rich("[color=cyan][GConnector] Sent add_material_complete for material: ", material.substr(0, 100))
 			else:
-				var image := await _generate_render(material)
+				var baked: Array = await baker.bake(material, false)
+				var image:Image = baked[0]
 				if image and not image.is_empty():
 					var img_base64 := _image_to_base64(image)
 					var response = {
@@ -232,6 +233,7 @@ func _handle_message(msg: Dictionary) -> void:
 						"id": msg_id,
 						"data": {
 							"material": material,
+							"material_params": baked[1],
 							"image": img_base64,
 						}
 					}
@@ -290,7 +292,7 @@ func _handle_message(msg: Dictionary) -> void:
 func _generate_render(material: String, anyway: bool = false) -> Image:
 	#var img = Image.create(518, 518, false, Image.FORMAT_RGBA8)
 	#img.fill(Color(randf(), randf(), randf(), 1.0))
-	var img: Image = await baker.bake(material, anyway)
+	var img: Image = (await baker.bake(material, anyway))[0]
 	return img
 
 

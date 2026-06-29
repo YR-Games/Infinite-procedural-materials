@@ -17,6 +17,10 @@ if log_dir.exists():
     shutil.rmtree(log_dir)
 log_dir.mkdir(parents=True, exist_ok=True)
 
+logging.basicConfig(
+    level=logging.INFO
+)
+
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
 file_handler = logging.FileHandler(

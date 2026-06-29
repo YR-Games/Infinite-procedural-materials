@@ -18,18 +18,18 @@ class CoreMock:
     Потом должно считаться в графе Материала!
     """
 
-    def __init__(self, threshold: int = 40):
+    def __init__(self, threshold: int = 250):
         self.non_unique_count = 0
         self.threshold = threshold
 
-    def add_render(self, image_data: str, material: str) -> bool:
+    def add_render(self, image_data: str, material: str, material_params: str) -> bool:
         """
         Имитирует добавление рендера.
         Возвращает True, если рендер уникален, иначе False.
         Увеличивает счётчик неуникальных при False.
         """
 
-        unique = add_render(image_data, material)
+        unique = add_render(image_data, material, material_params)
         if not unique:
             self.non_unique_count += 1
             lib_logger.info(f"Non-unique render, count={self.non_unique_count}")
@@ -99,7 +99,7 @@ def handle_add_material(sock: socket.socket, data: dict[str, Any], msg_id: str) 
 
     if is_can_add_material(material):
         # Фиксированное количество рендеров, не более:
-        max_renders = 300
+        max_renders = 1000
         for i in range(max_renders):
             # Запрос рендера
             req: dict[str, Any] = {
@@ -121,8 +121,9 @@ def handle_add_material(sock: socket.socket, data: dict[str, Any], msg_id: str) 
             if resp.get("type") == "render_response":
                 data: dict[str, Any] = resp.get("data", {})
                 material: str = data.get("material", "")
+                material_params = data.get("material_params", "")
                 image_data: str = data.get("image", "")
-                unique = core.add_render(image_data, material)
+                unique = core.add_render(image_data, material, material_params)
                 if not unique and core.non_unique_count > core.threshold:
                     stop_msg: dict[str, Any] = {
                         "type": "add_material_stop",

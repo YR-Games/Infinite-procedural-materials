@@ -144,7 +144,7 @@ class MaterialGraph(AbstractGraph):
         self._cluster_ids = []
         self.material = ""
 
-    def add_render(self, image: str, material: str) -> bool:
+    def add_render(self, image: str, material: str, material_params: str) -> bool:
         """
         Добавляет рендер в граф Материала и возвращает True, если он добавлен в новый кластер,
         False - пропущен, так как слишком похож на уже добавленные.
@@ -169,7 +169,7 @@ class MaterialGraph(AbstractGraph):
         # Создаём новый кластер
         cluster_id = self.next_cluster_id
         self.next_cluster_id += 1
-        node = RenderNode(material, embedding)
+        node = RenderNode(material_params, embedding)
         cluster = ClusterNode(id=cluster_id, centroid=embedding, nodes=[node], size=1)
         self.clusters[cluster_id] = cluster
 

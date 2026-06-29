@@ -55,7 +55,7 @@ func generate_shader_code(
 			used_generators, used_modifiers, used_blend_modes, shader_type)  # <-- +shader_type
 
 	return _cache.get_shader(
-		preamble_key,
+		preamble_key+shader_type,
 		func() -> String:
 			return PreambleBuilder.build(
 					used_generators, used_modifiers, used_blend_modes, _cache, shader_type),  # <-- +shader_type

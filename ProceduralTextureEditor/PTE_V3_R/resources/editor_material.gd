@@ -43,8 +43,8 @@ static func save_project(path:String) -> bool:
 
 	return true
 
-static func get_material_json_string()->String:
-	var json_data = JSON.from_native(editorMaterialData)
+static func get_material_json_string(material_data: Dictionary = editorMaterialData)->String:
+	var json_data = JSON.from_native(material_data)
 	return JSON.stringify(json_data, "\t")
 
 static func clear_project() -> void:

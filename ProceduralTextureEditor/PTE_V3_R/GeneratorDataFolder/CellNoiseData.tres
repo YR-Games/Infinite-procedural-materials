@@ -20,7 +20,9 @@ metadata/_custom_type_script = "uid://yfnmvhksfrlg"
 
 [sub_resource type="Resource" id="Resource_howm4"]
 script = ExtResource("2_l3tis")
+min_value = 0.05
 max_value = 20.0
+editor_type = 1
 metadata/_custom_type_script = "uid://vq2u6j364n55"
 
 [resource]
