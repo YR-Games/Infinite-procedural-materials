@@ -14,13 +14,23 @@ static func _load_all_from_folder(folder_path: String) -> Dictionary:
 	while file_name != "":
 		if not dir.current_is_dir():
 			var ext = file_name.get_extension().to_lower()
-			if ext in ["tres", "res", "tscn", "scn"]:   # add other extensions if needed
+			if ext in ["tres", "res", "tscn", "scn"]:
 				var full_path = folder_path.path_join(file_name)
 				var resource = load(full_path)
 				if resource:
-					# Use the file name (without extension) as the dictionary key
-					var key = file_name.get_basename()
-					result[key] = resource
+					# Проверяем, что ресурс является ModifierData
+					if resource is ModifierData:
+						var key = resource.function_name
+						# Если function_name пуст, используем имя файла как запасной вариант
+						if key.is_empty():
+							push_warning("ModifierData resource has empty function_name: ", full_path)
+							key = file_name.get_basename()
+						# Предупреждение о дублирующихся ключах (последний загруженный перезапишет предыдущий)
+						if result.has(key):
+							push_warning("Duplicate function_name '%s' found in file %s, overwriting previous" % [key, full_path])
+						result[key] = resource
+					else:
+						push_warning("Resource is not ModifierData: ", full_path)
 				else:
 					push_warning("Failed to load: ", full_path)
 		file_name = dir.get_next()

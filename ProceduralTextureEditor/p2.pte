@@ -3,40 +3,20 @@
 		"sn:generators",
 		{
 			"args": [
-				"sn:gen_21556520_646437098",
+				"sn:gen_35758876_1462528155",
 				{
 					"args": [
 						"sn:generator_name",
-						"sn:CellNoise",
-						"sn:parameters",
-						{
-							"args": [
-								"s:chaos",
-								"f:0.02",
-								"s:numOctaves",
-								"i:6",
-								"s:scale",
-								"f:9.65"
-							],
-							"type": "Dictionary"
-						}
-					],
-					"type": "Dictionary"
-				},
-				"sn:gen_188416839_4135595537",
-				{
-					"args": [
-						"sn:generator_name",
-						"sn:CellNoise",
+						"sn:cellNoise",
 						"sn:parameters",
 						{
 							"args": [
 								"s:chaos",
 								"f:1.0",
 								"s:numOctaves",
-								"i:10",
+								"i:1",
 								"s:scale",
-								"f:15.71"
+								"f:30.72"
 							],
 							"type": "Dictionary"
 						}
@@ -55,113 +35,19 @@
 						"sn:layers",
 						{
 							"args": [
-								"sn:layer_14217382_839607383",
+								"sn:layer_37709743_51219134",
 								{
 									"args": [
 										"sn:id",
-										"sn:layer_14217382_839607383",
+										"sn:layer_37709743_51219134",
 										"sn:name",
 										"s:Layer",
 										"sn:generator_id",
-										"sn:gen_21556520_646437098",
+										"sn:gen_35758876_1462528155",
 										"sn:blend_mode",
 										"sn:normal",
 										"sn:opacity",
-										"f:0.84",
-										"sn:modifiers",
-										{
-											"args": [
-												"sn:mod_90502161_3639790254",
-												{
-													"args": [
-														"sn:id",
-														"sn:mod_90502161_3639790254",
-														"sn:modifier_name",
-														"sn:ColorRamp",
-														"sn:parameters",
-														{
-															"args": [
-																"sn:palette",
-																{
-																	"args": [
-																		{
-																			"args": [
-																				18.2662544250488,
-																				18.541389465332,
-																				18.5220432281494,
-																				1.0
-																			],
-																			"type": "Color"
-																		},
-																		{
-																			"args": [
-																				0.75390625,
-																				0.0677337646484375,
-																				0.0677337646484375,
-																				1.0
-																			],
-																			"type": "Color"
-																		},
-																		{
-																			"args": [
-																				0.33203125,
-																				0.0791168212890625,
-																				0.0791168212890625,
-																				1.0
-																			],
-																			"type": "Color"
-																		},
-																		{
-																			"args": [
-																				0.27294921875,
-																				0.281379699707031,
-																				0.8125,
-																				1.0
-																			],
-																			"type": "Color"
-																		},
-																		{
-																			"args": [
-																				0.0666666850447655,
-																				0.752941191196442,
-																				0.447334557771683,
-																				1.0
-																			],
-																			"type": "Color"
-																		}
-																	],
-																	"elem_type": "Color",
-																	"type": "Array"
-																}
-															],
-															"type": "Dictionary"
-														}
-													],
-													"type": "Dictionary"
-												}
-											],
-											"type": "Dictionary"
-										},
-										"sn:modifier_order",
-										[
-											"sn:mod_90502161_3639790254"
-										]
-									],
-									"type": "Dictionary"
-								},
-								"sn:layer_205299811_3653226318",
-								{
-									"args": [
-										"sn:id",
-										"sn:layer_205299811_3653226318",
-										"sn:name",
-										"s:Layer",
-										"sn:generator_id",
-										"sn:gen_188416839_4135595537",
-										"sn:blend_mode",
-										"sn:normal",
-										"sn:opacity",
-										"f:0.944",
+										"f:1.0",
 										"sn:modifiers",
 										{
 											"args": [],
@@ -177,8 +63,7 @@
 						},
 						"sn:layer_order",
 						[
-							"sn:layer_205299811_3653226318",
-							"sn:layer_14217382_839607383"
+							"sn:layer_37709743_51219134"
 						]
 					],
 					"type": "Dictionary"

@@ -6,6 +6,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j64ke"]
 
 [node name="GeneratorUI" type="PanelContainer" unique_id=607833355]
+custom_maximum_size = Vector2(-1, 512)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -29,6 +30,7 @@ layout_mode = 2
 [node name="Preview" type="ColorRect" parent="VBoxContainer/PreviewContainer" unique_id=178683292]
 material = SubResource("ShaderMaterial_j64ke")
 custom_minimum_size = Vector2(128, 128)
+custom_maximum_size = Vector2(128, 128)
 layout_mode = 2
 
 [node name="ParameterScroll" type="ScrollContainer" parent="VBoxContainer" unique_id=1087340497]

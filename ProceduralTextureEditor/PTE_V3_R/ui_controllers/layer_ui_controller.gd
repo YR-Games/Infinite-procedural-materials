@@ -80,7 +80,7 @@ func _assign_generator(generator_id: StringName) -> void:
 	layer_path.child(&"generator_id").set_value(generator_id)
 	_refresh_generator_preview()
 	_refresh_generator_list()           # обновляем выделение в общем списке
-	generator_selector.text = "Select Generator"   # возвращаем надпись
+	generator_selector.text = "Select base texture function"   # возвращаем надпись
 
 
 # ---------------------- Обновление интерфейса ----------------------

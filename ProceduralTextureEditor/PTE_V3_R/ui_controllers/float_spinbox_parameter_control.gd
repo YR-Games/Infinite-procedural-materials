@@ -19,7 +19,7 @@ func _setup_ui() -> void:
 	spinbox.max_value = param_def.max_value
 	spinbox.step = param_def.step
 	spinbox.value_changed.connect(_on_spinbox_changed)
-
+	
 
 func _update_from_data() -> void:
 	var val = get_data_value()

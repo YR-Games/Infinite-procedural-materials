@@ -18,7 +18,8 @@ func value_to_glsl(value: Variant, var_name = "") -> String:
 
 enum EditorType {
 	SLIDER,
-	SPINBOX
+	SPINBOX,
+	DOUBLE
 }
 
 @export var editor_type: EditorType

@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://wj5w5g4f7lhr"]
+
+[ext_resource type="Script" uid="uid://1ujeqgg5kt3w" path="res://PTE_V3_R/ui_controllers/int_double_parameter_control.gd" id="1_v7mmw"]
+
+[node name="IntParameterUI" type="PanelContainer" unique_id=1600176633]
+custom_minimum_size = Vector2(0, 32)
+offset_right = 260.0
+offset_bottom = 32.0
+size_flags_horizontal = 2
+size_flags_vertical = 0
+script = ExtResource("1_v7mmw")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1992660765]
+layout_mode = 2
+
+[node name="ParamNameLabel" type="Label" parent="VBoxContainer" unique_id=2119446761]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1509167587]
+layout_mode = 2
+
+[node name="minVal" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=1033845453]
+layout_mode = 2
+
+[node name="Slider" type="HSlider" parent="VBoxContainer/HBoxContainer" unique_id=1909805869]
+custom_minimum_size = Vector2(128, 16)
+custom_maximum_size = Vector2(128, 16)
+layout_mode = 2
+rounded = true
+
+[node name="maxVal" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=1676413310]
+layout_mode = 2
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/HBoxContainer" unique_id=1627722912]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+rounded = true
