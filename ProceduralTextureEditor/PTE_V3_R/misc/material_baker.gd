@@ -134,7 +134,7 @@ func evalute()->bool:
 	step += 1
 	
 	for channel in current_material_data.get(&"channels"):
-		for layer in EditorMaterial.get_layers(channel, current_material_data):
+		for layer: StringName in EditorMaterial.get_layers(channel, current_material_data):
 			var gen_id: StringName = EditorMaterial.get_layer(channel, layer, current_material_data).get("generator_id", "")
 			var gen_instance := EditorMaterial.get_generator(gen_id, current_material_data)
 			var gen_name: String = gen_instance.get("generator_name", "")
@@ -182,7 +182,10 @@ func evalute()->bool:
 								param_def.get_step(),
 							)
 
-			EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.2, 1.0)
+			if EditorMaterial.get_layer_order(channel)[0] != layer:
+				EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.2, 1.0)
+			else:
+				EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.8, 1.0)
 
 	return true
 

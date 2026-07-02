@@ -12,6 +12,7 @@ var baker: ImageBaker
 
 var maaterial_add_queue: Array[Callable]
 var material_adding_finished: bool = true
+var generator_pid: int
 
 ## Запускает Python проект Генератора в фоне
 func start_generator() -> void:
@@ -37,6 +38,7 @@ func start_generator() -> void:
 		print_rich("[color=red]Ошибка запуска Python скрипта")
 	else:
 		print_rich("[color=green]Генератор запущен с PID: ", pid)
+		generator_pid = pid
 
 #region TCP Functions
 
@@ -63,7 +65,7 @@ func _ready() -> void:
 	# Запускаем генератор
 	start_generator()
 	# Даём время на запуск Python
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(4.0).timeout
 	
 	connect_to_generator()
 	# Отправляем тестовое сообщение через 2 секунды (для проверки соединения)
@@ -79,6 +81,10 @@ func test_connection() -> void:
 
 func connect_to_generator() -> void:
 	## Устанавливает TCP-соединение с Генератором.
+	if not is_process_running_windows(generator_pid):
+		start_generator()
+		await get_tree().create_timer(5.0).timeout
+
 	if stream != null:
 		stream.disconnect_from_host()
 		stream = null
@@ -124,8 +130,14 @@ func _process(delta: float) -> void:
 					print_rich("[color=light green][GConnector] Message sent successfully")
 
 			# Проверка очереди задач на добавление материалов
-			if material_adding_finished and not maaterial_add_queue.is_empty():
-				maaterial_add_queue.pop_back().call()
+			if material_adding_finished:
+				if not maaterial_add_queue.is_empty():
+					maaterial_add_queue.pop_back().call()
+				elif interface.get_parent().get_parent().get_child(3).visible:
+					interface.get_parent().get_parent().get_child(3).hide()
+			elif not interface.get_parent().get_parent().get_child(3).visible:
+				interface.get_parent().get_parent().get_child(3).show()
+				interface.get_parent().get_parent().get_child(3).text = "Индексация материала⚙️\nНе закрывайте Редактор!"
 
 			# Приём данных
 			_receive_messages()
@@ -319,6 +331,18 @@ func _image_to_base64(image: Image) -> String:
 	#return Marshalls.raw_to_base64(png_data)
 	var raw_data := image.get_data()
 	return Marshalls.raw_to_base64(raw_data)
+
+
+func is_process_running_windows(pid: int) -> bool:
+	var output: Array = []
+	# Запуск команды tasklist с параметром /FI для фильтрации по PID
+	var exit_code = OS.execute("cmd.exe", ["/c", "tasklist /FI \"PID eq " + str(pid) + "\""], output)
+	
+	if exit_code == 0 and output.size() > 0:
+		# Если процесс найден, в выводе будет его имя, а не фраза "No tasks are running"
+		if not "No tasks are running" in output[0]:
+			return true
+	return false
 
 
 # ---------- Публичные методы ----------

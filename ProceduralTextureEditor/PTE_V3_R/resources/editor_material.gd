@@ -209,8 +209,8 @@ static func remove_layer(channel:StringName, layer_id:StringName) -> void:
 	SignalBus.layer_structure_changed.emit()
 
 
-static func get_layer_order(channel:StringName) -> Array:
-	return get_channel_layer_order(channel)
+static func get_layer_order(channel:StringName, material_data: Dictionary = editorMaterialData) -> Array:
+	return get_channel_layer_order(channel, material_data)
 
 
 static func get_layers_in_order(channel:StringName, material_data: Dictionary = editorMaterialData) -> Array[Dictionary]:

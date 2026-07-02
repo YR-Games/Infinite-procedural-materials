@@ -104,7 +104,6 @@ oversampling_override = 1.0
 title = "Генератор процедурных материалов"
 initial_position = 2
 size = Vector2i(800, 600)
-visible = false
 exclusive = true
 always_on_top = true
 transparent = true
@@ -113,7 +112,7 @@ accessibility_name = "Генератор ПМ"
 accessibility_description = "Позволяет загрузить изображение и получить по нему список процедурных материалов, позволяющих его сгенерировать."
 script = ExtResource("2_2vb1g")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" unique_id=533739609]
+[node name="VBoxContainer" type="HBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" unique_id=1876146408]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -127,7 +126,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Выберите изображение:"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer" unique_id=266995984]
+[node name="HBoxContainer" type="VBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer" unique_id=933554494]
 layout_mode = 2
 
 [node name="LineEdit" type="LineEdit" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=1301430970]
@@ -149,21 +148,22 @@ access = 2
 filters = PackedStringArray("*.png,*.jpg,*.jpeg;Файлы изображений;image/png,image/jpeg")
 
 [node name="TextureRect" type="TextureRect" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=2123365252]
-custom_minimum_size = Vector2(0, 75)
+custom_minimum_size = Vector2(0, 308)
 layout_mode = 2
 size_flags_horizontal = 10
 expand_mode = 3
 
-[node name="HSeparator" type="HSeparator" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer" unique_id=1662565397]
+[node name="HSeparator" type="VSeparator" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer" unique_id=1912948630]
 custom_minimum_size = Vector2(0, 12.63)
-layout_mode = 2
-
-[node name="ProgressBar" type="ProgressBar" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer" unique_id=713689220]
 layout_mode = 2
 
 [node name="FindedMaterials" type="VBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer" unique_id=1152643774]
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/FindedMaterials" unique_id=713689220]
+layout_mode = 2
 
 [node name="Label" type="Label" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window/VBoxContainer/FindedMaterials" unique_id=1186266024]
 layout_mode = 2

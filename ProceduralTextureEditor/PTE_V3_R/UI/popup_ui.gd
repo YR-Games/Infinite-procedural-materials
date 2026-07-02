@@ -4,7 +4,7 @@ extends Window
 @onready var fd_open_button: Button = $VBoxContainer/VBoxContainer/HBoxContainer/Button
 @onready var file_dialog: FileDialog = $VBoxContainer/VBoxContainer/HBoxContainer/Button/FileDialog
 @onready var reference_miniature: TextureRect = $VBoxContainer/VBoxContainer/HBoxContainer/TextureRect
-@onready var progress_bar: ProgressBar = $VBoxContainer/ProgressBar
+@onready var progress_bar: ProgressBar = $VBoxContainer/FindedMaterials/ProgressBar
 @onready var finded_materials_block: VBoxContainer = $VBoxContainer/FindedMaterials
 @onready var materials_container: ScrollContainer = $VBoxContainer/FindedMaterials/ScrollContainer
 
