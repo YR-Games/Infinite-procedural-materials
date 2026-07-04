@@ -16,7 +16,7 @@ layout_mode = 2
 
 [node name="AddGeneratorButton" type="Button" parent="VBoxContainer" unique_id=62866823]
 layout_mode = 2
-text = "Add base texture function"
+text = "Добавить базовую текстуру"
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=1214156766]
 layout_mode = 2

@@ -1,0 +1,16 @@
+[gd_resource type="StyleBoxTexture" format=3 uid="uid://nm7fkt00ex22"]
+
+[ext_resource type="Texture2D" uid="uid://daq8drxuu3j0k" path="res://addons/clearlooks/textures/tab_unselected.png" id="1_kk4jy"]
+
+[resource]
+content_margin_left = 8.0
+content_margin_right = 8.0
+texture = ExtResource("1_kk4jy")
+texture_margin_left = 5.0
+texture_margin_top = 5.0
+texture_margin_right = 5.0
+texture_margin_bottom = 5.0
+expand_margin_left = 5.0
+expand_margin_top = 3.0
+expand_margin_right = 5.0
+expand_margin_bottom = 5.0

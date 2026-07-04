@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://q21mccbjng2h"]
 
+[ext_resource type="Theme" uid="uid://cl4kqmkbwreol" path="res://addons/clearlooks/clearlooks.tres" id="1_1523j"]
 [ext_resource type="PackedScene" uid="uid://duib2k2dsrbut" path="res://PTE_V3_R/UI/generators_list_ui.tscn" id="1_ovceq"]
 [ext_resource type="Script" uid="uid://c2i6ayaflr0s5" path="res://PTE_V3_R/UI/popup_ui.gd" id="2_2vb1g"]
 [ext_resource type="Script" uid="uid://xr3t3bde3734" path="res://PTE_V3_R/ui_controllers/GPM_controller.gd" id="2_i4lt2"]
@@ -9,6 +10,10 @@
 [ext_resource type="Script" uid="uid://jno1lkl6j3g" path="res://PTE_V3_R/ui_controllers/materials_list_ui_controller.gd" id="4_i4lt2"]
 [ext_resource type="Texture2D" uid="uid://glmiy2435yw7" path="res://SkyPanoramas/sky_sunny003_hdr.exr" id="4_nnwub"]
 [ext_resource type="Script" uid="uid://4lmxuyirt8k4" path="res://PTE_V3_R/misc/material_baker.gd" id="8_i4lt2"]
+
+[sub_resource type="Theme" id="Theme_xla1c"]
+Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+Button/styles/disabled = null
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_nnwub"]
 viewport_path = NodePath("MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport")
@@ -32,6 +37,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_1523j")
 
 [node name="MenuAndUI" type="VBoxContainer" parent="." unique_id=346902648]
 layout_mode = 1
@@ -44,6 +50,7 @@ grow_vertical = 2
 [node name="MenuTopBar" type="PanelContainer" parent="MenuAndUI" unique_id=828567378]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
+theme = SubResource("Theme_xla1c")
 
 [node name="MarginContainer" type="MarginContainer" parent="MenuAndUI/MenuTopBar" unique_id=1639082211]
 layout_mode = 2
@@ -54,7 +61,7 @@ layout_mode = 2
 [node name="MenuBar" type="MenuBar" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer" unique_id=380344858]
 layout_mode = 2
 
-[node name="File" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1057990025]
+[node name="Файл" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1057990025]
 item_count = 4
 item_0/text = "New Project"
 item_0/id = 0
@@ -65,14 +72,6 @@ item_2/id = 2
 item_3/text = "Export Shader code"
 item_3/id = 3
 script = ExtResource("2_o84eg")
-
-[node name="Edit" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1840165740]
-
-[node name="View" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=947069360]
-
-[node name="Tools" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1488132632]
-
-[node name="Help" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1996058615]
 
 [node name="ExportDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1185718605]
 oversampling_override = 1.0
@@ -94,7 +93,7 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 size_flags_horizontal = 6
-text = "Найти материал по изображжению 🔎"
+text = "Найти материал по изображению 🔎"
 script = ExtResource("2_i4lt2")
 
 [node name="Window" type="Window" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎" unique_id=1960990049]
@@ -103,6 +102,7 @@ oversampling_override = 1.0
 title = "Генератор процедурных материалов"
 initial_position = 2
 size = Vector2i(854, 600)
+visible = false
 exclusive = true
 always_on_top = true
 popup_window = true

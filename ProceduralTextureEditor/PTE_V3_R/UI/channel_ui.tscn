@@ -15,11 +15,11 @@ layout_mode = 2
 
 [node name="ChannelNameLabel" type="Label" parent="VBoxContainer" unique_id=2089514985]
 layout_mode = 2
-text = "Channel1"
+text = "Канал1"
 
 [node name="AddLayerButton" type="Button" parent="VBoxContainer" unique_id=239908780]
 layout_mode = 2
-text = "Add Layer"
+text = "Добавить слой"
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=772002904]
 layout_mode = 2

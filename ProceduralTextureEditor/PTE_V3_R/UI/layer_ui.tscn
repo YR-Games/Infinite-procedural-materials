@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bb4sx0er2lpgc"]
 
 [ext_resource type="Script" uid="uid://b8t2dn38yblxy" path="res://PTE_V3_R/ui_controllers/layer_ui_controller.gd" id="1_yuedb"]
-[ext_resource type="PackedScene" uid="uid://bupo62sa4a0ci" path="res://PTE_V3_R/UI/base_modifier_ui.tscn" id="2_yrhy8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yrhy8"]
 
@@ -21,14 +20,14 @@ layout_mode = 2
 [node name="LayerName" type="LineEdit" parent="VBoxContainer/Header" unique_id=416433443]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "TextureFunctionName"
+placeholder_text = "Название слоя"
 
 [node name="ActiveCheckBox" type="CheckBox" parent="VBoxContainer/Header" unique_id=2057966151]
 layout_mode = 2
 
 [node name="LabelOpacity" type="Label" parent="VBoxContainer" unique_id=1752534251]
 layout_mode = 2
-text = "Opacity:"
+text = "Непрозрачность"
 
 [node name="OpacitySlider" type="HSlider" parent="VBoxContainer" unique_id=2131348578]
 layout_mode = 2
@@ -37,18 +36,18 @@ step = 0.004
 
 [node name="LabelBlend" type="Label" parent="VBoxContainer" unique_id=1805152174]
 layout_mode = 2
-text = "Blend mode:"
+text = "Режим смешивания"
 
 [node name="BlendModeOption" type="OptionButton" parent="VBoxContainer" unique_id=1813996492]
 layout_mode = 2
 
 [node name="LabelGenerator" type="Label" parent="VBoxContainer" unique_id=1423958807]
 layout_mode = 2
-text = "Base texture function:"
+text = "Базовая текстурная функция"
 
 [node name="LabelGeneratorName" type="Label" parent="VBoxContainer" unique_id=1253873455]
 layout_mode = 2
-text = "BaseTextureFunctionName"
+text = "Имя базовой текстуры"
 
 [node name="Preview" type="ColorRect" parent="VBoxContainer" unique_id=1423664426]
 material = SubResource("ShaderMaterial_yrhy8")
@@ -58,11 +57,11 @@ layout_mode = 2
 
 [node name="SelectGeneratorButton" type="Button" parent="VBoxContainer" unique_id=1918657386]
 layout_mode = 2
-text = "Select base texture function"
+text = "Выбрать базовую текстуру"
 
 [node name="AddModifierButton" type="Button" parent="VBoxContainer" unique_id=1777987136]
 layout_mode = 2
-text = "Add Modifier"
+text = "Добавить модификатор"
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=847284585]
 layout_mode = 2
@@ -70,6 +69,3 @@ layout_mode = 2
 [node name="ModifiersContainer" type="VBoxContainer" parent="VBoxContainer" unique_id=780889004]
 layout_mode = 2
 size_flags_vertical = 2
-
-[node name="BaseModifierUI" parent="VBoxContainer/ModifiersContainer" unique_id=1365521779 instance=ExtResource("2_yrhy8")]
-layout_mode = 2
