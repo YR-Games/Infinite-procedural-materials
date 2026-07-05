@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GeneratorData" format=3 uid="uid://cm5m6xytchh0g"]
+[gd_resource type="Resource" script_class="GeneratorData" format=3 uid="uid://hyu3jl8arcsd"]
 
 [ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_qog2d"]
 [ext_resource type="Shader" uid="uid://beeqj4wsgs5ar" path="res://PTE_V3_R/PreviewShaders/CellNoisePreview.gdshader" id="2_4adij"]
@@ -21,7 +21,9 @@ metadata/_custom_type_script = "uid://yfnmvhksfrlg"
 
 [sub_resource type="Resource" id="Resource_howm4"]
 script = ExtResource("2_l3tis")
-max_value = 40.0
+default_value = 10.0
+min_value = 0.01
+max_value = 100.0
 editor_type = 2
 metadata/_custom_type_script = "uid://vq2u6j364n55"
 

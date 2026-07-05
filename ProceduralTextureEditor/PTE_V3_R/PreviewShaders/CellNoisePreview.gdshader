@@ -1,6 +1,6 @@
 shader_type canvas_item;
 
-uniform float scale = 1. ;
+uniform float scale = 10. ;
 uniform float chaos = 1.;
 uniform int numOctaves = 1;
 

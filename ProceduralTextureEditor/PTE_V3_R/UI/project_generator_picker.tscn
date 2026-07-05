@@ -29,4 +29,4 @@ columns = 3
 
 [node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=563339661]
 layout_mode = 2
-text = "Cancel"
+text = "Отмена"

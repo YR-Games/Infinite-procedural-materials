@@ -43,7 +43,7 @@ layout_mode = 2
 
 [node name="LabelGenerator" type="Label" parent="VBoxContainer" unique_id=1423958807]
 layout_mode = 2
-text = "Базовая текстурная функция"
+text = "Базовая текстура"
 
 [node name="LabelGeneratorName" type="Label" parent="VBoxContainer" unique_id=1253873455]
 layout_mode = 2

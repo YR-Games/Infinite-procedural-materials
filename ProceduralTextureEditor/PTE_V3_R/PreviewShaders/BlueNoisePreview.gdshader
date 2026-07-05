@@ -1,6 +1,6 @@
 shader_type canvas_item;
 
-uniform float scale = 1. ;
+uniform float scale = 10. ;
 
 	float random(in vec2 st) {
 			vec3 p3  = fract(vec3(st.xyx) * .1031);

@@ -1,17 +1,11 @@
-shader_type canvas_item;
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://yuvvqq65naj3"]
 
-uniform float scale = 10. ;
-uniform float seed = 1. ;
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_s5b8e"]
 
-vec2 hash22(vec2 p)
-{
-	vec3 p3 = fract(vec3(p.xyx) * vec3(.1031, .1030, .0973));
-    p3 += dot(p3, p3.yzx+33.33);
-    return fract((p3.xx+p3.yz)*p3.zy);
-
-}
-
-float vcm(vec2 uv, float time) {
+[resource]
+script = ExtResource("1_s5b8e")
+function_name = "vcm"
+code = "float vcm(vec2 uv, float time) {
     vec2 i_uv = floor(uv);
     vec2 f_uv = fract(uv);
     
@@ -37,15 +31,6 @@ float vcm(vec2 uv, float time) {
     }
     float clearance = d1 + d2;
     return clearance*d1;
-}
-
-
-
-float CellNoiseAlt(in vec2 uv){
-	return vcm(uv*scale,seed);
-}
-
-
-void fragment() {
-	COLOR.xyz=vec3(CellNoiseAlt(UV));
-}
+}"
+required_functions = ["hash22"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

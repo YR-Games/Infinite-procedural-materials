@@ -67,7 +67,7 @@ func _on_select_generator_button_pressed() -> void:
 		generator_list.generator_selected.connect(_static_on_generator_selected)
 		_generator_selection_handler_connected = true
 	# Визуальная обратная связь (опционально)
-	generator_selector.text = "Selecting..."
+	generator_selector.text = "Выберите текстуру..."
 
 
 static func _static_on_generator_selected(generator_id: StringName) -> void:
@@ -80,7 +80,7 @@ func _assign_generator(generator_id: StringName) -> void:
 	layer_path.child(&"generator_id").set_value(generator_id)
 	_refresh_generator_preview()
 	_refresh_generator_list()           # обновляем выделение в общем списке
-	generator_selector.text = "Select base texture function"   # возвращаем надпись
+	generator_selector.text = "Выбрать базовую текстуру"   # возвращаем надпись
 
 
 # ---------------------- Обновление интерфейса ----------------------
@@ -105,7 +105,7 @@ func _refresh_generator_preview() -> void:
 
 	var gen_id: StringName = layer_path.child(&"generator_id").get_value()
 	if gen_id.is_empty():
-		generator_name_label.text = "No Generator"
+		generator_name_label.text = "Базовая текстура не выбрана"
 		_preview_material.shader = null
 		return
 

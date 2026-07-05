@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="GeneratorData" format=3 uid="uid://cm5m6xytchh0g"]
+
+[ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_mav41"]
+[ext_resource type="Script" uid="uid://vq2u6j364n55" path="res://PTE_V3_R/resources/float_parameter_def.gd" id="2_s25i1"]
+[ext_resource type="Shader" uid="uid://buqo3bd6ojge1" path="res://PTE_V3_R/PreviewShaders/CellNoiseAltPreview.gdshader" id="3_mav41"]
+[ext_resource type="Script" uid="uid://b2t4rdfk1u1es" path="res://PTE_V3_R/resources/generator_data.gd" id="4_k6o7d"]
+
+[sub_resource type="Resource" id="Resource_howm4"]
+script = ExtResource("2_s25i1")
+default_value = 10.0
+min_value = 0.01
+max_value = 100.0
+editor_type = 2
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[sub_resource type="Resource" id="Resource_htevk"]
+script = ExtResource("2_s25i1")
+min_value = -1000.0
+max_value = 1000.0
+editor_type = 2
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[resource]
+script = ExtResource("4_k6o7d")
+function_name = "cellNoiseAlt"
+preview_shader = ExtResource("3_mav41")
+required_functions = ["vcm"]
+function = "float cellNoiseAlt(in vec2 uv, in float scale, in float seed){
+	return vcm(uv*scale,seed);
+}"
+parameters = Dictionary[String, ExtResource("1_mav41")]({
+"scale": SubResource("Resource_howm4"),
+"seed": SubResource("Resource_htevk")
+})
+metadata/_custom_type_script = "uid://b2t4rdfk1u1es"
