@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://b0882qbyu5tny"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_l4f6c"]
+
+[resource]
+script = ExtResource("1_l4f6c")
+function_name = "bn"
+code = "float bn(vec2 st) {
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+    vec2 u = f*f*f*(f*(f*6.-15.)+10.);
+    return mix( mix( random( i + vec2(0.0,0.0) ),
+                     random( i + vec2(1.0,0.0) ), u.x),
+                mix( random( i + vec2(0.0,1.0) ),
+                     random( i + vec2(1.0,1.0) ), u.x), u.y);
+}"
+required_functions = ["random"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

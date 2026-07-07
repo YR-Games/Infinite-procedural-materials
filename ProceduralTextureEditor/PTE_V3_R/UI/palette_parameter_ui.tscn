@@ -34,8 +34,8 @@ layout_mode = 2
 
 [node name="AddButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=278361938]
 layout_mode = 2
-text = "Add"
+text = "Добавить цвет"
 
 [node name="RemoveButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1166965343]
 layout_mode = 2
-text = "Remove"
+text = "Удалить цвет"

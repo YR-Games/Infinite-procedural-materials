@@ -2,22 +2,28 @@
 
 [ext_resource type="Script" uid="uid://cg3qn1tlrktqo" path="res://PTE_V3_R/ui_controllers/generator_picker_item.gd" id="1_jcl3g"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jcl3g"]
+bg_color = Color(0.5568628, 0.69803923, 0.8666667, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.05, 0.05, 0.05, 1)
+border_blend = true
+
 [node name="GeneratorPickerItem" type="PanelContainer" unique_id=1964546735]
-custom_minimum_size = Vector2(100, 120)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+offset_right = 128.0
+offset_bottom = 155.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_jcl3g")
 script = ExtResource("1_jcl3g")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1931552483]
+custom_maximum_size = Vector2(128, -1)
 layout_mode = 2
 
 [node name="ColorRect" type="ColorRect" parent="VBoxContainer" unique_id=1951264517]
-custom_minimum_size = Vector2(80, 80)
+custom_minimum_size = Vector2(128, 128)
+custom_maximum_size = Vector2(128, 128)
 layout_mode = 2
 
 [node name="NameLabel" type="Label" parent="VBoxContainer" unique_id=526982309]

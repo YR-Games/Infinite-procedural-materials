@@ -13,9 +13,18 @@ offset_left = 4.0
 offset_top = 4.0
 offset_right = 446.0
 offset_bottom = 396.0
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=256347835]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1308900688]
+layout_mode = 2
+text = "Библиотека базовых текстур"
+horizontal_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=1525467180]
 layout_mode = 2
@@ -29,4 +38,5 @@ columns = 3
 
 [node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=563339661]
 layout_mode = 2
-text = "Cancel"
+text = "Отмена
+"
