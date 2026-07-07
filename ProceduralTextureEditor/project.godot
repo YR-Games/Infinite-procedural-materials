@@ -37,6 +37,10 @@ window/energy_saving/keep_screen_on=false
 window/subwindows/embed_subwindows=false
 window/vsync/vsync_mode=0
 
+[gui]
+
+theme/custom="uid://diualrkk3oo8h"
+
 [input]
 
 save_material={
@@ -56,3 +60,4 @@ renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 anti_aliasing/quality/msaa_3d=3
 anti_aliasing/quality/use_debanding=true
+environment/defaults/default_clear_color=Color(0.9588502, 0.98435384, 0.9935946, 1)

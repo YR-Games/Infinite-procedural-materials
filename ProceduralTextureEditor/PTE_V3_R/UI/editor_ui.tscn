@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://c2i6ayaflr0s5" path="res://PTE_V3_R/UI/popup_ui.gd" id="2_2vb1g"]
 [ext_resource type="Script" uid="uid://xr3t3bde3734" path="res://PTE_V3_R/ui_controllers/GPM_controller.gd" id="2_i4lt2"]
 [ext_resource type="Script" uid="uid://bok06nq8k3fxe" path="res://PTE_V3_R/ui_controllers/file_ui_controller.gd" id="2_o84eg"]
+[ext_resource type="Theme" uid="uid://diualrkk3oo8h" path="res://editor themes/theme.res" id="3_a4pn1"]
 [ext_resource type="Script" uid="uid://da7m60llit8vk" path="res://PTE_V3_R/ui_controllers/channels_list_ui_controller.gd" id="3_nnwub"]
 [ext_resource type="Script" uid="uid://de6iegc2av1s2" path="res://PTE_V3_R/ui_controllers/preview_controller.gd" id="4_hi3c7"]
 [ext_resource type="Script" uid="uid://jno1lkl6j3g" path="res://PTE_V3_R/ui_controllers/materials_list_ui_controller.gd" id="4_i4lt2"]
@@ -62,6 +63,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Файл" type="PopupMenu" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1057990025]
+theme = ExtResource("3_a4pn1")
 item_count = 4
 item_0/text = "New Project"
 item_0/id = 0
@@ -75,15 +77,18 @@ script = ExtResource("2_o84eg")
 
 [node name="ExportDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1185718605]
 oversampling_override = 1.0
+theme = ExtResource("3_a4pn1")
 access = 2
 
 [node name="OpenProjectDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=1975484962]
 title = "Open a File"
+theme = ExtResource("3_a4pn1")
 file_mode = 0
 access = 2
 
 [node name="SaveProjectDialog" type="FileDialog" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/MenuBar" unique_id=2010895981]
 oversampling_override = 1.0
+theme = ExtResource("3_a4pn1")
 access = 2
 
 [node name="VSeparator" type="VSeparator" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer" unique_id=1280981140]
@@ -93,6 +98,7 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 size_flags_horizontal = 6
+theme = ExtResource("3_a4pn1")
 text = "Найти материал по изображению 🔎"
 script = ExtResource("2_i4lt2")
 
@@ -109,6 +115,7 @@ popup_window = true
 min_size = Vector2i(854, 550)
 accessibility_name = "Генератор ПМ"
 accessibility_description = "Позволяет загрузить изображение и получить по нему список процедурных материалов, позволяющих его сгенерировать."
+theme = ExtResource("3_a4pn1")
 script = ExtResource("2_2vb1g")
 
 [node name="VBoxContainer" type="HBoxContainer" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window" unique_id=1876146408]
