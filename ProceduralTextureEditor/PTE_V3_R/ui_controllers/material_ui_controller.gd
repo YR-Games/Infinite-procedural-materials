@@ -57,10 +57,10 @@ func setup(_material_data: String, similarity: float, id: int) -> void:
 
 func get_complexity()->String:
 	return str(
-		material_data.get(&"channels", {}).size()*3
+		material_data.get(&"channels", {}).size()*2
 		+ EditorMaterial.get_modifers_count(material_data)*2
 		+ EditorMaterial.get_generators_params_count(material_data)
-		+ material_data.get(&"generators", {}).size()
+		+ material_data.get(&"generators", {}).size()*3
 	)
 
 ## Один символ = 4 байта.

@@ -17,9 +17,9 @@ metadata/_custom_type_script = "uid://vq2u6j364n55"
 script = ExtResource("5_86cvd")
 function_name = "blueNoise"
 preview_shader = ExtResource("3_twgks")
-required_functions = ["bn"]
+required_functions = ["bnois"]
 function = "float blueNoise(in vec2 uv, in float scale){
-	return bn(uv*scale);
+	return bnois(uv*scale);
 }"
 parameters = Dictionary[String, ExtResource("1_8ea8v")]({
 "scale": SubResource("Resource_euod2")

@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://b0882qbyu5tny"]
 
-[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_l4f6c"]
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_8syvx"]
 
 [resource]
-script = ExtResource("1_l4f6c")
-function_name = "bn"
-code = "float bn(vec2 st) {
+script = ExtResource("1_8syvx")
+function_name = "bnois"
+code = "float bnois(vec2 st) {
     vec2 i = floor(st);
     vec2 f = fract(st);
     vec2 u = f*f*f*(f*(f*6.-15.)+10.);

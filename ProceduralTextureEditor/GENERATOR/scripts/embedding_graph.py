@@ -10,7 +10,6 @@ from typing import Any, Dict, List, Tuple
 
 import faiss
 import numpy as np
-from sklearn.cluster import DBSCAN
 
 from .logger import lib_logger
 from .models_manager import get_embedding
@@ -49,7 +48,7 @@ class AbstractGraph:
         self.next_cluster_id = 0
 
         self.index = None  # FAISS индекс для центроидов
-        self._cluster_ids = []  # список id кластеров в порядке индекса
+        self._cluster_ids: list[int] = []  # список id кластеров в порядке индекса
 
     @lru_cache(maxsize=1000)
     def _get_norm_embedding(self, image: str) -> np.ndarray:
@@ -92,7 +91,7 @@ class AbstractGraph:
         рассматривая не более 4 кластеров с наиболее похожими центроидами.
         Возвращает список кортежей (material, similarity) отсортированных по убыванию similarity.
         """
-        max_clusters = 4
+        max_clusters = 5
 
         embedding = self._get_norm_embedding(image)
         if self.index is None or self.index.ntotal == 0:
@@ -159,7 +158,9 @@ class MaterialGraph(AbstractGraph):
 
         # Проверяем, есть ли уже похожие кластеры (по максимальному сходству)
         if self.index is not None and self.index.ntotal > 0:
-            query = embedding.astype(np.float32).reshape(1, -1)
+            query = embedding.astype(np.float32).reshape(
+                1, -1
+            )  # ??? стразу приводить эмбеддинг к такому виду и в нём и сохранять!
             faiss.normalize_L2(query)
             similarities, _ = self.index.search(query, 1)
             max_sim = similarities[0][0]
@@ -189,26 +190,89 @@ class EmbeddingGraph(AbstractGraph):
 
     def add_nodes(self, material_graph: MaterialGraph):
         """
-        Дополняет/создаёт кластеры с использованием DBSCAN из графа рендеров материала.
+        Дополняет граф эмбеддингов нодами из графа материала.
+        Близкие ноды объединяются в существующие кластеры,
+        далёкие создают новые кластеры.
         """
         global cluster_threshold, all_added_materials
 
         lib_logger.info("Объединение графов... ⚙️")
 
-        # Собираем все эмбеддинги и соответствующие RenderNode из material_graph
-        embeddings_list = []
-        nodes_list: list[RenderNode] = []  # список RenderNode
+        # Собираем все RenderNode из material_graph
+        render_nodes: list[RenderNode] = []
         for cluster in material_graph.clusters.values():
-            # каждый кластер содержит один RenderNode
             if cluster.nodes:
-                node = cluster.nodes[0]
-                embeddings_list.append(node.embedding)
-                nodes_list.append(node)
+                render_nodes.extend(cluster.nodes)
 
-        if not embeddings_list:
-            lib_logger.info("Нет данных для кластеризации.")
+        if not render_nodes:
+            lib_logger.warning("Нет данных для добавления⚠️")
             return
 
+        new_clusters_count: int = 0
+        added_to_existing: int = 0
+
+        for node in render_nodes:
+            embedding = node.embedding
+
+            # Проверяем, есть ли похожий кластер в embedding_graph
+            if self.index is not None and self.index.ntotal > 0:
+                query = embedding.astype(np.float32).reshape(1, -1)
+                similarities, indices = self.index.search(query, 1)
+                max_sim = similarities[0][0]
+
+                if max_sim >= cluster_threshold:
+                    # Добавляем в существующий кластер
+                    cluster_idx: int = indices[0][0]
+                    if cluster_idx < len(self._cluster_ids):
+                        cluster_id = self._cluster_ids[cluster_idx]
+                        cluster = self.clusters[cluster_id]
+
+                        # Обновляем центроид с учётом нового элемента
+                        old_centroid = cluster.centroid
+                        # Добавляем новый элемент в кластер
+                        cluster.nodes.append(node)
+                        cluster.size += 1
+
+                        # Пересчитываем центроид (инкрементально)
+                        new_centroid = (
+                            old_centroid * (cluster.size - 1) + embedding
+                        ) / cluster.size
+                        new_centroid = new_centroid / np.linalg.norm(new_centroid)
+                        cluster.centroid = new_centroid
+
+                        added_to_existing += 1
+                        continue
+
+            # Если похожего кластера нет - создаём новый
+            cluster_id = self.next_cluster_id
+            self.next_cluster_id += 1
+
+            # Нормализуем центроид ??? если хранить шготовые эмбеддинги - лишнее, так как центройд и будет эмбеддингом
+            centroid = embedding.copy()
+            centroid = centroid / np.linalg.norm(centroid)
+
+            cluster = ClusterNode(
+                id=cluster_id, centroid=centroid, nodes=[node], size=1
+            )
+            self.clusters[cluster_id] = cluster
+            new_clusters_count += 1
+
+        # Обновляем список добавленных материалов
+        if material_graph.material not in all_added_materials:
+            all_added_materials.append(material_graph.material)
+
+        # Перестраиваем индекс
+        if new_clusters_count > 0 or added_to_existing > 0:
+            self._rebuild_index()
+            lib_logger.info(
+                f"Добавлено {new_clusters_count} новых кластеров, "
+                f"{added_to_existing} нод добавлено в существующие кластеры 🗜️"
+            )
+            self.save()
+        else:
+            lib_logger.info("Нет изменений в графе")
+
+        """
         X = np.array(embeddings_list, dtype=np.float32)
         faiss.normalize_L2(X)  # на всякий случай?
 
@@ -221,7 +285,7 @@ class EmbeddingGraph(AbstractGraph):
         unique_labels = set(labels)
         for label in unique_labels:
             indices = np.where(labels == label)[0]
-            cluster_nodes = [nodes_list[i] for i in indices]
+            cluster_nodes: list[RenderNode] = [nodes_list[i] for i in indices]
 
             if label == -1:
                 # Шум – создаём отдельный кластер для каждого элемента
@@ -235,8 +299,7 @@ class EmbeddingGraph(AbstractGraph):
                     self.clusters[cluster_id] = cluster
             else:
                 # Вычисляем центроид кластера
-                centroids = np.array([node.embedding for node in cluster_nodes])
-                centroid = np.mean(centroids, axis=0)
+                centroid = cluster_nodes[0].embedding.copy()
                 centroid = centroid / np.linalg.norm(centroid)
                 cluster_id = self.next_cluster_id
                 self.next_cluster_id += 1
@@ -253,6 +316,7 @@ class EmbeddingGraph(AbstractGraph):
         lib_logger.info(f"Создано {len(self.clusters)} кластеров 🗜️")
         all_added_materials.append(nodes_list[0].material)
         self.save()
+        """
 
     # Функции сохранения:
     def save(self, filepath: str = "embedding_graph.pkl"):

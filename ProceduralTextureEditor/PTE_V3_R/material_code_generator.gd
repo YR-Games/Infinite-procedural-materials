@@ -143,7 +143,7 @@ func _build_fragment(material_data: Dictionary, shader_type: String = "spatial")
 	# Albedo / COLOR
 	var albedo_layers := EditorMaterial.get_layers_in_order("albedo", material_data)
 	if not albedo_layers.is_empty():
-		code.append("\tvec4 base_albedo = vec4(0.0);")
+		code.append("\tvec4 base_albedo = vec4(1.0);")
 		_append_channel_body(code, "albedo", albedo_layers, "base_albedo", material_data)
 		if is_canvas:
 			code.append("\tCOLOR = base_albedo;")

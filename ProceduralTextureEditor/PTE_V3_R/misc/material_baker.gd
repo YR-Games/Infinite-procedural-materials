@@ -93,7 +93,7 @@ var current_material_data: Dictionary
 var step: int = 0
 var final_counter: int = 0
 var params_count: int = 0
-const MAX_BRUT_FORCE_STEP_COUNT = 20
+const MAX_BRUT_FORCE_STEP_COUNT = 22
 
 func bake(material: String, anyway: bool = false)->Array:
 	if material != current_material:
@@ -104,7 +104,7 @@ func bake(material: String, anyway: bool = false)->Array:
 			params_count = (
 				EditorMaterial.get_generators_params_count(current_material_data)
 				+ EditorMaterial.get_modifers_params_count(current_material_data)
-			) * 5
+			) * 6
 			final_counter = -params_count
 
 	if not anyway and not evalute():

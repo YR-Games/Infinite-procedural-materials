@@ -1,0 +1,155 @@
+{
+	"args": [
+		"sn:generators",
+		{
+			"args": [
+				"sn:gen_4550613_3035661529",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:cellNoiseAlt",
+						"sn:parameters",
+						{
+							"args": [
+								"s:scale",
+								"f:10.0",
+								"s:seed",
+								"f:1.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_6711078_2828798986",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:blueNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:scale",
+								"f:10.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		},
+		"sn:channels",
+		{
+			"args": [
+				"sn:albedo",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[]
+					],
+					"type": "Dictionary"
+				},
+				"sn:normal",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [
+								"sn:layer_9504579_509994975",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_9504579_509994975",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_4550613_3035661529",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:1.0",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								}
+							],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[
+							"sn:layer_9504579_509994975"
+						]
+					],
+					"type": "Dictionary"
+				},
+				"sn:roughness",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[]
+					],
+					"type": "Dictionary"
+				},
+				"sn:metallic",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [
+								"sn:layer_27533453_778281512",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_27533453_778281512",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_6711078_2828798986",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:1.0",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								}
+							],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[
+							"sn:layer_27533453_778281512"
+						]
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		}
+	],
+	"type": "Dictionary"
+}

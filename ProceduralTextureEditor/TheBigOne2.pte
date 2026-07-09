@@ -1,0 +1,305 @@
+{
+	"args": [
+		"sn:generators",
+		{
+			"args": [
+				"sn:gen_709515642_3532275889",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:cellNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:chaos",
+								"f:1.0",
+								"s:numOctaves",
+								"i:1",
+								"s:scale",
+								"f:10.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_712190797_1422241949",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:cellNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:chaos",
+								"f:1.0",
+								"s:numOctaves",
+								"i:1",
+								"s:scale",
+								"f:10.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_713859095_2183113654",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:cellNoiseAlt",
+						"sn:parameters",
+						{
+							"args": [
+								"s:scale",
+								"f:10.0",
+								"s:seed",
+								"f:1.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_716067564_3271516176",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:cellNoiseAlt",
+						"sn:parameters",
+						{
+							"args": [
+								"s:scale",
+								"f:10.0",
+								"s:seed",
+								"f:1.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_718689107_1571090360",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:fbmNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:chaos",
+								"f:1.0",
+								"s:numOctaves",
+								"i:1",
+								"s:scale",
+								"f:10.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_722639292_3369292475",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:fbmNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:chaos",
+								"f:1.0",
+								"s:numOctaves",
+								"i:1",
+								"s:scale",
+								"f:10.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		},
+		"sn:channels",
+		{
+			"args": [
+				"sn:albedo",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [
+								"sn:layer_705341666_1470241278",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_705341666_1470241278",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_709515642_3532275889",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:1.0",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_732897814_676862649",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_732897814_676862649",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_712190797_1422241949",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:0.996",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_736015855_3841780558",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_736015855_3841780558",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_713859095_2183113654",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:1.0",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_736657522_1089874559",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_736657522_1089874559",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_716067564_3271516176",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:0.996",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_744933937_3931535086",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_744933937_3931535086",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_718689107_1571090360",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:0.996",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_751789129_503076892",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_751789129_503076892",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_722639292_3369292475",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:1.0",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								}
+							],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[
+							"sn:layer_705341666_1470241278",
+							"sn:layer_732897814_676862649",
+							"sn:layer_736015855_3841780558",
+							"sn:layer_736657522_1089874559",
+							"sn:layer_744933937_3931535086",
+							"sn:layer_751789129_503076892"
+						]
+					],
+					"type": "Dictionary"
+				},
+				"sn:normal",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[]
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		}
+	],
+	"type": "Dictionary"
+}

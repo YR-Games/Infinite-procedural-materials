@@ -1,0 +1,1015 @@
+{
+	"args": [
+		"sn:generators",
+		{
+			"args": [
+				"sn:gen_406498075_300141327",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:cellNoiseAlt",
+						"sn:parameters",
+						{
+							"args": [
+								"s:scale",
+								"f:10.0",
+								"s:seed",
+								"f:1.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_502185250_3666564346",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:cellNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:chaos",
+								"f:1.0",
+								"s:numOctaves",
+								"i:1",
+								"s:scale",
+								"f:10.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_570440084_357568755",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:cellNoiseAlt",
+						"sn:parameters",
+						{
+							"args": [
+								"s:scale",
+								"f:10.0",
+								"s:seed",
+								"f:1.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_660890773_3140450952",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:fbmNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:chaos",
+								"f:1.0",
+								"s:numOctaves",
+								"i:1",
+								"s:scale",
+								"f:10.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_736098023_2708216664",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:cellNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:chaos",
+								"f:1.0",
+								"s:numOctaves",
+								"i:1",
+								"s:scale",
+								"f:10.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_1345611558_2676301761",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:fbmNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:chaos",
+								"f:1.0",
+								"s:numOctaves",
+								"i:1",
+								"s:scale",
+								"f:10.0"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		},
+		"sn:channels",
+		{
+			"args": [
+				"sn:albedo",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [
+								"sn:layer_408481972_1509654311",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_408481972_1509654311",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_406498075_300141327",
+										"sn:blend_mode",
+										"sn:normalBlend",
+										"sn:opacity",
+										"f:1.0",
+										"sn:modifiers",
+										{
+											"args": [
+												"sn:mod_413491266_2942681659",
+												{
+													"args": [
+														"sn:id",
+														"sn:mod_413491266_2942681659",
+														"sn:modifier_name",
+														"sn:colorRamp",
+														"sn:parameters",
+														{
+															"args": [
+																"sn:palette",
+																{
+																	"args": [
+																		{
+																			"args": [
+																				0.21875,
+																				0.1751708984375,
+																				0.1751708984375,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.2109375,
+																				0.203277111053467,
+																				0.140899658203125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.204986214637756,
+																				0.27734375,
+																				0.187423706054688,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.20703125,
+																				0.137481689453125,
+																				0.137481689453125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.2265625,
+																				0.158416748046875,
+																				0.158416748046875,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.22265625,
+																				0.195659995079041,
+																				0.103500366210938,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.4140625,
+																				0.412723064422607,
+																				0.328338623046875,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				1.0,
+																				1.0,
+																				1.0,
+																				1.0
+																			],
+																			"type": "Color"
+																		}
+																	],
+																	"elem_type": "Color",
+																	"type": "Array"
+																}
+															],
+															"type": "Dictionary"
+														}
+													],
+													"type": "Dictionary"
+												}
+											],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[
+											"sn:mod_413491266_2942681659"
+										]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_505219584_1813378223",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_505219584_1813378223",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_502185250_3666564346",
+										"sn:blend_mode",
+										"sn:normalBlend",
+										"sn:opacity",
+										"f:1.0",
+										"sn:modifiers",
+										{
+											"args": [
+												"sn:mod_511725913_1198462335",
+												{
+													"args": [
+														"sn:id",
+														"sn:mod_511725913_1198462335",
+														"sn:modifier_name",
+														"sn:colorRamp",
+														"sn:parameters",
+														{
+															"args": [
+																"sn:palette",
+																{
+																	"args": [
+																		{
+																			"args": [
+																				0.21484375,
+																				0.15777587890625,
+																				0.15777587890625,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.33984375,
+																				0.329441428184509,
+																				0.261520385742188,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.328125,
+																				0.321215629577637,
+																				0.2896728515625,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.26171875,
+																				0.215713500976563,
+																				0.215713500976563,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.3046875,
+																				0.291883707046509,
+																				0.208282470703125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.252056121826172,
+																				0.29296875,
+																				0.1922607421875,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.35546875,
+																				0.284847974777222,
+																				0.209671020507813,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				1.0,
+																				1.0,
+																				1.0,
+																				1.0
+																			],
+																			"type": "Color"
+																		}
+																	],
+																	"elem_type": "Color",
+																	"type": "Array"
+																}
+															],
+															"type": "Dictionary"
+														}
+													],
+													"type": "Dictionary"
+												}
+											],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[
+											"sn:mod_511725913_1198462335"
+										]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_574555081_994727482",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_574555081_994727482",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_570440084_357568755",
+										"sn:blend_mode",
+										"sn:normalBlend",
+										"sn:opacity",
+										"f:1.0",
+										"sn:modifiers",
+										{
+											"args": [
+												"sn:mod_584575024_455306053",
+												{
+													"args": [
+														"sn:id",
+														"sn:mod_584575024_455306053",
+														"sn:modifier_name",
+														"sn:colorRamp",
+														"sn:parameters",
+														{
+															"args": [
+																"sn:palette",
+																{
+																	"args": [
+																		{
+																			"args": [
+																				0.312026977539063,
+																				0.66015625,
+																				0.38274073600769,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.1761474609375,
+																				0.2890625,
+																				0.193790435791016,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.321118354797363,
+																				0.421875,
+																				0.2801513671875,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.401275515556335,
+																				0.40234375,
+																				0.265609741210938,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.845457434654236,
+																				0.84765625,
+																				0.566207885742188,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.619800567626953,
+																				0.65625,
+																				0.29736328125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.728142499923706,
+																				0.9140625,
+																				0.360626220703125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				1.0,
+																				1.0,
+																				1.0,
+																				1.0
+																			],
+																			"type": "Color"
+																		}
+																	],
+																	"elem_type": "Color",
+																	"type": "Array"
+																}
+															],
+															"type": "Dictionary"
+														}
+													],
+													"type": "Dictionary"
+												}
+											],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[
+											"sn:mod_584575024_455306053"
+										]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_664229641_96634893",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_664229641_96634893",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_660890773_3140450952",
+										"sn:blend_mode",
+										"sn:normalBlend",
+										"sn:opacity",
+										"f:0.996",
+										"sn:modifiers",
+										{
+											"args": [
+												"sn:mod_676134710_3727275629",
+												{
+													"args": [
+														"sn:id",
+														"sn:mod_676134710_3727275629",
+														"sn:modifier_name",
+														"sn:colorRamp",
+														"sn:parameters",
+														{
+															"args": [
+																"sn:palette",
+																{
+																	"args": [
+																		{
+																			"args": [
+																				0.9375,
+																				0.920047760009766,
+																				0.49072265625,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.637494325637817,
+																				0.6484375,
+																				0.448333740234375,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.334954261779785,
+																				0.5859375,
+																				0.3204345703125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.60783576965332,
+																				0.8671875,
+																				0.3929443359375,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.528605461120605,
+																				0.94921875,
+																				0.5042724609375,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.181976318359375,
+																				0.34765625,
+																				0.21174693107605,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.15998649597168,
+																				0.2890625,
+																				0.1490478515625,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				1.0,
+																				1.0,
+																				1.0,
+																				1.0
+																			],
+																			"type": "Color"
+																		}
+																	],
+																	"elem_type": "Color",
+																	"type": "Array"
+																}
+															],
+															"type": "Dictionary"
+														}
+													],
+													"type": "Dictionary"
+												}
+											],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[
+											"sn:mod_676134710_3727275629"
+										]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_738395146_810470592",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_738395146_810470592",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_736098023_2708216664",
+										"sn:blend_mode",
+										"sn:normalBlend",
+										"sn:opacity",
+										"f:0.996",
+										"sn:modifiers",
+										{
+											"args": [
+												"sn:mod_745880482_2383212709",
+												{
+													"args": [
+														"sn:id",
+														"sn:mod_745880482_2383212709",
+														"sn:modifier_name",
+														"sn:colorRamp",
+														"sn:parameters",
+														{
+															"args": [
+																"sn:palette",
+																{
+																	"args": [
+																		{
+																			"args": [
+																				0.792792320251465,
+																				0.94921875,
+																				0.448654174804688,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.277926921844482,
+																				0.41015625,
+																				0.187454223632813,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.327662348747253,
+																				0.53515625,
+																				0.315658569335938,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.4375,
+																				0.39178466796875,
+																				0.254638671875,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.34765625,
+																				0.276359558105469,
+																				0.1846923828125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.749258995056152,
+																				0.76171875,
+																				0.363006591796875,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.718185424804688,
+																				0.75,
+																				0.3427734375,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				1.0,
+																				1.0,
+																				1.0,
+																				1.0
+																			],
+																			"type": "Color"
+																		}
+																	],
+																	"elem_type": "Color",
+																	"type": "Array"
+																}
+															],
+															"type": "Dictionary"
+														}
+													],
+													"type": "Dictionary"
+												}
+											],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[
+											"sn:mod_745880482_2383212709"
+										]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_1333243152_2188109153",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_1333243152_2188109153",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_660890773_3140450952",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:0.996",
+										"sn:modifiers",
+										{
+											"args": [
+												"sn:mod_1396380853_3121674086",
+												{
+													"args": [
+														"sn:id",
+														"sn:mod_1396380853_3121674086",
+														"sn:modifier_name",
+														"sn:colorRamp",
+														"sn:parameters",
+														{
+															"args": [
+																"sn:palette",
+																{
+																	"args": [
+																		{
+																			"args": [
+																				0.25390625,
+																				0.23174524307251,
+																				0.144805908203125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.453125,
+																				0.401393413543701,
+																				0.22479248046875,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.387008666992188,
+																				0.40625,
+																				0.2523193359375,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.34797191619873,
+																				0.41015625,
+																				0.23712158203125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.33984375,
+																				0.28267765045166,
+																				0.2017822265625,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.37109375,
+																				0.247879028320313,
+																				0.1739501953125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.227345824241638,
+																				0.41015625,
+																				0.225906372070313,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				1.0,
+																				1.0,
+																				1.0,
+																				1.0
+																			],
+																			"type": "Color"
+																		}
+																	],
+																	"elem_type": "Color",
+																	"type": "Array"
+																}
+															],
+															"type": "Dictionary"
+														}
+													],
+													"type": "Dictionary"
+												}
+											],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[
+											"sn:mod_1396380853_3121674086"
+										]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_1351291580_1628333026",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_1351291580_1628333026",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_1345611558_2676301761",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:0.992",
+										"sn:modifiers",
+										{
+											"args": [
+												"sn:mod_1455567690_894753671",
+												{
+													"args": [
+														"sn:id",
+														"sn:mod_1455567690_894753671",
+														"sn:modifier_name",
+														"sn:colorRamp",
+														"sn:parameters",
+														{
+															"args": [
+																"sn:palette",
+																{
+																	"args": [
+																		{
+																			"args": [
+																				0.227859497070313,
+																				0.53515625,
+																				0.227859497070313,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.811742782592773,
+																				0.82421875,
+																				0.42498779296875,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.62890625,
+																				0.589753150939941,
+																				0.3341064453125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.26300048828125,
+																				0.484375,
+																				0.297590255737305,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.327453970909119,
+																				0.49609375,
+																				0.222854614257813,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.214614868164063,
+																				0.37890625,
+																				0.236434817314148,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.43359375,
+																				0.411773800849915,
+																				0.269302368164063,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				1.0,
+																				1.0,
+																				1.0,
+																				1.0
+																			],
+																			"type": "Color"
+																		}
+																	],
+																	"elem_type": "Color",
+																	"type": "Array"
+																}
+															],
+															"type": "Dictionary"
+														}
+													],
+													"type": "Dictionary"
+												}
+											],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[
+											"sn:mod_1455567690_894753671"
+										]
+									],
+									"type": "Dictionary"
+								}
+							],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[
+							"sn:layer_408481972_1509654311",
+							"sn:layer_505219584_1813378223",
+							"sn:layer_574555081_994727482",
+							"sn:layer_664229641_96634893",
+							"sn:layer_738395146_810470592",
+							"sn:layer_1333243152_2188109153",
+							"sn:layer_1351291580_1628333026"
+						]
+					],
+					"type": "Dictionary"
+				},
+				"sn:normal",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[]
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		}
+	],
+	"type": "Dictionary"
+}

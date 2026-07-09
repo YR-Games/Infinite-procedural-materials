@@ -3,32 +3,38 @@
 		"sn:generators",
 		{
 			"args": [
-				"sn:gen_11744381_2003784730",
+				"sn:gen_1116353564_1389119643",
 				{
 					"args": [
 						"sn:generator_name",
-						"sn:blueNoise",
+						"sn:cellNoise",
 						"sn:parameters",
 						{
 							"args": [
+								"s:chaos",
+								"f:0.6",
+								"s:numOctaves",
+								"i:10",
 								"s:scale",
-								"f:10.0"
+								"f:15.11"
 							],
 							"type": "Dictionary"
 						}
 					],
 					"type": "Dictionary"
 				},
-				"sn:gen_26724723_633316107",
+				"sn:gen_1199601964_3550320882",
 				{
 					"args": [
 						"sn:generator_name",
-						"sn:blueNoise",
+						"sn:cellNoiseAlt",
 						"sn:parameters",
 						{
 							"args": [
 								"s:scale",
-								"f:75.47"
+								"f:10.0",
+								"s:seed",
+								"f:-509.43"
 							],
 							"type": "Dictionary"
 						}
@@ -47,27 +53,50 @@
 						"sn:layers",
 						{
 							"args": [
-								"sn:layer_6027501_739318219",
+								"sn:layer_979727850_2699122379",
 								{
 									"args": [
 										"sn:id",
-										"sn:layer_6027501_739318219",
+										"sn:layer_979727850_2699122379",
 										"sn:name",
 										"s:Layer",
 										"sn:generator_id",
-										"sn:gen_11744381_2003784730",
+										"sn:gen_1116353564_1389119643",
 										"sn:blend_mode",
 										"sn:normal",
 										"sn:opacity",
 										"f:1.0",
 										"sn:modifiers",
 										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								},
+								"sn:layer_1208080170_3955893670",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_1208080170_3955893670",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_1199601964_3550320882",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:0.432",
+										"sn:modifiers",
+										{
 											"args": [
-												"sn:mod_140035359_1472316628",
+												"sn:mod_1230466234_4280197298",
 												{
 													"args": [
 														"sn:id",
-														"sn:mod_140035359_1472316628",
+														"sn:mod_1230466234_4280197298",
 														"sn:modifier_name",
 														"sn:colorRamp",
 														"sn:parameters",
@@ -78,45 +107,63 @@
 																	"args": [
 																		{
 																			"args": [
-																				0.0,
-																				0.0,
-																				0.0,
+																				0.746688008308411,
+																				0.96484375,
+																				0.0640716552734375,
 																				1.0
 																			],
 																			"type": "Color"
 																		},
 																		{
 																			"args": [
-																				1.0,
-																				1.0,
-																				1.0,
+																				0.54642927646637,
+																				0.93359375,
+																				0.543380737304688,
 																				1.0
 																			],
 																			"type": "Color"
 																		},
 																		{
 																			"args": [
-																				0.12890625,
-																				0.0951690673828125,
-																				0.0951690673828125,
+																				0.649060249328613,
+																				0.9140625,
+																				0.574859619140625,
 																				1.0
 																			],
 																			"type": "Color"
 																		},
 																		{
 																			"args": [
-																				1.0,
-																				1.0,
-																				1.0,
+																				0.701960802078247,
+																				0.666666686534882,
+																				0.337254911661148,
 																				1.0
 																			],
 																			"type": "Color"
 																		},
 																		{
 																			"args": [
-																				0.11328125,
-																				0.0561981201171875,
-																				0.0816179513931274,
+																				0.606542587280273,
+																				0.890625,
+																				0.347900390625,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.680923461914063,
+																				0.9765625,
+																				0.030517578125,
+																				1.0
+																			],
+																			"type": "Color"
+																		},
+																		{
+																			"args": [
+																				0.57843017578125,
+																				0.94921875,
+																				0.610294818878174,
 																				1.0
 																			],
 																			"type": "Color"
@@ -145,7 +192,7 @@
 										},
 										"sn:modifier_order",
 										[
-											"sn:mod_140035359_1472316628"
+											"sn:mod_1230466234_4280197298"
 										]
 									],
 									"type": "Dictionary"
@@ -155,7 +202,8 @@
 						},
 						"sn:layer_order",
 						[
-							"sn:layer_6027501_739318219"
+							"sn:layer_979727850_2699122379",
+							"sn:layer_1208080170_3955893670"
 						]
 					],
 					"type": "Dictionary"
@@ -166,19 +214,19 @@
 						"sn:layers",
 						{
 							"args": [
-								"sn:layer_37943358_2676895365",
+								"sn:layer_988488423_2679167304",
 								{
 									"args": [
 										"sn:id",
-										"sn:layer_37943358_2676895365",
+										"sn:layer_988488423_2679167304",
 										"sn:name",
 										"s:Layer",
 										"sn:generator_id",
-										"sn:gen_26724723_633316107",
+										"sn:gen_1116353564_1389119643",
 										"sn:blend_mode",
 										"sn:normal",
 										"sn:opacity",
-										"f:0.032",
+										"f:0.024",
 										"sn:modifiers",
 										{
 											"args": [],
@@ -194,7 +242,7 @@
 						},
 						"sn:layer_order",
 						[
-							"sn:layer_37943358_2676895365"
+							"sn:layer_988488423_2679167304"
 						]
 					],
 					"type": "Dictionary"
@@ -204,11 +252,37 @@
 					"args": [
 						"sn:layers",
 						{
-							"args": [],
+							"args": [
+								"sn:layer_1583499914_963256250",
+								{
+									"args": [
+										"sn:id",
+										"sn:layer_1583499914_963256250",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_1199601964_3550320882",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:1.0",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								}
+							],
 							"type": "Dictionary"
 						},
 						"sn:layer_order",
-						[]
+						[
+							"sn:layer_1583499914_963256250"
+						]
 					],
 					"type": "Dictionary"
 				},
