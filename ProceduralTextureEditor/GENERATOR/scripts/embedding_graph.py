@@ -6,7 +6,6 @@ scripts/embedding_graph.py
 import pickle
 from dataclasses import dataclass
 from functools import lru_cache
-from typing import Any, Dict, List, Tuple
 
 import faiss
 import numpy as np
@@ -38,13 +37,13 @@ class ClusterNode:
 
     id: int
     centroid: np.ndarray
-    nodes: List[RenderNode]
+    nodes: list[RenderNode]
     size: int
 
 
 class AbstractGraph:
     def __init__(self):
-        self.clusters: Dict[int, ClusterNode] = {}
+        self.clusters: dict[int, ClusterNode] = {}
         self.next_cluster_id = 0
 
         self.index = None  # FAISS индекс для центроидов
@@ -85,7 +84,7 @@ class AbstractGraph:
 
     def find_similar_clusters(
         self, image: str, limit: int = 10
-    ) -> List[Tuple[str, float]]:
+    ) -> list[tuple[str, float]]:
         """
         Находит до k (по умолчанию 10, но не более 10) наиболее похожих материалов,
         рассматривая не более 4 кластеров с наиболее похожими центроидами.
@@ -102,7 +101,7 @@ class AbstractGraph:
         num_to_search = min(max_clusters, self.index.ntotal)
         similarities, indices = self.index.search(query, num_to_search)
 
-        candidates: List[Tuple[str, float]] = []
+        candidates: list[tuple[str, float]] = []
         for i in range(num_to_search):
             idx = indices[0][i]
             if idx < len(self._cluster_ids):

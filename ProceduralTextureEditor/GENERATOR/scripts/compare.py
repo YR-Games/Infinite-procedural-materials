@@ -5,7 +5,9 @@ scripts/compare.py
 
 import os
 from collections import defaultdict
+from functools import lru_cache
 
+import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
@@ -15,6 +17,77 @@ from sklearn.manifold import MDS
 from .logger import lib_logger
 from .models_manager import get_embedding, load_and_transform_image, threshold
 from .utils import calculate_similarity, tensor_to_pil
+
+
+@lru_cache(maxsize=1000)
+def _get_norm_embedding(image: str) -> torch.Tensor:
+    """Возвращает нормализованный эмбеддинг по пути к изображению."""
+    embedding: torch.Tensor = get_embedding(image, False).squeeze()
+    return embedding / torch.norm(embedding, p=2)  # Нормализуем
+
+
+def compare(image_path1: str, image_path2: str) -> dict[str, float]:
+    result: dict[str, float] = {}
+    try:
+        result["DINOv2"] = torch.dot(
+            _get_norm_embedding(image_path1), _get_norm_embedding(image_path2)
+        ).item()
+    except Exception as e:
+        lib_logger.error(
+            f"Error DINOv2 comparing images {image_path1} and {image_path2}: {e}"
+        )
+    try:
+        result["SSIM (> 95: 🔥; < 80: 👎)"] = calculate_ssim(image_path1, image_path2)
+    except Exception as e:
+        lib_logger.error(
+            f"Error SSIM comparing images {image_path1} and {image_path2}: {e}"
+        )
+    try:
+        result["PSNR (> 40: 🔥; < 20: 👎)"] = calculate_psnr(image_path1, image_path2)
+    except Exception as e:
+        lib_logger.error(
+            f"Error PSNR comparing images {image_path1} and {image_path2}: {e}"
+        )
+    return result
+
+
+def calculate_psnr(image1: str, image2: str) -> float:
+    # Изображения должны быть одинакового размера и типа
+    img1 = cv2.imread(image1)
+    img2 = cv2.imread(image2)
+    return cv2.PSNR(img1, img2)
+
+
+def calculate_ssim(image1: str, image2: str) -> float:
+    img1 = cv2.imread(image1)
+    img2 = cv2.imread(image2)
+    # Константы для стабильности формулы SSIM
+    C1 = (0.01 * 255) ** 2
+    C2 = (0.03 * 255) ** 2
+
+    # Преобразование в float32 для точности вычислений
+    img1 = img1.astype(np.float64)
+    img2 = img2.astype(np.float64)
+
+    # Вычисление средних значений (ядро Гаусса 11x11, sigma=1.5)
+    mu1 = cv2.GaussianBlur(img1, (11, 11), 1.5)
+    mu2 = cv2.GaussianBlur(img2, (11, 11), 1.5)
+
+    mu1_sq = mu1**2
+    mu2_sq = mu2**2
+    mu1_mu2 = mu1 * mu2
+
+    # Вычисление дисперсий и ковариации
+    sigma1_sq = cv2.GaussianBlur(img1**2, (11, 11), 1.5) - mu1_sq
+    sigma2_sq = cv2.GaussianBlur(img2**2, (11, 11), 1.5) - mu2_sq
+    sigma12 = cv2.GaussianBlur(img1 * img2, (11, 11), 1.5) - mu1_mu2
+
+    # Формула SSIM
+    ssim_map = ((2 * mu1_mu2 + C1) * (2 * sigma12 + C2)) / (
+        (mu1_sq + mu2_sq + C1) * (sigma1_sq + sigma2_sq + C2)
+    )
+
+    return round(ssim_map.mean(), 5)
 
 
 class TextureComparator:
@@ -62,6 +135,7 @@ def get_comparator() -> TextureComparator:
     return _comparator
 
 
+'''
 def compare(image1_path: str, image2_path: str) -> float:
     """
     Функция сравнения двух изображений.
@@ -78,6 +152,7 @@ def compare(image1_path: str, image2_path: str) -> float:
     print("sim: ", similarity, ", dist: ", dist)
 
     return similarity
+'''
 
 
 def str_compare(image1_path: str, image2_path: str) -> str:

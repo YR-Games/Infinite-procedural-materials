@@ -3,28 +3,33 @@ core.py
 Основные функции для работы с эмбеддингами и графом.
 """
 
-from typing import List, Tuple
-
 from scripts.compare import compare
 from scripts.embedding_graph import (
     embedding_graph,
+    is_material_already_added,
     material_graph,
-    is_material_already_added
 )
 
 
-def compare_images(image_path1: str, image_path2: str) -> float:
-    """??? УСТАРЕЛО: Должен работать с изображениями, а не путями!
-    Сравнивает два изображения и возвращает степень сходства.
+def compare_images(
+    image_paths1: list[str], image_paths2: list[str]
+) -> list[dict[str, float]]:
+    """
+    Сравнивает пары изображений, где первой берётся из списка 1,
+    второе из списка 2 и возвращает степень сходства по 3 метрикам.
 
     Args:
-        image_path1: Путь к первому изображению
-        image_path2: Путь ко второму изображению
+        image_path1: Пути к первым изображениям
+        image_path2: Пути ко вторым изображениям
 
     Returns:
-        float: Степень сходства от 0.0 до 1.0
+        Список словарей, где ключи - строковые названия методов, значений - степени сходства от 0.0 до 1.0.
     """
-    return compare(image_path1, image_path2)
+    count: int = min(image_paths1.__len__(), image_paths2.__len__())
+    result: list[dict[str, float]] = []
+    for i in range(count):
+        result.append(compare(image_paths1[i], image_paths2[i]))
+    return result
 
 
 # Функции для API:
@@ -44,9 +49,9 @@ def save():
     embedding_graph.save()
 
 
-def find_similar_clusters(str_image: str) -> List[Tuple[str, float]]:
+def find_similar_clusters(str_image: str) -> list[tuple[str, float]]:
     return embedding_graph.find_similar_clusters(str_image)
 
 
-def is_can_add_material(material: str)->bool:
+def is_can_add_material(material: str) -> bool:
     return is_material_already_added(material)

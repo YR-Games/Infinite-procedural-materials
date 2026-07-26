@@ -7,6 +7,7 @@ scripts/models_manager.py
 
 import base64
 from functools import lru_cache
+import os
 
 import torch
 import torch.nn as nn
@@ -45,7 +46,7 @@ def base64_to_pil(data: str) -> Image.Image:
 
 
 @lru_cache(maxsize=1000)
-def get_embedding(image: str) -> torch.Tensor:  # numpy.ndarray
+def get_embedding(image: str, from_base64: bool = True) -> torch.Tensor:  # numpy.ndarray
     """
     Пропускает изображение через модель и возвращает эмбеддинг.
 
@@ -58,7 +59,7 @@ def get_embedding(image: str) -> torch.Tensor:  # numpy.ndarray
     try:
         # Получаем эмбеддинг.
         with torch.no_grad():
-            outputs = _embedding_model(load_and_transform_image(image))
+            outputs = _embedding_model(load_and_transform_image(image, from_base64))
 
         # Извлекаем эмбеддинг [CLS] токена (используется как представление всего изображения).
         embedding: torch.Tensor = outputs.last_hidden_state[:, 0, :].cpu()
@@ -72,14 +73,17 @@ def get_embedding(image: str) -> torch.Tensor:  # numpy.ndarray
 
 @lru_cache(maxsize=1000)
 def load_and_transform_image(
-    image: str, definition: int = STANDARD_DEFINITION, to_device: bool = True
+    image: str, from_base64: bool = True, definition: int = STANDARD_DEFINITION, to_device: bool = True
 ) -> torch.Tensor:
     """Загрузка и трансформация изображения с кэшированием"""
-    # if not os.path.exists(image_path):
-    #    raise FileNotFoundError(f"Image not found: {image_path}")
 
     transform = get_base_transform(definition)
-    img = base64_to_pil(image)  # Image.open(image_path).convert("RGB")
+    if from_base64:
+        img = base64_to_pil(image)
+    else:
+        if not os.path.exists(image):
+            raise FileNotFoundError(f"Image not found: {image}")
+        img = Image.open(image).convert("RGB")
 
     """# Визуализация изображений ???
     import matplotlib.pyplot as plt
