@@ -54,7 +54,7 @@ func _input(event: InputEvent) -> void:
 		TCPConnection.show()
 		#??? Должен предлагать ввести код доступа, после успешного подтверждения открывать меню с настройками подключения
 	elif event.is_action_pressed("ui_select"):
-		AlertWindow.alert("АБЫбабы-тутуту!")
+		AlertWindow.alert("Абыбабы\nттутутуу!", true if randf() > 0.5 else false)
 
 
 func _process(delta: float) -> void:

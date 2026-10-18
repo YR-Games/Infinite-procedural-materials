@@ -219,6 +219,7 @@ MarginContainer/constants/margin_bottom = 0
 MarginContainer/constants/margin_left = 0
 MarginContainer/constants/margin_right = 0
 MarginContainer/constants/margin_top = 0
+MenuBar/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 Panel/styles/panel = ExtResource("9_6lmaf")
 PanelContainer/styles/panel = ExtResource("9_6lmaf")
 PopupMenu/colors/font_color = Color(0, 0, 0, 1)

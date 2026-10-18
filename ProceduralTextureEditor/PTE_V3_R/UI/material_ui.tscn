@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://d0earg2bw4j6i"]
 
 [ext_resource type="StyleBox" uid="uid://dhhh003lvmmll" path="res://PTE_V3_R/styles/normal_style_box.tres" id="1_d4kk8"]
+[ext_resource type="Theme" uid="uid://cl4kqmkbwreol" path="res://addons/clearlooks/clearlooks.tres" id="1_imbtq"]
 [ext_resource type="Script" uid="uid://dblqe30xa1i6g" path="res://PTE_V3_R/ui_controllers/material_ui_controller.gd" id="2_d4kk8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j64ke"]
@@ -10,6 +11,7 @@ offset_right = 764.0
 offset_bottom = 557.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("1_imbtq")
 theme_override_styles/panel = ExtResource("1_d4kk8")
 script = ExtResource("2_d4kk8")
 

@@ -38,9 +38,11 @@ window/energy_saving/keep_screen_on=false
 window/subwindows/embed_subwindows=false
 window/vsync/vsync_mode=0
 
-[gui]
+[file_customization]
 
-theme/custom="uid://diualrkk3oo8h"
+folder_colors={
+"res://tests/": "red"
+}
 
 [input]
 
