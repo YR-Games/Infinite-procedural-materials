@@ -12,47 +12,17 @@ var baker: ImageBaker
 
 var maaterial_add_queue: Array[Callable]
 var material_adding_finished: bool = true
-var generator_pid: int
-
-## Запускает Python проект Генератора в фоне
-func start_generator() -> void:
-	var project_dir := ProjectSettings.globalize_path("res://")
-	
-	# Проверяем ОС
-	var python_path: String
-	var script_path := project_dir + "GENERATOR/main.py"
-	
-	if OS.get_name() == "Windows":
-		python_path = project_dir + "GENERATOR/.env/Scripts/python.exe"
-	else:
-		python_path = project_dir + "GENERATOR/.env/bin/python"
-	
-	var file := FileAccess.open(script_path, FileAccess.READ)
-	if file == null:
-		print_rich("[color=red]Ошибка: файл скрипта не найден по пути: ", script_path)
-		return
-	file.close()
-	
-	var pid := OS.create_process(python_path, [script_path])
-	if pid == -1:
-		print_rich("[color=red]Ошибка запуска Python скрипта")
-	else:
-		print_rich("[color=green]Генератор запущен с PID: ", pid)
-		generator_pid = pid
 
 #region TCP Functions
 
-const GENERATOR_HOST = "127.0.0.1"
-const GENERATOR_PORT = 12345
-const TIMEOUT_SECONDS = 10.0
-const MAX_RETRIES = 3
-const RECONNECT_DELAY = 1.0
+## Задержка перед повторной отправкой запроса.
+static var TIMEOUT_SECONDS := 10.0
+## Максимальное число попыток отправить запрос.
+static var MAX_RETRIES := 3
 
-var stream: StreamPeerTCP = null
 var send_queue: Array = []                # очередь сообщений на отправку
 var recv_buffer: String = ""              # буфер для накопления входящих данных
 var pending_requests: Dictionary = {}     # id -> {callback, retries, timer_start, original_msg}
-var reconnect_timer: float = 0.0
 
 
 func _ready() -> void:
@@ -63,11 +33,11 @@ func _ready() -> void:
 	#set_process_input(false)
 
 	# Запускаем генератор
-	start_generator()
+	TCPConnection.start_generator()
 	# Даём время на запуск Python
 	await get_tree().create_timer(4.0).timeout
 	
-	connect_to_generator()
+	TCPConnection.connect_to_generator()
 	# Отправляем тестовое сообщение через 2 секунды (для проверки соединения)
 	await get_tree().create_timer(2.0).timeout
 	test_connection()
@@ -79,77 +49,47 @@ func test_connection() -> void:
 	send_message(msg)
 
 
-func connect_to_generator() -> void:
-	## Устанавливает TCP-соединение с Генератором.
-	if not is_process_running_windows(generator_pid):
-		start_generator()
-		await get_tree().create_timer(5.0).timeout
-
-	if stream != null:
-		stream.disconnect_from_host()
-		stream = null
-	
-	stream = StreamPeerTCP.new()
-	var err = stream.connect_to_host(GENERATOR_HOST, GENERATOR_PORT)
-	if err != OK:
-		print_rich("[color=red][GConnector] Connection error: ", err)
-		reconnect_timer = RECONNECT_DELAY
-	else:
-		print_rich("[color=yellow][GConnector] Connecting...")
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("debug_mode"):
+		TCPConnection.show()
+		#??? Должен предлагать ввести код доступа, после успешного подтверждения открывать меню с настройками подключения
+	elif event.is_action_pressed("ui_select"):
+		AlertWindow.alert("АБЫбабы-тутуту!")
 
 
 func _process(delta: float) -> void:
 	# 1. Обработка переподключения
-	if stream == null:
-		if reconnect_timer > 0:
-			reconnect_timer -= delta
-			if reconnect_timer <= 0:
-				connect_to_generator()
+	if not TCPConnection.check_status(delta):
 		return
 
-	# 2. Проверка статуса сокета
-	stream.poll()
-	var status := stream.get_status()
-	#print_rich(status)
-	match status:
-		StreamPeerTCP.STATUS_CONNECTED:
-			# Отправка сообщений из очереди
-			while send_queue.size() > 0:
-				var msg = send_queue.pop_front()
-				var json_str = JSON.stringify(msg) + "\n"
-				print_rich("[color=cyan][GConnector] Sending: ", json_str.strip_edges().substr(0, 100))
-				var bytes = json_str.to_utf8_buffer()
-				var err = stream.put_data(bytes)
-				if err != OK:
-					print_rich("[color=red][GConnector] Send error: ", err)
-					send_queue.push_front(msg)  # возвращаем в очередь
-					_disconnect()
-					reconnect_timer = RECONNECT_DELAY
-					return
-				else:
-					print_rich("[color=light green][GConnector] Message sent successfully")
+	# 2. Обработка активных запросов
+	# Отправка сообщений из очереди #??? вынести в отдельные функции, как _receive_messages
+	while send_queue.size() > 0:
+		var msg = send_queue.pop_front()
+		var json_str = JSON.stringify(msg) + "\n"
+		print_rich("[color=cyan][GConnector] Sending: ", json_str.strip_edges().substr(0, 100))
+		var bytes = json_str.to_utf8_buffer()
+		var err := TCPConnection.put_data(bytes)
+		if err != OK:
+			print_rich("[color=red][GConnector] Send error: ", err)
+			send_queue.push_front(msg)  # возвращаем в очередь
+			#TCPConnection.disconnect_generator(true)??? Не нужно переподключать. Просто добавить проверку, что если попыток больше чем send_queue.length*3 -> выход! 
+			return
+		else:
+			print_rich("[color=light green][GConnector] Message sent successfully")
 
-			# Проверка очереди задач на добавление материалов
-			if material_adding_finished:
-				if not maaterial_add_queue.is_empty():
-					maaterial_add_queue.pop_back().call()
-				elif interface.get_parent().get_parent().get_child(3).visible:
-					interface.get_parent().get_parent().get_child(3).hide()
-			elif not interface.get_parent().get_parent().get_child(3).visible:
-				interface.get_parent().get_parent().get_child(3).show()
-				interface.get_parent().get_parent().get_child(3).text = "Индексация материала⚙️\nНе закрывайте Редактор!"
+	# Проверка очереди задач на добавление материалов
+	if material_adding_finished:
+		if not maaterial_add_queue.is_empty():
+			maaterial_add_queue.pop_back().call()
+		elif interface.get_parent().get_parent().get_child(3).visible:
+			interface.get_parent().get_parent().get_child(3).hide()
+	elif not interface.get_parent().get_parent().get_child(3).visible:
+		interface.get_parent().get_parent().get_child(3).show()
+		interface.get_parent().get_parent().get_child(3).text = "Индексация материала⚙️\nНе закрывайте Редактор!"
 
-			# Приём данных
-			_receive_messages()
-
-		StreamPeerTCP.STATUS_ERROR:
-			print_rich("[color=red][GConnector] Connection error, reconnecting...")
-			_disconnect()
-			reconnect_timer = RECONNECT_DELAY
-
-		StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_CONNECTING:
-			# Ничего не делаем, ждём
-			pass
+	# Приём данных
+	_receive_messages()
 
 	# 3. Проверка таймаутов для ожидающих запросов
 	var now = Time.get_ticks_msec() / 1000.0
@@ -168,36 +108,23 @@ func _process(delta: float) -> void:
 				pending_requests.erase(id)
 
 
-func _disconnect() -> void:
-	## Закрывает соединение и сбрасывает состояние.
-	if stream != null:
-		stream.disconnect_from_host()
-		stream = null
-	# Очищаем очередь, чтобы не накапливать старые сообщения
-	# (можно оставить, если нужно повторить после переподключения)
-	send_queue.clear()
-	pending_requests.clear()
-	print_rich("[color=light red][GConnector] Disconnected")
-
-
 func _receive_messages() -> void:
 	## Читает доступные данные и разбирает сообщения.
-	if stream.get_available_bytes() > 0:
-		var data = stream.get_data(stream.get_available_bytes())
-		if data[0] == OK:
-			var text = data[1].get_string_from_utf8()
-			print_rich("[GConnector] Received raw data: ", text.substr(0, 150))
-			recv_buffer += text
-			while recv_buffer.find("\n") != -1:
-				var line = recv_buffer.substr(0, recv_buffer.find("\n"))
-				recv_buffer = recv_buffer.substr(recv_buffer.find("\n") + 1)
-				line = line.strip_edges()
-				if line != "":
-					var msg = JSON.parse_string(line)
-					if msg != null:
-						_handle_message(msg)
-					else:
-						print_rich("[color=red][GConnector] Failed to parse JSON: ", line)
+	var data := TCPConnection.get_data()
+	if data[0] == OK:
+		var text = data[1].get_string_from_utf8()
+		print_rich("[GConnector] Received raw data: ", text.substr(0, 150))
+		recv_buffer += text
+		while recv_buffer.find("\n") != -1:
+			var line := recv_buffer.substr(0, recv_buffer.find("\n"))
+			recv_buffer = recv_buffer.substr(recv_buffer.find("\n") + 1)
+			line = line.strip_edges()
+			if line != "":
+				var msg = JSON.parse_string(line)
+				if msg != null:
+					_handle_message(msg)
+				else:
+					print_rich("[color=red][GConnector] Failed to parse JSON: ", line)
 
 
 func send_message(msg: Dictionary, callback: Callable = Callable()) -> void:
@@ -273,7 +200,7 @@ func _handle_message(msg: Dictionary) -> void:
 
 		"search_ack":
 			interface.update_progress_bar(1)
-			# Пока ничего полезного не делает, заглушка н абудущее.
+			# Пока ничего полезного не делает, заглушка на будущее.
 			if pending_requests.has(msg_id):
 				var req = pending_requests[msg_id]
 				var callback = req.callback
@@ -331,18 +258,6 @@ func _image_to_base64(image: Image) -> String:
 	#return Marshalls.raw_to_base64(png_data)
 	var raw_data := image.get_data()
 	return Marshalls.raw_to_base64(raw_data)
-
-
-func is_process_running_windows(pid: int) -> bool:
-	var output: Array = []
-	# Запуск команды tasklist с параметром /FI для фильтрации по PID
-	var exit_code = OS.execute("cmd.exe", ["/c", "tasklist /FI \"PID eq " + str(pid) + "\""], output)
-	
-	if exit_code == 0 and output.size() > 0:
-		# Если процесс найден, в выводе будет его имя, а не фраза "No tasks are running"
-		if not "No tasks are running" in output[0]:
-			return true
-	return false
 
 
 # ---------- Публичные методы ----------

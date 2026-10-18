@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://dn2k7o7ufiwvh"]
+
+[node name="DebugUi" type="ConfirmationDialog" unique_id=1376382770]
+oversampling_override = 1.0
+title = "Настройки подключения к генератору"
+initial_position = 1
+size = Vector2i(388, 328)
+visible = true
+ok_button_text = "Созранить"
+cancel_button_text = "Отмена"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=131183351]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 384.0
+offset_bottom = 283.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=442958222]
+layout_mode = 2
+
+[node name="HostIP" type="HBoxContainer" parent="VBoxContainer" unique_id=2076082968]
+layout_mode = 2
+
+[node name="HostIPLabel" type="Label" parent="VBoxContainer/HostIP" unique_id=1645513456]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "IP адресс сервера"
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/HostIP" unique_id=1979390376]
+custom_minimum_size = Vector2(0, 29.445)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="HostIPLineEdit" type="LineEdit" parent="VBoxContainer/HostIP" unique_id=1735739345]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "127.0.0.1"
+placeholder_text = "127.0.0.1"
+
+[node name="HostPort" type="HBoxContainer" parent="VBoxContainer" unique_id=1160668229]
+layout_mode = 2
+
+[node name="HostPortLabel" type="Label" parent="VBoxContainer/HostPort" unique_id=952041884]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Порт сервера"
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/HostPort" unique_id=2068574603]
+custom_minimum_size = Vector2(0, 29.445)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="HostPortLineEdit" type="LineEdit" parent="VBoxContainer/HostPort" unique_id=625545947]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "12345"
+placeholder_text = "12345"
