@@ -37,8 +37,8 @@ func _refresh() -> void:
 
 
 func _on_add_layer() -> void:
-	print("channel_name =", channel_name)
-	var layer_id := StringName(_generate_layer_id())
+	var layer_id := _generate_layer_id(channel_name)
+	print(layer_id)
 	var layer_data := EditorMaterial.add_layer(channel_name,layer_id)
 	_create_layer_ui(layer_data)
 
@@ -73,5 +73,5 @@ func _remove_layer(layer_controller: LayerUIController) -> void:
 	layer_controller.queue_free()
 
 
-func _generate_layer_id() -> String:
-	return "layer_%d_%d" % [Time.get_ticks_usec(),randi()]
+func _generate_layer_id(_channel_name: StringName) -> StringName:
+	return "%s_layer_%f_%d" % [_channel_name,Time.get_unix_time_from_system(),randi()]

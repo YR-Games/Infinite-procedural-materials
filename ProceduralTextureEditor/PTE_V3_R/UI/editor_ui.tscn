@@ -180,6 +180,8 @@ size_flags_vertical = 3
 [node name="Label" type="Label" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer" unique_id=1565702208]
 layout_mode = 2
 size_flags_horizontal = 6
+tooltip_text = "Функция генератора будет доступна сразу после подключения к серверу!"
+mouse_filter = 1
 text = "Генератор загружается ⚙️"
 
 [node name="UI" type="PanelContainer" parent="MenuAndUI" unique_id=209799095]
@@ -210,6 +212,7 @@ script = ExtResource("4_hi3c7")
 
 [node name="PreviewRect" type="TextureRect" parent="MenuAndUI/UI/EditorPreviewSplit/Preview" unique_id=1697785336]
 layout_mode = 2
+tooltip_text = "Область предпросмотра"
 texture = SubResource("ViewportTexture_nnwub")
 expand_mode = 1
 stretch_mode = 6

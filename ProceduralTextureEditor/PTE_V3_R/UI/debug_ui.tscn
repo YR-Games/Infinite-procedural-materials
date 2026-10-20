@@ -26,6 +26,8 @@ layout_mode = 2
 [node name="HostIPLabel" type="Label" parent="VBoxContainer/HostIP" unique_id=1645513456]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+tooltip_text = "Меняйте только на свой страх и риск!"
+mouse_filter = 1
 text = "IP адресс сервера"
 
 [node name="VSeparator" type="VSeparator" parent="VBoxContainer/HostIP" unique_id=1979390376]
@@ -46,6 +48,8 @@ layout_mode = 2
 [node name="HostPortLabel" type="Label" parent="VBoxContainer/HostPort" unique_id=952041884]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+tooltip_text = "Меняйте только на свой страх и риск!"
+mouse_filter = 1
 text = "Порт сервера"
 
 [node name="VSeparator" type="VSeparator" parent="VBoxContainer/HostPort" unique_id=2068574603]

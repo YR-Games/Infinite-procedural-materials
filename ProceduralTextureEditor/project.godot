@@ -44,6 +44,10 @@ folder_colors={
 "res://tests/": "red"
 }
 
+[gui]
+
+timers/tooltip_delay_sec=1.0
+
 [input]
 
 save_material={
