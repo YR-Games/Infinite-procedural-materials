@@ -30,6 +30,8 @@ func _on_material_changed() -> void:
 	# Restart the debounce timer every time something changes
 	update_timer.start()
 
+## ??? Каждый раз создаёт новый шейдер!!!
+## Изменение параметров не должно вызывать рекомпил, а должно настраивать юниформы.
 func _update_preview() -> void:
 	var generator = MaterialCodeGenerator.new()
 	var code = generator.generate_shader_code()
