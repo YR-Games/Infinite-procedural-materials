@@ -29,7 +29,7 @@ var pending_requests: Dictionary = {}     # id -> {callback, retries, timer_star
 func _ready() -> void:
 	interface = get_node(^"/root/EditorUI/MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window")
 	baker = get_node(^"/root/EditorUI/Node")
-	progress_bar = get_node(^"/root/EditorUI/MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/ProgressBar")
+	progress_bar = get_node(^"/root/EditorUI/MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Label/ProgressBar")
 
 	#set_physics_process(false)
 	#set_process_input(false)
