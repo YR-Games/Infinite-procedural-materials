@@ -184,6 +184,23 @@ tooltip_text = "Функция генератора будет доступна 
 mouse_filter = 1
 text = "Генератор загружается ⚙️"
 
+[node name="ProgressBar" type="ProgressBar" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Label" unique_id=1959728655]
+custom_maximum_size = Vector2(-1, 26.14)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 20.065002
+offset_top = -10.12
+offset_right = 420.065
+offset_bottom = 16.019999
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+
 [node name="UI" type="PanelContainer" parent="MenuAndUI" unique_id=209799095]
 layout_mode = 2
 size_flags_vertical = 3

@@ -9,6 +9,7 @@ extends Node #GConnector
 
 var interface: Window
 var baker: ImageBaker
+var progress_bar: ProgressBar
 
 var maaterial_add_queue: Array[Callable]
 var material_adding_finished: bool = true
@@ -28,6 +29,7 @@ var pending_requests: Dictionary = {}     # id -> {callback, retries, timer_star
 func _ready() -> void:
 	interface = get_node(^"/root/EditorUI/MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Найти материал по изображжению 🔎/Window")
 	baker = get_node(^"/root/EditorUI/Node")
+	progress_bar = get_node(^"/root/EditorUI/MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/ProgressBar")
 
 	#set_physics_process(false)
 	#set_process_input(false)
@@ -84,9 +86,11 @@ func _process(delta: float) -> void:
 			maaterial_add_queue.pop_back().call()
 		elif interface.get_parent().get_parent().get_child(3).visible:
 			interface.get_parent().get_parent().get_child(3).hide()
+			progress_bar.hide()
 	elif not interface.get_parent().get_parent().get_child(3).visible:
 		interface.get_parent().get_parent().get_child(3).show()
 		interface.get_parent().get_parent().get_child(3).text = "Индексация материала⚙️\nНе закрывайте Редактор!"
+		progress_bar.show()
 
 	# Приём данных
 	_receive_messages()
@@ -190,6 +194,9 @@ func _handle_message(msg: Dictionary) -> void:
 					}
 					send_message(response)
 					print_rich("[color=cyan][GConnector] Sent %d render_response for material" % baker.step)
+					progress_bar.tooltip_text = "step: %d" % baker.step
+					progress_bar.set_value_no_signal(baker.final_counter+baker.params_count)
+					progress_bar.max_value = baker.params_count*2
 				else:
 					var response = {
 						"type": "renders_is_ower",

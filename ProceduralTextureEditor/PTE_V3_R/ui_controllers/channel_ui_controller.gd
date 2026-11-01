@@ -74,4 +74,4 @@ func _remove_layer(layer_controller: LayerUIController) -> void:
 
 
 func _generate_layer_id(_channel_name: StringName) -> StringName:
-	return "%s_layer_%f_%d" % [_channel_name,Time.get_unix_time_from_system(),randi()]
+	return "%s_layer_%d_%d" % [_channel_name,ceil(Time.get_unix_time_from_system()),randi()]
