@@ -185,6 +185,7 @@ mouse_filter = 1
 text = "Генератор загружается ⚙️"
 
 [node name="ProgressBar" type="ProgressBar" parent="MenuAndUI/MenuTopBar/MarginContainer/HBoxContainer/Label" unique_id=1959728655]
+visible = false
 custom_maximum_size = Vector2(-1, 26.14)
 layout_mode = 1
 anchors_preset = 6

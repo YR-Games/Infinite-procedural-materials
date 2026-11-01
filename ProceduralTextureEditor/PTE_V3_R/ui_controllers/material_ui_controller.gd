@@ -37,7 +37,7 @@ func setup(_material_data: String, similarity: float, id: int) -> void:
 	shader_code = generator.generate_shader_code(material_data)
 
 	name_line.text = material_data.get(&"name", "Material %d"%id)
-	similarity_label.text = "Степень сходства: %f.4" % similarity
+	similarity_label.text = "Степень сходства: %.4f" % similarity
 	var comp = material_data.get(&"complexity", -1)
 	complexity_label.text = "Вычислительная сложность: "+get_complexity() if comp == -1 else str(comp)
 	var sz = material_data.get(&"size", -1)
