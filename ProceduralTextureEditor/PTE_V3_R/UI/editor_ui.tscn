@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://q21mccbjng2h"]
 
-[ext_resource type="Theme" uid="uid://cl4kqmkbwreol" path="res://addons/clearlooks/clearlooks.tres" id="1_1523j"]
 [ext_resource type="PackedScene" uid="uid://duib2k2dsrbut" path="res://PTE_V3_R/UI/generators_list_ui.tscn" id="1_ovceq"]
 [ext_resource type="Script" uid="uid://c2i6ayaflr0s5" path="res://PTE_V3_R/UI/popup_ui.gd" id="2_2vb1g"]
 [ext_resource type="Script" uid="uid://xr3t3bde3734" path="res://PTE_V3_R/ui_controllers/GPM_controller.gd" id="2_i4lt2"]
@@ -33,7 +32,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_1523j")
 
 [node name="MenuAndUI" type="VBoxContainer" parent="." unique_id=346902648]
 layout_mode = 1
