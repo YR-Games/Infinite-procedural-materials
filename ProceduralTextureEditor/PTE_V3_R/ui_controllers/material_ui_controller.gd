@@ -34,7 +34,7 @@ func setup(_material_data: String, similarity: float, id: int) -> void:
 	material_data = EditorMaterial.parce_json_string_to_dict(_material_data)
 
 	var generator := MaterialCodeGenerator.new()
-	shader_code = generator.generate_shader_code(material_data)
+	shader_code = generator.generate_shader_code(material_data)#???
 
 	name_line.text = material_data.get(&"name", "Material %d"%id)
 	similarity_label.text = "Степень сходства: %.4f" % similarity

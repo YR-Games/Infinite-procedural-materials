@@ -6,12 +6,12 @@ scripts/models_manager.py
 """
 
 import base64
-from functools import lru_cache
 import os
+from functools import lru_cache
 
 import torch
-import torch.nn as nn
 from PIL import Image
+from torch import nn
 from transformers import AutoImageProcessor, AutoModel
 
 from .config import STANDARD_DEFINITION
@@ -46,7 +46,9 @@ def base64_to_pil(data: str) -> Image.Image:
 
 
 @lru_cache(maxsize=1000)
-def get_embedding(image: str, from_base64: bool = True) -> torch.Tensor:  # numpy.ndarray
+def get_embedding(
+    image: str, from_base64: bool = True
+) -> torch.Tensor:  # numpy.ndarray
     """
     Пропускает изображение через модель и возвращает эмбеддинг.
 
@@ -73,7 +75,10 @@ def get_embedding(image: str, from_base64: bool = True) -> torch.Tensor:  # nump
 
 @lru_cache(maxsize=1000)
 def load_and_transform_image(
-    image: str, from_base64: bool = True, definition: int = STANDARD_DEFINITION, to_device: bool = True
+    image: str,
+    from_base64: bool = True,
+    definition: int = STANDARD_DEFINITION,
+    to_device: bool = True,
 ) -> torch.Tensor:
     """Загрузка и трансформация изображения с кэшированием"""
 

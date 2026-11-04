@@ -4,14 +4,15 @@ main.py
 для работы с графом ближайших соседей для добавления материалов и поиска подходящих.
 """
 
+import asyncio
 import json
-import socket
 from typing import Any
 
 from core import add_nodes, add_render, find_similar_clusters, is_can_add_material
 from scripts.logger import lib_logger
 
 
+# ??? Перенести в core
 class CoreMock:
     """
     Заглушка для модуля core, имитирующая проверку уникальности рендеров.
@@ -42,42 +43,75 @@ class CoreMock:
 core = CoreMock()
 
 
-def recv_message(sock: socket.socket) -> dict[str, Any] | None:
+async def recv_message(
+    reader: asyncio.StreamReader,
+) -> dict[str, Any] | None:
     """
-    Читает из сокета одно сообщение (до символа '\n'),
+    Асинхронно читает из потока одно сообщение (до символа '\n'),
     декодирует JSON и возвращает словарь.
     Возвращает None при ошибке или закрытии соединения.
     """
+
     try:
-        data = b""
         lib_logger.info("Waiting for data...")
-        while b"\n" not in data:
-            # lib_logger.info("Waiting for chunk data...")
-            chunk = sock.recv(4096)
-            if not chunk:
+        try:
+            # readuntil возвращает данные ВКЛЮЧАЯ разделитель '\n'.
+            # Если в буфере остались байты после '\n', они сохраняются
+            # для следующего вызова.
+            line = await reader.readuntil(b"\n")
+
+        except asyncio.IncompleteReadError as e:
+            # Соединение закрыто. e.partial — недочитанные байты.
+            if e.partial:
+                lib_logger.warning(
+                    f"Connection closed mid-message, got {len(e.partial)} bytes"
+                )
+            else:
                 lib_logger.info("Connection closed by peer")
-                return None
-            data += chunk
-            # lib_logger.debug(f"Received {len(chunk)} bytes")
-        line, _ = data.split(b"\n", 1)
+            return None
+
+        except asyncio.LimitOverrunError as e:
+            # Строка превысила внутренний лимит StreamReader
+            # (по умолчанию 64 KiB). Соединение нужно закрыть —
+            # буфер остаётся "забитым".
+            lib_logger.error(
+                f"Message exceeded reader limit ({e.consumed} bytes buffered)"
+            )
+            return None
+
+        # Отбрасываем завершающий '\n'
+        line = line[:-1]
         lib_logger.info(f"Full message: {line[:100]}")
         return json.loads(line.decode("utf-8"))
-    except Exception as e:
+
+    except Exception as e:  # noqa: BLE001
         lib_logger.error(f"Error receiving message: {e}")
         return None
 
 
-def send_message(sock: socket.socket, msg: dict) -> None:
+async def send_message(
+    writer: asyncio.StreamWriter,
+    msg: dict[str, Any],
+) -> None:
     """
-    Отправляет словарь msg как JSON с завершающим '\n' через сокет.
+    Асинхронно отправляет словарь msg как JSON с завершающим '\n'.
     """
+
     try:
-        sock.sendall((json.dumps(msg) + "\n").encode("utf-8"))
-    except Exception as e:
+        writer.write((json.dumps(msg) + "\n").encode("utf-8"))
+        # drain() ждёт, пока данные уйдут в сокет (или пока буфер
+        # не разгрузится настолько, чтобы принять новые байты).
+        await writer.drain()
+    except Exception as e:  # noqa: BLE001
         lib_logger.error(f"Error sending message: {e}")
 
 
-def handle_add_material(sock: socket.socket, data: dict[str, Any], msg_id: str) -> None:
+async def handle_add_material(
+    writer: asyncio.StreamWriter,
+    reader: asyncio.StreamReader,
+    data: dict[str, Any],
+    msg_id: str,
+) -> None:
     """
     Обрабатывает запрос на добавление материала.
     Отправляет ack, затем в цикле запрашивает рендеры через render_request,
@@ -86,6 +120,7 @@ def handle_add_material(sock: socket.socket, data: dict[str, Any], msg_id: str) 
     После перебора всех параметров отправляет финальный render_request с finished=True
     и ожидает add_material_complete.
     """
+
     material: str = data.get("material", "")
     lib_logger.info(f"Handling add_material id={msg_id}, material={material[:100]}")
 
@@ -95,9 +130,10 @@ def handle_add_material(sock: socket.socket, data: dict[str, Any], msg_id: str) 
         "id": msg_id,
         "data": {"status": "processing"},
     }
-    send_message(sock, ack)
+    await send_message(writer, ack)
 
     if is_can_add_material(material):
+        unique_render_count: int = 0
         # Фиксированное количество рендеров, не более:
         max_renders = 1000
         for i in range(max_renders):
@@ -110,28 +146,26 @@ def handle_add_material(sock: socket.socket, data: dict[str, Any], msg_id: str) 
                     "finished": False,
                 },
             }
-            send_message(sock, req)
+            await send_message(writer, req)
             lib_logger.info(f"Sent render_request {i}")
 
             # Ожидание ответа render_response
-            resp = recv_message(sock)
+            resp: dict[str, Any] | None = await recv_message(reader)
             if resp is None:
                 lib_logger.error("Connection closed while waiting for render_response")
                 break
             if resp.get("type") == "render_response":
-                data: dict[str, Any] = resp.get("data", {})
-                material: str = data.get("material", "")
-                material_params = data.get("material_params", "")
-                image_data: str = data.get("image", "")
+                resp_data: dict[str, Any] = resp.get("data", {})
+                material: str = resp_data.get("material", "")
+                material_params = resp_data.get("material_params", "")
+                image_data: str = resp_data.get("image", "")
                 unique = core.add_render(image_data, material, material_params)
-                if not unique and core.non_unique_count > core.threshold:
-                    stop_msg: dict[str, Any] = {
-                        "type": "add_material_stop",
-                        "data": {"reason": "too many non unique"},
-                    }
-                    send_message(sock, stop_msg)
+                if unique:
+                    unique_render_count += 1
+                elif not unique and core.non_unique_count > core.threshold:
+                    await _send_add_material_stop(writer, "too many non-unique")
                     lib_logger.warning(
-                        "Stopping material addition due to too many non-unique renders"
+                        f"Stopping material addition due to too many non-unique renders ({core.non_unique_count})"
                     )
                     break
             elif resp.get("type") == "renders_is_ower":
@@ -148,31 +182,42 @@ def handle_add_material(sock: socket.socket, data: dict[str, Any], msg_id: str) 
             "id": "finish",
             "data": {"finished": True, "material": material},
         }
-        send_message(sock, finish_req)
+        await send_message(writer, finish_req)
         lib_logger.info("Sent final render_request with finished=True")
 
         # Ожидаем add_material_complete
-        complete_resp = recv_message(sock)
+        complete_resp = await recv_message(reader)
         if complete_resp and complete_resp.get("type") == "add_material_complete":
             lib_logger.info(
-                "Received add_material_complete, addition finished successfully."
+                f"Received add_material_complete, addition finished successfully. {unique_render_count} unique renders have been added."
             )
         else:
             lib_logger.error(
                 "Expected add_material_complete but got something else or timeout"
             )
     else:
-        lib_logger.warning("Material already added, SKIPPED!")
+        reason: str = "Material already added, SKIPPED!"
+        await _send_add_material_stop(writer, reason)
+        lib_logger.warning(reason)
 
 
-def handle_search_request(
-    sock: socket.socket, data: dict[str, Any], msg_id: str
+async def _send_add_material_stop(writer: asyncio.StreamWriter, reason: str) -> None:
+    stop_msg: dict[str, Any] = {
+        "type": "add_material_stop",
+        "data": {"reason": reason},
+    }
+    await send_message(writer, stop_msg)
+
+
+async def handle_search_request(
+    writer: asyncio.StreamWriter, data: dict[str, Any], msg_id: str
 ) -> None:
     """
     Обрабатывает запрос на поиск по эталонному изображению.
     Отправляет search_ack, затем периодически отправляет search_progress
     и search_result, в конце отправляет search_done.
     """
+
     image_data = data.get("image", "")
     lib_logger.info(
         f"Handling search_request id={msg_id}, image_data={image_data[:100]}"
@@ -183,7 +228,7 @@ def handle_search_request(
         "id": msg_id,
         "data": {"status": "processing"},
     }
-    send_message(sock, ack)
+    await send_message(writer, ack)
 
     # Имитация процесса поиска для красивого прогресс бара)
     prog_msg: dict[str, Any] = {
@@ -191,7 +236,7 @@ def handle_search_request(
         "id": msg_id,
         "data": {"progress": 0.9},
     }
-    send_message(sock, prog_msg)
+    await send_message(writer, prog_msg)
 
     materials = find_similar_clusters(image_data)
     for material in materials:
@@ -201,69 +246,78 @@ def handle_search_request(
             "id": msg_id,
             "data": {"material": material[0], "similarity": material[1]},
         }
-        send_message(sock, result_msg)
-        lib_logger.info(f"Sent search_result {material}")
+        await send_message(writer, result_msg)
+        lib_logger.info(
+            f"Sent search_result [material: {material[0][:100]} similarity: {material[1]}]"
+        )
 
         prog_msg: dict[str, Any] = {
             "type": "search_progress",
             "id": msg_id,
             "data": {"progress": 10},
         }
-        send_message(sock, prog_msg)
+        await send_message(writer, prog_msg)
 
     # Завершение поиска
     done_msg: dict[str, Any] = {"type": "search_done", "id": msg_id, "data": {}}
-    send_message(sock, done_msg)
+    await send_message(writer, done_msg)
     lib_logger.info("Search finished")
 
 
-def main() -> None:
+async def handle_client(
+    reader: asyncio.StreamReader, writer: asyncio.StreamWriter
+) -> None:
     """
-    Запускает TCP-сервер, принимает одно соединение от Редактора
-    и обрабатывает входящие сообщения в бесконечном цикле.
+    Функция-обработчик соединения с одним клиентом.
     """
-    host = "127.0.0.1"
-    port = 12345
 
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server.bind((host, port))
-    server.listen(1)
-    lib_logger.info(f"Generator listening on {host}:{port}")
-
-    conn, addr = server.accept()
-    lib_logger.info(f"Connected by {addr}")
-    lib_logger.info("Waiting for first message...")
-
-    with conn:
+    addr = writer.get_extra_info("peername")
+    lib_logger.info(f"Connected by {addr}. Waiting for first message...")
+    try:
         while True:
-            try:
-                msg = recv_message(conn)
-                if msg is None:
-                    lib_logger.info("Connection closed by client")
-                    break
+            # Предполагается, что recv_message_async реализован через reader
+            msg: dict[str, Any] | None = await recv_message(reader)
+            if msg is None:
+                break
 
-                msg_type = msg.get("type")
-                msg_id = msg.get("id")
-                data = msg.get("data", {})
-                lib_logger.info(f"Received message type={msg_type}, id={msg_id}")
+            msg_type = msg.get("type")
+            msg_id: str = msg.get("id")  # type: ignore
+            data: dict[str, Any] = msg.get("data", {})
+            lib_logger.info(f"Received message type={msg_type}, id={msg_id}")
 
-                if msg_type == "add_material":
-                    handle_add_material(conn, data, msg_id)
-                elif msg_type == "search_request":
-                    handle_search_request(conn, data, msg_id)
-                elif msg_type == "ping":
-                    prog_msg: dict[str, Any] = {
-                        "type": "ping",
-                        "data": "0.0001 mc",
-                    }
-                    send_message(conn, prog_msg)
-                else:
-                    lib_logger.warning(f"Unhandled message type: {msg_type}")
+            if msg_type == "add_material":
+                await handle_add_material(writer, reader, data, msg_id)
+            elif msg_type == "search_request":
+                await handle_search_request(writer, data, msg_id)
+            elif msg_type == "ping":
+                await send_message(writer, {"type": "ping", "data": "0.0001 mc"})
+            else:
+                lib_logger.warning(f"Unhandled message type: {msg_type}")
 
-            except Exception as e:
-                lib_logger.error(f"Error: {e}")
+    except Exception as e:  # noqa: BLE001
+        lib_logger.error(f"Error with {addr}: {e}")
+    finally:
+        writer.close()
+        await writer.wait_closed()
+        lib_logger.info(f"Connection closed by {addr}")
+
+
+async def main() -> None:
+    """
+    Запускает TCP-сервер, принимает соединения от Редакторов
+    и обрабатывает входящие сообщения.
+    """
+
+    host, port = "127.0.0.1", 12345
+    # limit — максимальный размер буфера StreamReader (в байтах).
+    # Поднимаем до 10 МБ, т.к. сообщения могут быть больше 64 KiB.
+    server = await asyncio.start_server(
+        handle_client, host, port, limit=1000 * 1024 * 1024
+    )
+    lib_logger.info(f"Generator listening on {host}:{port}")
+    async with server:
+        await server.serve_forever()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

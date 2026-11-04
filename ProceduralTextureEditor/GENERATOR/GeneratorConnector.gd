@@ -231,6 +231,7 @@ func _handle_message(msg: Dictionary) -> void:
 			print_rich("[color=light green][GConnector] Search completed")
 
 		"add_material_stop":
+			material_adding_finished = true
 			var reason = data.get("reason", "")
 			print_rich("[color=light yellow][GConnector] Add material stopped: ", reason)
 
