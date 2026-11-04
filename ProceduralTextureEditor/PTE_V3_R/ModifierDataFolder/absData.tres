@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://boahdi6sr7s6h"]
+
+[ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_qtm15"]
+[ext_resource type="Script" uid="uid://db062eko2a4ko" path="res://PTE_V3_R/resources/modifier_data.gd" id="3_1cpuw"]
+
+[resource]
+script = ExtResource("3_1cpuw")
+function_name = "abs"
+return_type = "float"
+function = "float abs(float value) {
+    return abs(value)
+}"
+metadata/_custom_type_script = "uid://db062eko2a4ko"

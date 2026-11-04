@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://demeyefuhp8xy"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_2gymj"]
+
+[resource]
+script = ExtResource("1_2gymj")
+function_name = "fabriceTrabeculum"
+code = "float fabriceTrabeculum(in vec2 uv)
+{
+ vec3 d = vec3(9.0); // squared distances to the 3 nearest nodes, sorted
+	vec2 base = ceil(uv) - 2.0; // = floor(uv) - 1
+
+	for (int k = 0; k < 9; k++) {
+		vec2 p = base + vec2(float(k % 3), float(k / 3)); // cell id
+		vec2 c = hash22(p) + p - uv; // vector to that cell's node
+		float l = dot(c, c);
+
+		if (l < d.x) {
+			d.yz = d.xy;
+			d.x = l;
+		} else if (l < d.y) {
+			d.z = d.y;
+			d.y = l;
+		} else if (l < d.z) {
+			d.z = l;
+		}
+	}
+
+	d = 5.0 * sqrt(d);
+	float a = d.y - d.x;
+	float b = d.z - d.x;
+	return 4.0 * (a / (a / (b + 0.000001) + 1.0) - 0.5);
+    }
+
+"
+required_functions = ["hash22"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

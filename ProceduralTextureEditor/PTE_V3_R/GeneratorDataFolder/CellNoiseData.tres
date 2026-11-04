@@ -4,26 +4,12 @@
 [ext_resource type="Shader" uid="uid://beeqj4wsgs5ar" path="res://PTE_V3_R/PreviewShaders/CellNoisePreview.gdshader" id="2_4adij"]
 [ext_resource type="Script" uid="uid://b2t4rdfk1u1es" path="res://PTE_V3_R/resources/generator_data.gd" id="2_aloys"]
 [ext_resource type="Script" uid="uid://vq2u6j364n55" path="res://PTE_V3_R/resources/float_parameter_def.gd" id="2_l3tis"]
-[ext_resource type="Script" uid="uid://yfnmvhksfrlg" path="res://PTE_V3_R/resources/int_parameter_def.gd" id="3_1gkcn"]
-
-[sub_resource type="Resource" id="Resource_d8yqr"]
-script = ExtResource("2_l3tis")
-min_value = 0.01
-editor_type = 2
-metadata/_custom_type_script = "uid://vq2u6j364n55"
-
-[sub_resource type="Resource" id="Resource_jahst"]
-script = ExtResource("3_1gkcn")
-min_value = 1
-max_value = 10
-editor_type = 2
-metadata/_custom_type_script = "uid://yfnmvhksfrlg"
 
 [sub_resource type="Resource" id="Resource_howm4"]
 script = ExtResource("2_l3tis")
 default_value = 10.0
 min_value = 0.01
-max_value = 100.0
+max_value = 300.0
 editor_type = 2
 metadata/_custom_type_script = "uid://vq2u6j364n55"
 
@@ -31,13 +17,11 @@ metadata/_custom_type_script = "uid://vq2u6j364n55"
 script = ExtResource("2_aloys")
 function_name = "cellNoise"
 preview_shader = ExtResource("2_4adij")
-required_functions = ["cfbm"]
-function = "float cellNoise(in vec2 uv, float chaos, int numOctaves, float scale,){
-	return cfbm(uv*scale,chaos,numOctaves);
+required_functions = ["cellTiling"]
+function = "float cellNoise(in vec2 uv,  float scale,){
+	return cellTiling(uv*scale);
 }"
 parameters = Dictionary[String, ExtResource("1_qog2d")]({
-"chaos": SubResource("Resource_d8yqr"),
-"numOctaves": SubResource("Resource_jahst"),
 "scale": SubResource("Resource_howm4")
 })
 metadata/_custom_type_script = "uid://b2t4rdfk1u1es"

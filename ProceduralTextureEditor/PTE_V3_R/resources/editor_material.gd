@@ -15,16 +15,6 @@ static var editorMaterialData := {
 		&"normal": {
 			&"layers": {},
 			&"layer_order": []
-		},
-		
-		&"roughness": {
-			&"layers": {},
-			&"layer_order": []
-		},
-
-		&"metallic": {
-			&"layers": {},
-			&"layer_order": []
 		}
 	}
 }
@@ -86,6 +76,83 @@ static func load_project_from_dict(project: Dictionary)->bool:
 		return true
 
 	return false
+
+
+## сливает generators и channels (вместе с layers, layer order и modifiers)
+## из входного словаря с текущим проектом.
+## В случае коллизии ID элемент входного словаря получает новый ID;
+## возвращает false если сливать было нечегоe.
+static func merge_project_from_dict(project: Dictionary) -> bool:
+	var incoming_generators: Dictionary = project.get(&"generators", {})
+	var incoming_channels: Dictionary = project.get(&"channels", {})
+
+	if incoming_generators.is_empty() and incoming_channels.is_empty():
+		return false
+
+	# ---- Generators ----
+	var generator_id_map := {}  # old id -> id actually used in the project
+	var generators := get_generators()
+
+	for old_id in incoming_generators:
+		var new_id: StringName = old_id
+		if generators.has(new_id):
+			new_id = _make_unique_id("gen", generators)
+
+		generators[new_id] = incoming_generators[old_id].duplicate(true)
+		generator_id_map[old_id] = new_id
+
+	# ---- Channels ----
+	var channels: Dictionary = editorMaterialData[&"channels"]
+
+	for channel in incoming_channels:
+		var incoming_channel: Dictionary = incoming_channels[channel]
+
+		if not channels.has(channel):
+			channels[channel] = {
+				&"layers": {},
+				&"layer_order": []
+			}
+
+		var layers: Dictionary = channels[channel][&"layers"]
+		var order: Array = channels[channel][&"layer_order"]
+
+		var incoming_layers: Dictionary = incoming_channel.get(&"layers", {})
+
+		var incoming_ids: Array = incoming_channel.get(&"layer_order", []).duplicate()
+		for layer_id in incoming_layers:
+			if not incoming_ids.has(layer_id):
+				incoming_ids.append(layer_id)
+
+		for old_layer_id in incoming_ids:
+			if not incoming_layers.has(old_layer_id):
+				continue
+
+			var layer: Dictionary = incoming_layers[old_layer_id].duplicate(true)
+
+			var new_layer_id: StringName = old_layer_id
+			if layers.has(new_layer_id):
+				new_layer_id = _make_unique_id("layer", layers)
+				layer[&"id"] = new_layer_id
+
+			# перепривязываем слой если его генератор был переименован
+			var gen_id: StringName = layer.get(&"generator_id", StringName())
+			if generator_id_map.has(gen_id):
+				layer[&"generator_id"] = generator_id_map[gen_id]
+
+			layers[new_layer_id] = layer
+			order.append(new_layer_id)
+
+	SignalBus.layer_structure_changed.emit()
+	SignalBus.material_value_changed.emit()
+
+	return true
+
+
+static func _make_unique_id(prefix: String, existing: Dictionary) -> StringName:
+	var id := StringName()
+	while id.is_empty() or existing.has(id):
+		id = StringName("%s_%d_%d" % [prefix, Time.get_ticks_usec(), randi()])
+	return id
 
 
 static func parce_json_string_to_dict(text: String)->Dictionary:
@@ -169,25 +236,48 @@ static func get_channel_layer_order(channel:StringName, material_data: Dictionar
 
 	return channel_data[&"layer_order"]
 
-static func add_layer(channel:StringName,layer_id:StringName) -> Dictionary:
+static func add_layer(channel:StringName, layer_id:StringName, generator_id:StringName = StringName()) -> Dictionary:
 	var channel_data := get_channel(channel)
 	if channel_data.is_empty():
 		return {}
 	var layer := {
 		&"id": layer_id,
 		&"name": "Layer",
-		&"generator_id": StringName(),
+		&"generator_id": generator_id,   # <- was StringName()
 		&"blend_mode": &"normal",
 		&"opacity": 1.0,
 		&"modifiers": {},
 		&"modifier_order": []
 	}
-	
+
 	channel_data[&"layers"][layer_id] = layer
 	channel_data[&"layer_order"].append(layer_id)
 	SignalBus.layer_structure_changed.emit()
-	
+
 	return layer
+
+
+## Создаёт генератор и слой в канале.
+## Возвращает Dictionary нового слоя,
+## или пустой Dictionary если канала не существует.
+static func add_layer_with_generator(
+	channel: StringName,
+	generator_name: StringName,
+	parameters: Dictionary = {}
+) -> Dictionary:
+
+	if get_channel(channel).is_empty():
+		push_error("Unknown channel: %s" % channel)
+		return {}
+
+	var ticks := Time.get_unix_time_from_system()
+	var generator_id := StringName("gen_%d_%d" % [ticks, randi()])
+	var layer_id := StringName("layer_%d_%d" % [ticks, randi()])
+
+
+	add_generator(generator_id, generator_name, parameters.duplicate(true))
+
+	return add_layer(channel, layer_id, generator_id)
 
 
 static func get_layer(channel:StringName, layer_id:StringName, material_data: Dictionary = editorMaterialData) -> Dictionary:
@@ -280,12 +370,7 @@ static func remove_modifier(channel:StringName,layer_id:StringName,modifier_id:S
 	layer[&"modifier_order"].erase(modifier_id)
 
 
-static func get_modifier(
-	channel:StringName,
-	layer_id:StringName,
-	modifier_id:StringName,
-	material_data: Dictionary = editorMaterialData
-) -> Dictionary:
+static func get_modifier(channel:StringName,layer_id:StringName,modifier_id:StringName,material_data: Dictionary = editorMaterialData) -> Dictionary:
 
 	var layer := get_layer(channel, layer_id, material_data)
 
