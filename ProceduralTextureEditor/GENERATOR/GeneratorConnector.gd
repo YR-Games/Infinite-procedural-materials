@@ -179,7 +179,7 @@ func _handle_message(msg: Dictionary) -> void:
 					material_adding_finished = true
 				
 			else:
-				var baked: Array = await baker.bake(material, false)
+				var baked: Array = await baker.bake(material, false, true) #???
 				var image:Image = baked[0]
 				if image and not image.is_empty():
 					var img_base64 := _image_to_base64(image)
@@ -247,7 +247,7 @@ func _handle_message(msg: Dictionary) -> void:
 			print_rich("[color=light red][GConnector] Unhandled message type: ", msg_type)
 
 
-## Генерирует изображение для материала.
+## Генерирует изображение для материала. ??? Не используется!
 func _generate_render(material: String, anyway: bool = false) -> Image:
 	#var img = Image.create(518, 518, false, Image.FORMAT_RGBA8)
 	#img.fill(Color(randf(), randf(), randf(), 1.0))

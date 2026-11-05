@@ -1,6 +1,8 @@
 """
 scripts/embedding_graph.py
-Структура данных для эффективного хранения и поиска кластеров эмбеддингов.
+Структуры данных для эффективного хранения и поиска кластеров эмбеддингов.
+Не потокобезопасен! Многопоточное выполнение допустимо ТОЛЬКО для MaterialGraph!
+Расчитан на python 3.13.5
 """
 
 import pickle
@@ -31,13 +33,6 @@ class RenderNode:
     embedding: np.ndarray
     """Эмбеддинг рендера при параметрах material_params"""
 
-    def __init__(
-        self, material_id: int, material_params: str, embedding: np.ndarray
-    ) -> None:
-        self.material_id = material_id
-        self.material_params = material_params
-        self.embedding = embedding
-
 
 @dataclass(slots=True)
 class ClusterNode:
@@ -47,6 +42,7 @@ class ClusterNode:
     centroid: np.ndarray
     nodes: list[RenderNode]
     size: int
+    sum_embedding: np.ndarray
 
 
 class AbstractGraph:
@@ -60,9 +56,11 @@ class AbstractGraph:
     @lru_cache(maxsize=1000)
     @staticmethod
     def _get_norm_embedding(image: str) -> np.ndarray:
-        """Возвращает нормализованный эмбеддинг по пути к изображению."""
-        embedding = get_embedding(image).numpy().squeeze()
-        return embedding / np.linalg.norm(embedding)  # Нормализуем
+        """Возвращает нормализованный эмбеддинг по строковому представлению изображения."""
+        vec = get_embedding(image).numpy().squeeze()
+        vec = vec.astype(np.float32, copy=False)
+        vec = vec / np.linalg.norm(vec)  # уже нормирован, но пока 1D
+        return vec.reshape(1, -1)  # (1, d) float32
 
     def _rebuild_index(self):
         """Перестраивает FAISS индекс из центроидов всех кластеров."""
@@ -72,10 +70,9 @@ class AbstractGraph:
             return
 
         self._cluster_ids = list(self.clusters.keys())
-        centroids = np.array(
-            [self.clusters[cid].centroid for cid in self._cluster_ids], dtype=np.float32
-        )
-        faiss.normalize_L2(centroids)
+        centroids = np.vstack(
+            [self.clusters[cid].centroid for cid in self._cluster_ids]
+        ).astype(np.float32, copy=False)
         dim = centroids.shape[1]
         self.index = faiss.IndexFlatIP(dim)
         self.index.add(centroids)
@@ -83,21 +80,18 @@ class AbstractGraph:
     def _add_centroid_to_index(self, centroid: np.ndarray, cluster_id: int):
         """Добавляет один центроид в существующий индекс."""
         if self.index is None:
-            dim = centroid.shape[0]
-            self.index = faiss.IndexFlatIP(dim)
+            self.index = faiss.IndexFlatIP(centroid.shape[-1])
             self._cluster_ids = []
-        centroid_norm = centroid.astype(np.float32).reshape(1, -1)
-        faiss.normalize_L2(centroid_norm)
-        self.index.add(centroid_norm)
+        self.index.add(centroid.astype(np.float32, copy=False))
         self._cluster_ids.append(cluster_id)
 
     def find_similar_clusters(
         self, image: str, limit: int = 10
     ) -> list[tuple[str, float]]:
         """
-        Находит до k (по умолчанию 10, но не более 10) наиболее похожих материалов,
-        рассматривая не более 4 кластеров с наиболее похожими центроидами.
-        Возвращает список кортежей (material, similarity) отсортированных по убыванию similarity.
+        Находит до k (по умолчанию не более 10) наиболее похожих материалов,
+        рассматривая не более 5 кластеров с наиболее похожими центроидами.
+        Возвращает список кортежей (material_params, similarity) отсортированных по убыванию similarity.
         """
         max_clusters = 5
 
@@ -105,22 +99,20 @@ class AbstractGraph:
         if self.index is None or self.index.ntotal == 0:
             return []
 
-        query = embedding.astype(np.float32).reshape(1, -1)
-        faiss.normalize_L2(query)
         num_to_search = min(max_clusters, self.index.ntotal)
-        _, indices = self.index.search(query, num_to_search)
+        _, indices = self.index.search(embedding, num_to_search)
 
         candidates: list[tuple[str, float]] = []
         for i in range(num_to_search):
             idx = indices[0][i]
-            if idx < len(self._cluster_ids):
+            if 0 <= idx < len(self._cluster_ids):
                 cid: int = self._cluster_ids[idx]  # type: ignore
                 cluster = self.clusters.get(cid)  # type: ignore
                 if cluster is None:
                     continue
                 # Для каждого узла в кластере вычисляем точное косинусное сходство с запросом
                 for node in cluster.nodes:
-                    exact_sim = float(np.dot(embedding, node.embedding))
+                    exact_sim = float(np.dot(embedding[0], node.embedding[0]))
                     candidates.append((node.material_params, exact_sim))
 
         # Сортируем по убыванию точного сходства и обрезаем до лимита
@@ -156,6 +148,9 @@ class MaterialGraph(AbstractGraph):
         """
         Добавляет рендер в граф Материала и возвращает True, если он добавлен в новый кластер,
         False - пропущен, так как слишком похож на уже добавленные.
+
+        * material не может меняться во время добавления рендеров одного материала,
+        а все материалы добавляются последовательно.
         """
 
         if material != self.current_material:
@@ -169,11 +164,7 @@ class MaterialGraph(AbstractGraph):
 
         # Проверяем, есть ли уже похожие кластеры (по максимальному сходству)
         if self.index is not None and self.index.ntotal > 0:
-            query = embedding.astype(np.float32).reshape(
-                1, -1
-            )  # ??? стразу приводить эмбеддинг к такому виду и в нём и сохранять!
-            faiss.normalize_L2(query)
-            similarities, _ = self.index.search(query, 1)
+            similarities, _ = self.index.search(embedding, 1)
             max_sim = similarities[0][0]
             if max_sim >= cluster_threshold:
                 return False
@@ -182,7 +173,13 @@ class MaterialGraph(AbstractGraph):
         cluster_id = self.next_cluster_id
         self.next_cluster_id += 1
         node = RenderNode(self.material_id, material_params, embedding)
-        cluster = ClusterNode(id=cluster_id, centroid=embedding, nodes=[node], size=1)
+        cluster = ClusterNode(
+            id=cluster_id,
+            centroid=embedding,
+            nodes=[node],
+            size=1,
+            sum_embedding=embedding.copy(),
+        )
         self.clusters[cluster_id] = cluster
 
         # Добавляем центроид в индекс
@@ -199,7 +196,7 @@ class EmbeddingGraph(AbstractGraph):
     def __init__(self):
         super().__init__()
 
-    def add_nodes(self, material_graph: MaterialGraph):
+    def add_nodes(self, material_graph: MaterialGraph, save: bool = True):
         """
         Дополняет граф эмбеддингов нодами из графа материала.
         Близкие ноды объединяются в существующие кластеры,
@@ -226,29 +223,23 @@ class EmbeddingGraph(AbstractGraph):
 
             # Проверяем, есть ли похожий кластер в embedding_graph
             if self.index is not None and self.index.ntotal > 0:
-                query = embedding.astype(np.float32).reshape(1, -1)
-                similarities, indices = self.index.search(query, 1)
+                similarities, indices = self.index.search(embedding, 1)
                 max_sim = similarities[0][0]
 
                 if max_sim >= cluster_threshold:
                     # Добавляем в существующий кластер
                     cluster_idx: int = indices[0][0]
-                    if cluster_idx < len(self._cluster_ids):
+                    if 0 <= cluster_idx < len(self._cluster_ids):
                         cluster_id = self._cluster_ids[cluster_idx]
                         cluster = self.clusters[cluster_id]
 
-                        # Обновляем центроид с учётом нового элемента
-                        old_centroid = cluster.centroid
-                        # Добавляем новый элемент в кластер
-                        cluster.nodes.append(node)
+                        # Точное обновление центроидf через хранимую сумму с учётом нового элемента
+                        cluster.sum_embedding += embedding  # (1,d) += (1,d)
                         cluster.size += 1
-
-                        # Пересчитываем центроид (инкрементально)
-                        new_centroid = (
-                            old_centroid * (cluster.size - 1) + embedding
-                        ) / cluster.size
-                        new_centroid = new_centroid / np.linalg.norm(new_centroid)
-                        cluster.centroid = new_centroid
+                        cluster.nodes.append(node)
+                        cluster.centroid = cluster.sum_embedding / np.linalg.norm(
+                            cluster.sum_embedding
+                        )
 
                         added_to_existing += 1
                         continue
@@ -257,15 +248,21 @@ class EmbeddingGraph(AbstractGraph):
             cluster_id = self.next_cluster_id
             self.next_cluster_id += 1
 
-            # Нормализуем центроид ??? если хранить шготовые эмбеддинги - лишнее, так как центройд и будет эмбеддингом
+            # Центроид уже нормализован
             centroid = embedding.copy()
-            centroid = centroid / np.linalg.norm(centroid)
 
             cluster = ClusterNode(
-                id=cluster_id, centroid=centroid, nodes=[node], size=1
+                id=cluster_id,
+                centroid=centroid,
+                nodes=[node],
+                size=1,
+                sum_embedding=embedding.copy(),
             )
             self.clusters[cluster_id] = cluster
             new_clusters_count += 1
+
+            # Добавляем новый центроид в индекс
+            self._add_centroid_to_index(centroid, cluster_id)
 
         # Перестраиваем индекс
         if new_clusters_count > 0 or added_to_existing > 0:
@@ -274,7 +271,8 @@ class EmbeddingGraph(AbstractGraph):
                 f"Добавлено {new_clusters_count} новых кластеров, "
                 f"{added_to_existing} нод добавлено в существующие кластеры 🗜️"
             )
-            self.save()
+            if save:
+                self.save()
         else:
             lib_logger.info("Нет изменений в графе")
 
@@ -320,7 +318,8 @@ class EmbeddingGraph(AbstractGraph):
             self._cluster_ids = []
 
 
-def is_material_already_added(material: str) -> bool:
+def is_material_do_not_added(material: str) -> bool:
+    """Возвращает True, есл иматериал ещё не добавлен."""
     return material not in all_added_materials
 
 

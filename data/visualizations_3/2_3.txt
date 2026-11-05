@@ -3,16 +3,18 @@
 		"sn:generators",
 		{
 			"args": [
-				"sn:gen_330047817_2140003569",
+				"sn:gen_184719344_1857506880",
 				{
 					"args": [
 						"sn:generator_name",
-						"sn:cellNoise",
+						"sn:cellNoiseAlt",
 						"sn:parameters",
 						{
 							"args": [
 								"s:scale",
-								"f:40.9177272727273"
+								"f:10.0",
+								"s:seed",
+								"f:1.0"
 							],
 							"type": "Dictionary"
 						}
@@ -31,19 +33,19 @@
 						"sn:layers",
 						{
 							"args": [
-								"sn:albedo_layer_1793855728_2186660213",
+								"sn:albedo_layer_1793881328_3761852362",
 								{
 									"args": [
 										"sn:id",
-										"sn:albedo_layer_1793855728_2186660213",
+										"sn:albedo_layer_1793881328_3761852362",
 										"sn:name",
 										"s:Layer",
 										"sn:generator_id",
-										"sn:gen_330047817_2140003569",
+										"sn:gen_184719344_1857506880",
 										"sn:blend_mode",
 										"sn:normal",
 										"sn:opacity",
-										"f:0.98667375983924",
+										"f:1.0",
 										"sn:modifiers",
 										{
 											"args": [],
@@ -59,7 +61,7 @@
 						},
 						"sn:layer_order",
 						[
-							"sn:albedo_layer_1793855728_2186660213"
+							"sn:albedo_layer_1793881328_3761852362"
 						]
 					],
 					"type": "Dictionary"

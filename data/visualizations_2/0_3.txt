@@ -1,0 +1,85 @@
+{
+	"args": [
+		"sn:generators",
+		{
+			"args": [
+				"sn:gen_20692703_2135598857",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:blueNoiseAlt",
+						"sn:parameters",
+						{
+							"args": [
+								"s:scale",
+								"f:40.9177272727273"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		},
+		"sn:channels",
+		{
+			"args": [
+				"sn:albedo",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [
+								"sn:albedo_layer_1793881167_2422722803",
+								{
+									"args": [
+										"sn:id",
+										"sn:albedo_layer_1793881167_2422722803",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_20692703_2135598857",
+										"sn:blend_mode",
+										"sn:normal",
+										"sn:opacity",
+										"f:1.0",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								}
+							],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[
+							"sn:albedo_layer_1793881167_2422722803"
+						]
+					],
+					"type": "Dictionary"
+				},
+				"sn:normal",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[]
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		}
+	],
+	"type": "Dictionary"
+}

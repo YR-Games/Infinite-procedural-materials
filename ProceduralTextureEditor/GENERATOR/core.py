@@ -6,7 +6,7 @@ core.py
 from scripts.compare import compare
 from scripts.embedding_graph import (
     embedding_graph,
-    is_material_already_added,
+    is_material_do_not_added,
     material_graph,
 )
 
@@ -34,6 +34,8 @@ def compare_images(
 
 # Функции для API:
 def add_nodes():
+    """??? Добавить очередь и бачевую обработку, в конце добалвения батча
+    вызывать embedding_graph.save()"""
     embedding_graph.add_nodes(material_graph)
 
 
@@ -42,6 +44,7 @@ def add_render(str_image: str, material: str, material_params: str) -> bool:
     Принимает base64 изображение, преобразовывает его в PIL
     и передавает в граф Материала на дальнейшёю обработку.
     """
+    # ??? Должен создавать новый граф материала для каждого подключенного пользователя!!!
     return material_graph.add_render(str_image, material, material_params)
 
 
@@ -54,4 +57,4 @@ def find_similar_clusters(str_image: str) -> list[tuple[str, float]]:
 
 
 def is_can_add_material(material: str) -> bool:
-    return is_material_already_added(material)
+    return is_material_do_not_added(material)

@@ -95,7 +95,7 @@ var final_counter: int = 0
 var params_count: int = 0
 const MAX_BRUT_FORCE_STEP_COUNT = 22
 
-func bake(material: String, anyway: bool = false)->Array:
+func bake(material: String, anyway: bool = false, evalute_only_gen: bool = false)->Array:
 	if material != current_material:
 		current_material = material
 		current_material_data = EditorMaterial.parce_json_string_to_dict(material)
@@ -103,11 +103,15 @@ func bake(material: String, anyway: bool = false)->Array:
 			step = 0
 			params_count = (
 				EditorMaterial.get_generators_params_count(current_material_data)
-				+ EditorMaterial.get_modifers_params_count(current_material_data)
+				+ (
+					EditorMaterial.get_modifers_params_count(current_material_data)
+					if not evalute_only_gen
+					else 0
+				)
 			) * 6
 			final_counter = -params_count
 
-	if not anyway and not evalute():
+	if not anyway and not evalute(evalute_only_gen):
 		return [Image.new(), ""]
 
 	var generator := MaterialCodeGenerator.new()
@@ -124,7 +128,7 @@ func bake(material: String, anyway: bool = false)->Array:
 
 
 ## Подставляет следующие параметры для обрабатываемого материала.
-func evalute()->bool:
+func evalute(evalute_only_gen: bool = false)->bool:
 	if final_counter >= params_count:
 		
 		return false
@@ -160,32 +164,33 @@ func evalute()->bool:
 							param_def.get_step(),
 						)
 
-			for mod_id in EditorMaterial.get_modifier_order(channel, layer, current_material_data):
-				var mod := EditorMaterial.get_modifier(channel, layer, mod_id, current_material_data)
-				var mod_name: String  = mod.get("modifier_name", "")
-				var mod_params: Dictionary = mod.get("parameters", {})
-				var mod_data: ModifierData = ModifierLibrary.get_modifier_data(mod_name)
-				if not mod_data:
-					continue
+			if not evalute_only_gen:
+				for mod_id in EditorMaterial.get_modifier_order(channel, layer, current_material_data):
+					var mod := EditorMaterial.get_modifier(channel, layer, mod_id, current_material_data)
+					var mod_name: String  = mod.get("modifier_name", "")
+					var mod_params: Dictionary = mod.get("parameters", {})
+					var mod_data: ModifierData = ModifierLibrary.get_modifier_data(mod_name)
+					if not mod_data:
+						continue
 
-				for param_name in mod_data.parameters:
-					var param_def: abstractParameterDef = mod_data.parameters[param_name]
-					if not param_def is PaletteParameterDef and randf() > 0.5:
-						if step == 1 or mod_params[param_name] >= param_def.get_max():
-							mod_params[param_name] = param_def.get_min()
-							final_counter+=1
-						else:
-							# Вариант 1 i.default_value += i.step - резервный
-							# Вариант 2
-							mod_params[param_name] += max(
-								(param_def.get_max()-param_def.get_min())/MAX_BRUT_FORCE_STEP_COUNT,
-								param_def.get_step(),
-							)
+					for param_name in mod_data.parameters:
+						var param_def: abstractParameterDef = mod_data.parameters[param_name]
+						if not param_def is PaletteParameterDef and randf() > 0.5:
+							if step == 1 or mod_params[param_name] >= param_def.get_max():
+								mod_params[param_name] = param_def.get_min()
+								final_counter+=1
+							else:
+								# Вариант 1 i.default_value += i.step - резервный
+								# Вариант 2
+								mod_params[param_name] += max(
+									(param_def.get_max()-param_def.get_min())/MAX_BRUT_FORCE_STEP_COUNT,
+									param_def.get_step(),
+								)
 
-			if EditorMaterial.get_layer_order(channel)[0] != layer:
-				EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.2, 1.0)
-			else:
-				EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.8, 1.0)
+				if EditorMaterial.get_layer_order(channel)[0] != layer:
+					EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.2, 1.0)
+				else:
+					EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.8, 1.0)
 
 	return true
 

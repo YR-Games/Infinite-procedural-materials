@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_w0vkn")
-function_name = "worley12d"
+function_name = "worley12"
 code = "float worley12(vec2 p) {
 	vec2 i = floor(p);
 	p -= i;
