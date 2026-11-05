@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://ccsvg78qsnqcc"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_ekif7"]
+
+[resource]
+script = ExtResource("1_ekif7")
+function_name = "perlin12"
+code = "float perlin12(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = p - i;
+	vec2 u = f * f * f * (10.0 + f * (6.0 * f - 15.0));
+	float a = dot(normalize(hash22(i + vec2(0.0, 0.0)) - 0.5), f - vec2(0.0, 0.0));
+	float b = dot(normalize(hash22(i + vec2(1.0, 0.0)) - 0.5), f - vec2(1.0, 0.0));
+	float c = dot(normalize(hash22(i + vec2(0.0, 1.0)) - 0.5), f - vec2(0.0, 1.0));
+	float d = dot(normalize(hash22(i + vec2(1.0, 1.0)) - 0.5), f - vec2(1.0, 1.0));
+	return mix(mix(a, b, u.x), mix(c, d, u.x), u.y) * 0.7 + 0.5;
+}"
+required_functions = ["hash22"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

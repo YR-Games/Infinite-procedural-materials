@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://8k8r3h35nuf0"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_0fph1"]
+
+[resource]
+script = ExtResource("1_0fph1")
+function_name = "curl22"
+code = "vec2 curl22(vec2 p) {
+	vec2 e = vec2(0.01, 0.0);
+	vec2 a = vec2(perlin12(p + e.xy), perlin12(p + e.yx));
+	vec2 b = vec2(perlin12(p - e.xy), perlin12(p - e.yx));
+	return (a - b) / e.x * 0.5;
+}"
+required_functions = ["perlin12"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

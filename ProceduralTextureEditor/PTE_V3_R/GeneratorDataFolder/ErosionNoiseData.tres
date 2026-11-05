@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="GeneratorData" format=3 uid="uid://c60jqlt53rx7s"]
+
+[ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_8r1no"]
+[ext_resource type="Script" uid="uid://vq2u6j364n55" path="res://PTE_V3_R/resources/float_parameter_def.gd" id="2_kuth0"]
+[ext_resource type="Script" uid="uid://b2t4rdfk1u1es" path="res://PTE_V3_R/resources/generator_data.gd" id="3_77gc7"]
+
+[sub_resource type="Resource" id="Resource_euod2"]
+script = ExtResource("2_kuth0")
+default_value = 10.0
+min_value = 0.01
+max_value = 300.0
+editor_type = 2
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[resource]
+script = ExtResource("3_77gc7")
+function_name = "erosionNoise"
+required_functions = ["erosion12"]
+function = "float erosionNoise(in vec2 uv, in float scale){
+	return erosion12(uv*scale).x;
+}"
+parameters = Dictionary[String, ExtResource("1_8r1no")]({
+"scale": SubResource("Resource_euod2")
+})
+metadata/_custom_type_script = "uid://b2t4rdfk1u1es"

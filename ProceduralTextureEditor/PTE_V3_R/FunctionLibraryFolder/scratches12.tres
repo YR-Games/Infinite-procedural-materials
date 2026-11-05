@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://da2ixlqh1il42"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_btssp"]
+
+[resource]
+script = ExtResource("1_btssp")
+function_name = "scratches12"
+code = "float scratches12(vec2 p) {
+	const float SOFTNESS = 3.0;
+	const int OCTAVES = 8;
+
+	float scratches = 0.0;
+	float w = length(fwidth(p)) * SOFTNESS;
+	for (int i = 0; i < OCTAVES; ++i) {
+		float x = scratch(p, w);
+		scratches = max(scratches, x);
+		p = p * mat2(vec2(1.0, 0.7), vec2(-0.7, 1.0)) - 12.31;
+		w *= 1.22;
+	}
+	return scratches;
+}"
+required_functions = ["scratch"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

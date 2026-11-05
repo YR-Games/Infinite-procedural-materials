@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://c7rep87ikwpcp"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_ju86x"]
+
+[resource]
+script = ExtResource("1_ju86x")
+function_name = "hash11"
+code = "float hash11(float p)
+{
+    p = fract(p * .1031);
+    p *= p + 33.33;
+    p *= p + p;
+    return fract(p);
+}"
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

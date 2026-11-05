@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://uf0tevedoiqc"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_s2xm7"]
+
+[resource]
+script = ExtResource("1_s2xm7")
+function_name = "hash13"
+code = "float hash13(vec3 p3)
+{
+	p3  = fract(p3 * .1031);
+    p3 += dot(p3, p3.zyx + 31.32);
+    return fract((p3.x + p3.y) * p3.z);
+}"
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

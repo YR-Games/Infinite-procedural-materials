@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://bfgildg367g4o"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_2vsm5"]
+
+[resource]
+script = ExtResource("1_2vsm5")
+function_name = "blue12"
+code = "float blue12(vec2 p) {
+	float v = 0.0;
+	for (int k = 0; k < 9; k++) {
+		v += hash12(p + vec2(float(k % 3 - 1), float(k / 3 - 1)));
+	}
+	return 0.9 * (1.125 * hash12(p) - v / 8.0) + 0.5;
+}"
+required_functions = ["hash12"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

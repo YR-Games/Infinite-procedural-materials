@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://cch0y2osuysdu"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_8xswd"]
+
+[resource]
+script = ExtResource("1_8xswd")
+function_name = "hilbert_blue12"
+code = "float hilbert_blue12(vec2 p) {
+	return fract(0.6180339887498948482 * float(hilbert_encode(512, ivec2(p)) % 262144));
+}"
+required_functions = ["hilbert_encode"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://d0l0tylmm47g8"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_oma4n"]
+
+[resource]
+script = ExtResource("1_oma4n")
+function_name = "hash33"
+code = "vec3 hash33(vec3 p3)
+{
+	p3 = fract(p3 * vec3(.1031, .1030, .0973));
+    p3 += dot(p3, p3.yxz+33.33);
+    return 2.0*fract((p3.xxy + p3.yxx)*p3.zyx)-1.;
+
+}"
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

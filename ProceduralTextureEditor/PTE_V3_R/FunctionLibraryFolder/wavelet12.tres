@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://cu6tfmhbgyrf8"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_uacx6"]
+
+[resource]
+script = ExtResource("1_uacx6")
+function_name = "wavelet12"
+code = "float wavelet12(vec2 p, float phase, float scale) {
+	float d = 0.0;
+	float s = 1.0;
+	float m = 0.0;
+	for (float i = 0.0; i < 4.0; ++i) {
+		vec2 q = p * s;
+		vec2 g = fract(floor(q) * vec2(123.34, 233.53));
+		g += dot(g, g + 23.234);
+		float a = fract(g.x * g.y) * 1000.0; // + z * (mod(g.x + g.y, 2.0) - 1.0); // add vorticity
+		q = (fract(q) - 0.5) * mat2(vec2(cos(a), -sin(a)), vec2(sin(a), cos(a)));
+		d += sin(q.x * 10.0 + phase) * (1.0 - smoothstep(0.0, 0.25, dot(q, q))) / s;
+		p = p * mat2(vec2(0.54, -0.84), vec2(0.84, 0.54)) + i;
+		m += 1.0 / s;
+		s *= scale;
+	}
+	return d / m;
+}"
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://bpjcan5goqc2p"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_ov262"]
+
+[resource]
+script = ExtResource("1_ov262")
+function_name = "golden_ign12"
+code = "float golden_ign12(vec2 p) {
+	return float(uint(p.x) * 3242174889u + uint(p.y) * 2447445413u) * exp2(-32.0);
+}"
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

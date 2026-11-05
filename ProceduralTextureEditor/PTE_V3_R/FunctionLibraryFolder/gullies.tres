@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://bncodkp6v1yvm"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_d0oyy"]
+
+[resource]
+script = ExtResource("1_d0oyy")
+function_name = "gullies"
+code = "vec3 gullies(vec2 p, vec2 slope) {
+	vec2 side_dir = vec2(-slope.y, slope.x) * 3.14159265;
+	vec2 id = floor(p);
+	p -= id;
+	vec2 height_slope = vec2(0.0);
+	float w_sum = 0.0;
+	for (int x = -1; x <= 2; x++) {
+		for (int y = -1; y <= 2; y++) {
+			vec2 off = vec2(float(x), float(y));
+			vec2 c = p - off - hash22(id + off) + 0.5;
+			float dist2 = dot(c, c);
+			float w = max(0.0, exp(-dist2 * 2.0) - 0.01111);
+			w_sum += w;
+			float t = dot(c, side_dir);
+			height_slope += vec2(cos(t), -sin(t)) * w;
+		}
+	}
+	return vec3(height_slope.x, height_slope.y * side_dir) / w_sum;
+}"
+required_functions = ["hash22"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

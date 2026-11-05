@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://c7fv5ae2b4b2s"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_xk68e"]
+
+[resource]
+script = ExtResource("1_xk68e")
+function_name = "perlin12d"
+code = "vec3 perlin12d(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+	vec2 du = 30.0 * f * f * (f * (f - 2.0) + 1.0);
+	vec2 ga = hash22(i + vec2(0.0, 0.0)) * 2.0 - 1.0;
+	vec2 gb = hash22(i + vec2(1.0, 0.0)) * 2.0 - 1.0;
+	vec2 gc = hash22(i + vec2(0.0, 1.0)) * 2.0 - 1.0;
+	vec2 gd = hash22(i + vec2(1.0, 1.0)) * 2.0 - 1.0;
+	float va = dot(ga, f - vec2(0.0, 0.0));
+	float vb = dot(gb, f - vec2(1.0, 0.0));
+	float vc = dot(gc, f - vec2(0.0, 1.0));
+	float vd = dot(gd, f - vec2(1.0, 1.0));
+	return vec3(
+			va + u.x * (vb - va) + u.y * (vc - va) + u.x * u.y * (va - vb - vc + vd),
+			ga + u.x * (gb - ga) + u.y * (gc - ga) + u.x * u.y * (ga - gb - gc + gd)
+					+ du * (u.yx * (va - vb - vc + vd) + vec2(vb, vc) - va));
+}"
+required_functions = ["hash22"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

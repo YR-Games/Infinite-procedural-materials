@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://ctysuv46i3r5r"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_hbv4h"]
+
+[resource]
+script = ExtResource("1_hbv4h")
+function_name = "hilbert_encode"
+code = "int hilbert_encode(int n, ivec2 p) {
+	int i = 0;
+	for (int s = n >> 1; s > 0; s >>= 1) {
+		int rx = (p.x & s) != 0 ? 1 : 0;
+		int ry = (p.y & s) != 0 ? 1 : 0;
+		i += s * s * ((rx << 1) | (rx ^ ry));
+		int flip = ((p.x ^ p.y) * (1 - ry)) ^ ((s - 1) * (rx & (1 - ry)));
+		p.x ^= flip;
+		p.y ^= flip;
+	}
+	return i;
+}"
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://d0mv4s5gbvke0"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_hxmtn"]
+
+[resource]
+script = ExtResource("1_hxmtn")
+function_name = "voronoi12"
+code = "float voronoi12(vec2 x, float s) {
+	s = 1.0 / s;
+	vec2 p = floor(x);
+	vec2 f = x - p;
+	float va = 0.0;
+	float wt = 0.0;
+	for (float gx = -1.0; gx <= 1.0; ++gx) {
+		for (float gy = -1.0; gy <= 1.0; ++gy) {
+			vec3 o = hash32(p + vec2(gx, gy));
+			float d = length(vec2(gx, gy) - f + o.xy);
+			float ww = pow(1.0 - smoothstep(0.0, 1.414, d), s);
+			va += o.z * ww;
+			wt += ww;
+		}
+	}
+	return va / wt;
+}"
+required_functions = ["hash32"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

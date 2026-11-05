@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="GeneratorData" format=3 uid="uid://dbcmfgd3u57jg"]
+
+[ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_peukw"]
+[ext_resource type="Script" uid="uid://vq2u6j364n55" path="res://PTE_V3_R/resources/float_parameter_def.gd" id="2_i15sd"]
+[ext_resource type="Script" uid="uid://b2t4rdfk1u1es" path="res://PTE_V3_R/resources/generator_data.gd" id="3_7xtm8"]
+
+[sub_resource type="Resource" id="Resource_euod2"]
+script = ExtResource("2_i15sd")
+default_value = 10.0
+min_value = 0.01
+max_value = 300.0
+editor_type = 2
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[sub_resource type="Resource" id="Resource_jaj4f"]
+script = ExtResource("2_i15sd")
+max_value = 10.0
+editor_type = 2
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[resource]
+script = ExtResource("3_7xtm8")
+function_name = "voronoiNoise"
+required_functions = ["voronoi12"]
+function = "float voronoiNoise(in vec2 uv, in float scale, in float smoothness){
+	return voronoi12(uv*scale,smoothness);
+}"
+parameters = Dictionary[String, ExtResource("1_peukw")]({
+"scale": SubResource("Resource_euod2"),
+"smoothness": SubResource("Resource_jaj4f")
+})
+metadata/_custom_type_script = "uid://b2t4rdfk1u1es"

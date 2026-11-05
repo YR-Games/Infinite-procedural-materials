@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://cueyl78q2dhlr"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_d1kj1"]
+
+[resource]
+script = ExtResource("1_d1kj1")
+function_name = "crater12"
+code = "float crater12(vec2 p) {
+	vec2 f = fract(p);
+	p = floor(p);
+	float va = 0.0;
+	float wt = 0.0;
+	for (int i = -2; i <= 2; i++) {
+		for (int j = -2; j <= 2; j++) {
+			vec2 g = vec2(float(i), float(j));
+			vec2 o = hash22(p + g);
+			float d = distance(f - g, o);
+			float w = exp(-4.0 * d);
+			va += w * sin(6.28 * sqrt(max(d, 0.06)));
+			wt += w;
+		}
+	}
+	return abs(va / wt);
+}"
+required_functions = ["hash22"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

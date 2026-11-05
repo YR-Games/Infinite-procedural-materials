@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="GeneratorData" format=3 uid="uid://cscbotjjgb75"]
+
+[ext_resource type="Script" uid="uid://dvea3mtug7h1q" path="res://PTE_V3_R/resources/abstract_parameter_def.gd" id="1_k4lab"]
+[ext_resource type="Script" uid="uid://vq2u6j364n55" path="res://PTE_V3_R/resources/float_parameter_def.gd" id="2_85jfy"]
+[ext_resource type="Script" uid="uid://b2t4rdfk1u1es" path="res://PTE_V3_R/resources/generator_data.gd" id="3_fdgfj"]
+
+[sub_resource type="Resource" id="Resource_euod2"]
+script = ExtResource("2_85jfy")
+default_value = 10.0
+min_value = 0.01
+max_value = 300.0
+editor_type = 2
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[sub_resource type="Resource" id="Resource_xqdq3"]
+script = ExtResource("2_85jfy")
+max_value = 100.0
+editor_type = 2
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[sub_resource type="Resource" id="Resource_q3q56"]
+script = ExtResource("2_85jfy")
+default_value = 1.24
+max_value = 100.0
+editor_type = 2
+metadata/_custom_type_script = "uid://vq2u6j364n55"
+
+[resource]
+script = ExtResource("3_fdgfj")
+function_name = "waveletNoise"
+required_functions = ["wavelet12"]
+function = "float waveletNoise(in vec2 uv, in float scale, in float phase, in float amplitude){
+	return wavelet12(uv*scale, phase, amplitude);
+}"
+parameters = Dictionary[String, ExtResource("1_k4lab")]({
+"amplitude": SubResource("Resource_q3q56"),
+"phase": SubResource("Resource_xqdq3"),
+"scale": SubResource("Resource_euod2")
+})
+metadata/_custom_type_script = "uid://b2t4rdfk1u1es"

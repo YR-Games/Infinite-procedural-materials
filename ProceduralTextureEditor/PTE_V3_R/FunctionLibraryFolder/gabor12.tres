@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://dybr2jedt02ik"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_ebiw8"]
+
+[resource]
+script = ExtResource("1_ebiw8")
+function_name = "gabor12"
+code = "float gabor12(vec2 p) {
+	const float kF = 8.0;
+	vec2 i = floor(p);
+	vec2 f = p - i;
+	f *= f * (3.0 - 2.0 * f);
+	return mix(mix(sin(kF * dot(p, hash22(i + vec2(0.0, 0.0)))),
+					sin(kF * dot(p, hash22(i + vec2(1.0, 0.0)))), f.x),
+			mix(sin(kF * dot(p, hash22(i + vec2(0.0, 1.0)))),
+					sin(kF * dot(p, hash22(i + vec2(1.0, 1.0)))), f.x), f.y);
+}"
+required_functions = ["hash22"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

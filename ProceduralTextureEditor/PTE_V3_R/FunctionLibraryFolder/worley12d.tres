@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://drhri73hew4ah"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_p5oou"]
+
+[resource]
+script = ExtResource("1_p5oou")
+function_name = "worley12d"
+code = "vec3 worley12d(vec2 p) {
+	vec2 i = floor(p);
+	p -= i;
+	float w = 1e6;
+	vec2 cmin = vec2(0.0);
+	for (float x = -1.0; x <= 1.0; ++x) {
+		for (float y = -1.0; y <= 1.0; ++y) {
+			vec2 c = p - vec2(x, y) - hash12(i + vec2(x, y));
+			float l2 = dot(c, c);
+			if (l2 < w) {
+				w = l2;
+				cmin = c;
+			}
+		}
+	}
+	w = sqrt(w);
+	return vec3(1.0 - w, -cmin / w);
+}"
+required_functions = ["hash12"]
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"

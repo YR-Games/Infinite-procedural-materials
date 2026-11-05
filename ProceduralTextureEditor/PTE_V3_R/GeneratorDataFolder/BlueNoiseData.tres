@@ -9,7 +9,7 @@
 script = ExtResource("2_7j0gx")
 default_value = 10.0
 min_value = 0.01
-max_value = 100.0
+max_value = 300.0
 editor_type = 2
 metadata/_custom_type_script = "uid://vq2u6j364n55"
 

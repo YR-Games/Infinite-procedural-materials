@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FunctionData" format=3 uid="uid://odjmcaau3ylj"]
+
+[ext_resource type="Script" uid="uid://dxcnvm1ttksge" path="res://PTE_V3_R/resources/function_data.gd" id="1_npy0a"]
+
+[resource]
+script = ExtResource("1_npy0a")
+function_name = "ign12"
+code = "float ign12(vec2 p) {
+	return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715))));
+}"
+metadata/_custom_type_script = "uid://dxcnvm1ttksge"
