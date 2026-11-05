@@ -14,20 +14,20 @@ metadata/_custom_type_script = "uid://vq2u6j364n55"
 
 [sub_resource type="Resource" id="Resource_t41vp"]
 script = ExtResource("2_hx4pf")
-max_value = 300.0
+max_value = 10.0
 editor_type = 2
 metadata/_custom_type_script = "uid://vq2u6j364n55"
 
 [sub_resource type="Resource" id="Resource_isjgj"]
 script = ExtResource("2_hx4pf")
-max_value = 100.0
+max_value = 10.0
 editor_type = 2
 metadata/_custom_type_script = "uid://vq2u6j364n55"
 
 [sub_resource type="Resource" id="Resource_bk68a"]
 script = ExtResource("2_hx4pf")
 default_value = 0.5
-max_value = 100.0
+max_value = 10.0
 editor_type = 2
 metadata/_custom_type_script = "uid://vq2u6j364n55"
 

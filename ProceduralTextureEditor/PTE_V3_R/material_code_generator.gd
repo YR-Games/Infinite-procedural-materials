@@ -6,6 +6,25 @@ class_name MaterialCodeGenerator extends RefCounted
 # ---------------------------------------------------------------------------
 var _cache := ShaderCache.new()
 
+# ---------------------------------------------------------------------------
+# Parameter matching
+# Generator / modifier arguments are matched to the GLSL function signature
+# BY NAME, so the order of the `parameters` dictionary can never mis-wire them.
+# ---------------------------------------------------------------------------
+
+# Property on GeneratorData / ModifierData that holds the GLSL source of the
+# function (GeneratorData calls it `function`). If ModifierData uses another
+# name, add it to this list.
+const _GLSL_SOURCE_PROPS := ["function"]
+
+# function_name -> PackedStringArray of argument names after the first one
+# (uv / input value), or null when the signature can't be matched to the
+# parameter keys. Filled lazily, reported once per function.
+var _param_order_cache := {}
+
+# Last identifier of one GLSL argument declaration: "in float scale", "float x[4]".
+var _arg_name_rx := RegEx.create_from_string("(\\w+)\\s*(?:\\[[^\\]]*\\])?\\s*$")
+
 func _init() -> void:
 	# Topo-sort runs exactly once here.
 	_cache.warm_up_library()
@@ -172,7 +191,7 @@ func _build_fragment(material_data: Dictionary, shader_type: String = "spatial")
 
 	code.append("}")
 	return "\n".join(code)
-	
+
 # Appends the layer iteration lines into `code`.
 # `base_var` is the name of the vec4 accumulator already declared by the caller.
 # Indentation prefix is always one tab (works for both a function body and fragment body).
@@ -212,17 +231,10 @@ func _append_channel_body(
 		if not gen_data:
 			continue
 
+		# Arguments are emitted in GLSL signature order, values looked up by name.
 		var args := PackedStringArray(["uv"])
-		for param_name in gen_data.parameters:
-			var param_def: abstractParameterDef = gen_data.parameters[param_name]
-			var val = gen_params.get(param_name, param_def.get_default_value())
-			var var_name: String = "gen_%s_%s" % [layer.get("id", "layer"), param_name]
-			var declaration: String = param_def.generate_glsl_declaration(val, var_name)
-			if declaration.strip_edges() != "":
-				code.append("\t" + declaration.replace("\n", "\n\t"))
-				args.append(param_def.value_to_glsl(val, var_name))
-			else:
-				args.append(param_def.value_to_glsl(val))
+		if not _append_params(code, args, gen_data, gen_params, "gen_%s" % layer.get("id", "layer")):
+			continue
 
 		var current_val: String  = "gen_val_" + str(layer.get("id", "gen"))
 		var current_type: String = gen_data.return_type
@@ -238,16 +250,8 @@ func _append_channel_body(
 				continue
 
 			var mod_args := PackedStringArray([current_val])
-			for param_name in mod_data.parameters:
-				var param_def: abstractParameterDef = mod_data.parameters[param_name]
-				var val = mod_params.get(param_name, param_def.get_default_value())
-				var var_name: String = "mod_%s_%s" % [mod_id, param_name]
-				var declaration: String = param_def.generate_glsl_declaration(val, var_name)
-				if declaration.strip_edges() != "":
-					code.append("\t" + declaration.replace("\n", "\n\t"))
-					mod_args.append(param_def.value_to_glsl(val, var_name))
-				else:
-					mod_args.append(param_def.value_to_glsl(val))
+			if not _append_params(code, mod_args, mod_data, mod_params, "mod_%s" % mod_id):
+				continue
 
 			var new_val: String = "mod_" + str(mod_id)
 			code.append("\t%s %s = %s(%s);" % [
@@ -272,3 +276,103 @@ func _append_channel_body(
 		else:
 			code.append("\t%s = mix(%s, %s, %s.a * %.6f);" % [
 					base_var, base_var, layer_color_var, layer_color_var, opacity])
+
+
+# ---------------------------------------------------------------------------
+# Name-based parameter wiring (shared by generators and modifiers)
+# ---------------------------------------------------------------------------
+
+# Emits the declarations for one generator/modifier and appends its arguments
+# to `args` in the order the GLSL function expects them. Values are looked up
+# by parameter name, so the order of `data.parameters` doesn't matter.
+# Returns false if the parameters can't be matched to the GLSL signature;
+# the caller should then skip that generator/modifier.
+func _append_params(
+		code: PackedStringArray,
+		args: PackedStringArray,
+		data,
+		values: Dictionary,
+		prefix: String
+) -> bool:
+	var order = _param_order(data)
+	if order == null:
+		return false
+
+	for param_name in order:
+		var param_def: abstractParameterDef = data.parameters[param_name]
+		var val = values.get(param_name, param_def.get_default_value())
+		var var_name: String = "%s_%s" % [prefix, param_name]
+		var declaration: String = param_def.generate_glsl_declaration(val, var_name)
+		if declaration.strip_edges() != "":
+			code.append("\t" + declaration.replace("\n", "\n\t"))
+			args.append(param_def.value_to_glsl(val, var_name))
+		else:
+			args.append(param_def.value_to_glsl(val))
+	return true
+
+
+# Argument names for `data.function_name` in GLSL signature order, excluding the
+# first argument. Returns null if a GLSL argument has no matching key in
+# `data.parameters`. Result is cached, and problems are reported once.
+func _param_order(data) -> Variant:
+	var fn: String = data.function_name
+	if _param_order_cache.has(fn):
+		return _param_order_cache[fn]
+
+	var order := PackedStringArray()
+	var parsed = _parse_glsl_signature(fn, _get_glsl_source(data))
+
+	if parsed == null:
+		# No GLSL source (or no matching signature): fall back to dictionary order.
+		push_warning("MaterialCodeGenerator: can't read the GLSL signature of '%s', using parameter dictionary order. Check _GLSL_SOURCE_PROPS." % fn)
+		for key in data.parameters:
+			order.append(str(key))
+	else:
+		order = parsed
+
+		var missing := PackedStringArray()
+		for param_name in order:
+			if not data.parameters.has(param_name):
+				missing.append(param_name)
+		if not missing.is_empty():
+			push_error("MaterialCodeGenerator: GLSL function '%s' takes argument(s) [%s] that have no matching key in its parameters. Keys are: %s" % [
+					fn, ", ".join(missing), str(data.parameters.keys())])
+			_param_order_cache[fn] = null
+			return null
+
+		# Parameters the editor shows but the GLSL function never receives.
+		for key in data.parameters:
+			if str(key) not in order:
+				push_warning("MaterialCodeGenerator: parameter '%s' is not an argument of GLSL function '%s' and has no effect." % [str(key), fn])
+
+	_param_order_cache[fn] = order
+	return order
+
+
+func _get_glsl_source(data) -> String:
+	for prop in _GLSL_SOURCE_PROPS:
+		var src = data.get(prop)
+		if src is String and src != "":
+			return src
+	return ""
+
+
+# Reads the argument names of `func_name` out of its GLSL definition, skipping
+# the first argument. Returns null if the definition isn't found in `source`.
+func _parse_glsl_signature(func_name: String, source: String) -> Variant:
+	if source == "":
+		return null
+
+	var sig_rx := RegEx.create_from_string(
+			"\\b\\w+\\s+%s\\s*\\(([^)]*)\\)\\s*\\{" % func_name)
+	var m := sig_rx.search(source)
+	if m == null:
+		return null
+
+	var names := PackedStringArray()
+	var arg_list := m.get_string(1).split(",")
+	for i in range(1, arg_list.size()):
+		var arg_match := _arg_name_rx.search(arg_list[i])
+		if arg_match:
+			names.append(arg_match.get_string(1))
+	return names
