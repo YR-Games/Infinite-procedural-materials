@@ -244,7 +244,7 @@ static func add_layer(channel:StringName, layer_id:StringName, generator_id:Stri
 		&"id": layer_id,
 		&"name": "Layer",
 		&"generator_id": generator_id,   # <- was StringName()
-		&"blend_mode": &"normal",
+		&"blend_mode": &"addBlend",
 		&"opacity": 1.0,
 		&"modifiers": {},
 		&"modifier_order": []

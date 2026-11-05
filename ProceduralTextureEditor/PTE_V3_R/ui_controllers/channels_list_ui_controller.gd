@@ -8,7 +8,6 @@ var channels: Array[ChannelUIController] = []
 
 func _ready() -> void:
 	add_channel(&"albedo")
-	add_channel(&"normal")
 
 
 func add_channel(channel_name: StringName) -> void:
