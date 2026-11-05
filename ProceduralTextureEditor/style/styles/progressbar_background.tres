@@ -1,0 +1,15 @@
+[gd_resource type="StyleBoxTexture" format=3 uid="uid://cblirpnrc0id4"]
+
+[ext_resource type="Texture2D" uid="uid://cuhxa4ktl7tb2" path="res://addons/clearlooks/textures/progressbar_background.png" id="1_vmb64"]
+
+[resource]
+texture = ExtResource("1_vmb64")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+expand_margin_left = 3.0
+expand_margin_top = 3.0
+expand_margin_right = 3.0
+expand_margin_bottom = 3.0
+modulate_color = Color(0.32941177, 0.35686275, 0.43137255, 1)

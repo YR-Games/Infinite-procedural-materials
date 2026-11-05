@@ -1,0 +1,15 @@
+[gd_resource type="StyleBoxTexture" format=3 uid="uid://5ligg1upymq8"]
+
+[ext_resource type="Texture2D" uid="uid://c0ptgw2arrero" path="res://addons/clearlooks/textures/button_pressed.png" id="1_4r6dm"]
+
+[resource]
+texture = ExtResource("1_4r6dm")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+modulate_color = Color(0.6806, 0.72044, 0.83, 1)

@@ -8,8 +8,8 @@ class_name GeneratorUIController extends PanelContainer
 @onready var preview_rect: ColorRect = $VBoxContainer/PreviewContainer/Preview
 @onready var parameters_container: VBoxContainer = $VBoxContainer/ParameterScroll/ParameterList
 
-var normal_style = preload("res://PTE_V3_R/styles/normal_style_box.tres")
-var highlight_style = preload("res://PTE_V3_R/styles/selected_style_box.tres")
+var normal_style = preload("res://style/styles/normal_style_box.tres")
+var highlight_style = preload("res://style/styles/selected_style_box.tres")
 
 var _material: ShaderMaterial
 var param_controls: Dictionary[String, ParameterControl] = {}

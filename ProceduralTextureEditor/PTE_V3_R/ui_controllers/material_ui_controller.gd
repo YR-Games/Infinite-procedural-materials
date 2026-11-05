@@ -10,8 +10,8 @@ var shader_code: String
 @onready var size_label: Label = $HBoxContainer/HBoxContainer/Size
 @onready var apply_button: Button = $HBoxContainer/HBoxContainer/Button
 
-var normal_style = preload("res://PTE_V3_R/styles/normal_style_box.tres")
-var highlight_style = preload("res://PTE_V3_R/styles/selected_style_box.tres")
+var normal_style = preload("res://style/styles/normal_style_box.tres")
+var highlight_style = preload("res://style/styles/selected_style_box.tres")
 
 var _material: ShaderMaterial
 

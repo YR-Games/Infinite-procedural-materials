@@ -10,8 +10,8 @@ var param_controls: Dictionary[String, ParameterControl] = {}
 @onready var modifier_name_label: Label = $VBoxContainer/ModifierName
 @onready var params_container: VBoxContainer = $VBoxContainer/ParameterScroll/ParameterList
 
-var normal_style = preload("res://PTE_V3_R/styles/normal_style_box.tres")
-var highlight_style = preload("res://PTE_V3_R/styles/selected_style_box.tres")
+var normal_style = preload("res://style/styles/normal_style_box.tres")
+var highlight_style = preload("res://style/styles/selected_style_box.tres")
 var parent_layer:LayerUIController
 
 var is_selected := false:

@@ -1,0 +1,15 @@
+[gd_resource type="StyleBoxTexture" format=3 uid="uid://crks40d21ulv"]
+
+[ext_resource type="Texture2D" uid="uid://cywo064vqis06" path="res://addons/clearlooks/textures/frame.png" id="1_4ob8x"]
+
+[resource]
+texture = ExtResource("1_4ob8x")
+texture_margin_left = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+expand_margin_left = 5.0
+expand_margin_top = 1.0
+expand_margin_right = 5.0
+expand_margin_bottom = 5.0
+region_rect = Rect2(0, 8.648453, 379, 245.35155)
+modulate_color = Color(0.6431373, 0.68235296, 0.78039217, 1)

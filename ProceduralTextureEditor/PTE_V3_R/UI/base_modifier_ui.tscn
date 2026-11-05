@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bupo62sa4a0ci"]
 
-[ext_resource type="StyleBox" uid="uid://dhhh003lvmmll" path="res://PTE_V3_R/styles/normal_style_box.tres" id="1_328r3"]
+[ext_resource type="StyleBox" uid="uid://dhhh003lvmmll" path="res://style/styleBoxes/normal_style_box.tres" id="1_328r3"]
 [ext_resource type="Script" uid="uid://cqa3gj0hajscv" path="res://PTE_V3_R/ui_controllers/modifier_ui_controller.gd" id="2_328r3"]
 
 [node name="BaseModifierUI" type="PanelContainer" unique_id=607833355]

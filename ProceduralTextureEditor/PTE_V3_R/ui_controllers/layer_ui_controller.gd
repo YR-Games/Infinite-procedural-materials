@@ -24,8 +24,8 @@ var current_modifier : ModifierUIController = null
 
 @onready var generator_list: GeneratorListUIController = get_node("/root/EditorUI/MenuAndUI/UI/EditorPreviewSplit/GeneratorsChannelsSplit/Generators")
 
-var normal_style = preload("res://PTE_V3_R/styles/normal_style_box.tres")
-var highlight_style = preload("res://PTE_V3_R/styles/selected_style_box.tres")
+var normal_style = preload("res://style/styles/normal_style_box.tres")
+var highlight_style = preload("res://style/styles/selected_style_box.tres")
 var owner_channel: ChannelUIController
 
 
