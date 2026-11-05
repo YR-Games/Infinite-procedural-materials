@@ -6,6 +6,7 @@ scripts/embedding_graph.py
 import pickle
 from dataclasses import dataclass
 from functools import lru_cache
+from typing import Any
 
 import faiss
 import numpy as np
@@ -19,19 +20,26 @@ all_added_materials: list[str] = []
 
 
 # Вспомогательные классы.
-@dataclass
+@dataclass(slots=True)
 class RenderNode:
     """Узел графа, связывающий Материал с эмбеддингом."""
 
-    material: str
+    material_id: int
+    """Уникальный индекс высушенного материала (без параметров, только структура)"""
+    material_params: str
+    """Материал с параметрами"""
     embedding: np.ndarray
+    """Эмбеддинг рендера при параметрах material_params"""
 
-    def __init__(self, material: str, embedding: np.ndarray) -> None:
-        self.material = material
+    def __init__(
+        self, material_id: int, material_params: str, embedding: np.ndarray
+    ) -> None:
+        self.material_id = material_id
+        self.material_params = material_params
         self.embedding = embedding
 
 
-@dataclass
+@dataclass(slots=True)
 class ClusterNode:
     """Узел кластера в графе."""
 
@@ -46,11 +54,12 @@ class AbstractGraph:
         self.clusters: dict[int, ClusterNode] = {}
         self.next_cluster_id = 0
 
-        self.index = None  # FAISS индекс для центроидов
+        self.index: faiss.IndexFlatIP | None = None  # FAISS индекс для центроидов
         self._cluster_ids: list[int] = []  # список id кластеров в порядке индекса
 
     @lru_cache(maxsize=1000)
-    def _get_norm_embedding(self, image: str) -> np.ndarray:
+    @staticmethod
+    def _get_norm_embedding(image: str) -> np.ndarray:
         """Возвращает нормализованный эмбеддинг по пути к изображению."""
         embedding = get_embedding(image).numpy().squeeze()
         return embedding / np.linalg.norm(embedding)  # Нормализуем
@@ -92,27 +101,27 @@ class AbstractGraph:
         """
         max_clusters = 5
 
-        embedding = self._get_norm_embedding(image)
+        embedding = AbstractGraph._get_norm_embedding(image)
         if self.index is None or self.index.ntotal == 0:
             return []
 
         query = embedding.astype(np.float32).reshape(1, -1)
         faiss.normalize_L2(query)
         num_to_search = min(max_clusters, self.index.ntotal)
-        similarities, indices = self.index.search(query, num_to_search)
+        _, indices = self.index.search(query, num_to_search)
 
         candidates: list[tuple[str, float]] = []
         for i in range(num_to_search):
             idx = indices[0][i]
             if idx < len(self._cluster_ids):
-                cid = self._cluster_ids[idx]
-                cluster = self.clusters.get(cid)
+                cid: int = self._cluster_ids[idx]  # type: ignore
+                cluster = self.clusters.get(cid)  # type: ignore
                 if cluster is None:
                     continue
                 # Для каждого узла в кластере вычисляем точное косинусное сходство с запросом
                 for node in cluster.nodes:
                     exact_sim = float(np.dot(embedding, node.embedding))
-                    candidates.append((node.material, exact_sim))
+                    candidates.append((node.material_params, exact_sim))
 
         # Сортируем по убыванию точного сходства и обрезаем до лимита
         candidates.sort(key=lambda x: x[1], reverse=True)
@@ -132,7 +141,8 @@ class MaterialGraph(AbstractGraph):
 
     def __init__(self):
         super().__init__()
-        self.material: str = ""
+        self.material_id: int = -1
+        self.current_material: str = ""
 
     def _clear(self):
         """Очищает граф."""
@@ -140,20 +150,22 @@ class MaterialGraph(AbstractGraph):
         self.next_cluster_id = 0
         self.index = None
         self._cluster_ids = []
-        self.material = ""
+        self.material_id = -1
 
     def add_render(self, image: str, material: str, material_params: str) -> bool:
         """
         Добавляет рендер в граф Материала и возвращает True, если он добавлен в новый кластер,
         False - пропущен, так как слишком похож на уже добавленные.
         """
-        global cluster_threshold
 
-        if material != self.material:
+        if material != self.current_material:
             self._clear()
-            self.material = material
+            # Обновляем список добавленных материалов и сохраняем его индекс
+            self.material_id = len(all_added_materials)
+            all_added_materials.append(material)
+            self.current_material = material
 
-        embedding = self._get_norm_embedding(image)
+        embedding = AbstractGraph._get_norm_embedding(image)
 
         # Проверяем, есть ли уже похожие кластеры (по максимальному сходству)
         if self.index is not None and self.index.ntotal > 0:
@@ -169,7 +181,7 @@ class MaterialGraph(AbstractGraph):
         # Создаём новый кластер
         cluster_id = self.next_cluster_id
         self.next_cluster_id += 1
-        node = RenderNode(material_params, embedding)
+        node = RenderNode(self.material_id, material_params, embedding)
         cluster = ClusterNode(id=cluster_id, centroid=embedding, nodes=[node], size=1)
         self.clusters[cluster_id] = cluster
 
@@ -193,7 +205,6 @@ class EmbeddingGraph(AbstractGraph):
         Близкие ноды объединяются в существующие кластеры,
         далёкие создают новые кластеры.
         """
-        global cluster_threshold, all_added_materials
 
         lib_logger.info("Объединение графов... ⚙️")
 
@@ -256,10 +267,6 @@ class EmbeddingGraph(AbstractGraph):
             self.clusters[cluster_id] = cluster
             new_clusters_count += 1
 
-        # Обновляем список добавленных материалов
-        if material_graph.material not in all_added_materials:
-            all_added_materials.append(material_graph.material)
-
         # Перестраиваем индекс
         if new_clusters_count > 0 or added_to_existing > 0:
             self._rebuild_index()
@@ -271,58 +278,11 @@ class EmbeddingGraph(AbstractGraph):
         else:
             lib_logger.info("Нет изменений в графе")
 
-        """
-        X = np.array(embeddings_list, dtype=np.float32)
-        faiss.normalize_L2(X)  # на всякий случай?
-
-        # DBSCAN с косинусным расстоянием
-        eps = 1 - cluster_threshold
-        db = DBSCAN(eps=eps, min_samples=1, metric="cosine")
-        labels = db.fit_predict(X)
-
-        # Группируем по меткам
-        unique_labels = set(labels)
-        for label in unique_labels:
-            indices = np.where(labels == label)[0]
-            cluster_nodes: list[RenderNode] = [nodes_list[i] for i in indices]
-
-            if label == -1:
-                # Шум – создаём отдельный кластер для каждого элемента
-                for node in cluster_nodes:
-                    cluster_id = self.next_cluster_id
-                    self.next_cluster_id += 1
-                    centroid = node.embedding
-                    cluster = ClusterNode(
-                        id=cluster_id, centroid=centroid, nodes=[node], size=1
-                    )
-                    self.clusters[cluster_id] = cluster
-            else:
-                # Вычисляем центроид кластера
-                centroid = cluster_nodes[0].embedding.copy()
-                centroid = centroid / np.linalg.norm(centroid)
-                cluster_id = self.next_cluster_id
-                self.next_cluster_id += 1
-                cluster = ClusterNode(
-                    id=cluster_id,
-                    centroid=centroid,
-                    nodes=cluster_nodes,
-                    size=len(cluster_nodes),
-                )
-                self.clusters[cluster_id] = cluster
-
-        # Перестраиваем индекс
-        self._rebuild_index()
-        lib_logger.info(f"Создано {len(self.clusters)} кластеров 🗜️")
-        all_added_materials.append(nodes_list[0].material)
-        self.save()
-        """
-
     # Функции сохранения:
     def save(self, filepath: str = "embedding_graph.pkl"):
         """
         Сохраняет граф в файл (без FAISS индекса, он будет перестроен).
         """
-        global cluster_threshold, all_added_materials
         data: dict[str, Any] = {
             "clusters": self.clusters,
             "next_cluster_id": self.next_cluster_id,
@@ -350,7 +310,7 @@ class EmbeddingGraph(AbstractGraph):
             lib_logger.info(
                 f"Граф загружен из {filepath}, кластеров: {len(self.clusters)}"
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             lib_logger.info(
                 f"Граф не найден по пути {filepath} ({e}), будет создан новый!"
             )

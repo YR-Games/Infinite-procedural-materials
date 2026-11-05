@@ -19,7 +19,7 @@ class CoreMock:
     Потом должно считаться в графе Материала!
     """
 
-    def __init__(self, threshold: int = 250):
+    def __init__(self, threshold: int = 500):
         self.non_unique_count = 0
         self.threshold = threshold
 
@@ -74,7 +74,7 @@ async def recv_message(
             # Строка превысила внутренний лимит StreamReader
             # (по умолчанию 64 KiB). Соединение нужно закрыть —
             # буфер остаётся "забитым".
-            lib_logger.error(
+            lib_logger.exception(
                 f"Message exceeded reader limit ({e.consumed} bytes buffered)"
             )
             return None
@@ -85,7 +85,7 @@ async def recv_message(
         return json.loads(line.decode("utf-8"))
 
     except Exception as e:  # noqa: BLE001
-        lib_logger.error(f"Error receiving message: {e}")
+        lib_logger.exception(f"Error receiving message: {e}")
         return None
 
 
@@ -295,7 +295,7 @@ async def handle_client(
                 lib_logger.warning(f"Unhandled message type: {msg_type}")
 
     except Exception as e:  # noqa: BLE001
-        lib_logger.error(f"Error with {addr}: {e}")
+        lib_logger.exception(f"Error with {addr}: {e}")
     finally:
         writer.close()
         await writer.wait_closed()

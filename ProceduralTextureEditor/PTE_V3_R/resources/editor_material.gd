@@ -147,11 +147,11 @@ static func merge_project_from_dict(project: Dictionary) -> bool:
 
 	return true
 
-
+##??? Заменить разрознеенные генераторы на этот унифицированный.
 static func _make_unique_id(prefix: String, existing: Dictionary) -> StringName:
 	var id := StringName()
 	while id.is_empty() or existing.has(id):
-		id = StringName("%s_%d_%d" % [prefix, Time.get_ticks_usec(), randi()])
+		id = StringName("%s_%d_%d" % [prefix, int(Time.get_unix_time_from_system()), randi()])
 	return id
 
 
