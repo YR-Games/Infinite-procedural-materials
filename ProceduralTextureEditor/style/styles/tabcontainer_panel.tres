@@ -12,4 +12,4 @@ expand_margin_top = 1.0
 expand_margin_right = 5.0
 expand_margin_bottom = 5.0
 region_rect = Rect2(0, 8.648453, 379, 245.35155)
-modulate_color = Color(0.6431373, 0.68235296, 0.78039217, 1)
+modulate_color = Color(0.38431373, 0.41960785, 0.50980395, 1)
