@@ -11,8 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://glmiy2435yw7" path="res://SkyPanoramas/sky_sunny003_hdr.exr" id="4_nnwub"]
 [ext_resource type="Script" uid="uid://4lmxuyirt8k4" path="res://PTE_V3_R/misc/material_baker.gd" id="8_i4lt2"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_nnwub"]
-viewport_path = NodePath("MenuAndUI/UI/EditorPreviewSplit/Preview/SubViewport")
+[sub_resource type="ViewportTexture" id="ViewportTexture_1523j"]
+viewport_path = NodePath("Node/SubViewport")
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_yfcqk"]
 panorama = ExtResource("4_nnwub")
@@ -223,7 +223,7 @@ script = ExtResource("4_hi3c7")
 [node name="PreviewRect" type="TextureRect" parent="MenuAndUI/UI/EditorPreviewSplit/Preview" unique_id=1697785336]
 layout_mode = 2
 tooltip_text = "Область предпросмотра"
-texture = SubResource("ViewportTexture_nnwub")
+texture = SubResource("ViewportTexture_1523j")
 expand_mode = 1
 stretch_mode = 6
 
@@ -251,7 +251,6 @@ script = ExtResource("8_i4lt2")
 
 [node name="SubViewport" type="SubViewport" parent="Node" unique_id=1428011765]
 size = Vector2i(518, 518)
-render_target_update_mode = 4
 
 [node name="ColorRect" type="ColorRect" parent="Node/SubViewport" unique_id=577014155]
 anchors_preset = 15

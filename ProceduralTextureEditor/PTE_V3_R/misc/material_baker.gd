@@ -29,8 +29,8 @@ const DEFAULT_SIZE := Vector2i(518, 518)
 # Internal scene tree — built once in _ready(), reused across bake() calls.
 # ---------------------------------------------------------------------------
 
-var _viewport: SubViewport
-var _color_rect: ColorRect
+@onready var _viewport: SubViewport = $SubViewport
+@onready var _color_rect: ColorRect = $SubViewport/ColorRect
 var _shader_material: ShaderMaterial
 
 # Prevents two concurrent bake() calls from sharing the viewport.
@@ -45,17 +45,13 @@ func _ready() -> void:
 
 
 func _build_viewport_tree() -> void:
-	_viewport = SubViewport.new()
 	_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	_viewport.render_target_clear_mode  = SubViewport.CLEAR_MODE_ONCE
 	# Transparent background so the shader's ALPHA output is preserved.
 	_viewport.transparent_bg = true
-	add_child(_viewport)
 
-	_color_rect = ColorRect.new()
 	# Anchors handled manually via size; we set this to match viewport size on each bake.
 	_color_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_viewport.add_child(_color_rect)
 
 	_shader_material = ShaderMaterial.new()
 	_color_rect.material = _shader_material
@@ -93,7 +89,7 @@ var current_material_data: Dictionary
 var step: int = 0
 var final_counter: int = 0
 var params_count: int = 0
-const MAX_BRUT_FORCE_STEP_COUNT = 22
+const MAX_BRUT_FORCE_STEP_COUNT = 30
 
 func bake(material: String, anyway: bool = false, evalute_only_gen: bool = false)->Array:
 	if material != current_material:
@@ -108,7 +104,8 @@ func bake(material: String, anyway: bool = false, evalute_only_gen: bool = false
 					if not evalute_only_gen
 					else 0
 				)
-			) * 6
+				+ EditorMaterial.get_layers(&"albedo", current_material_data).keys().size() * 2 # редим смешивания + прозрачность
+			)**2
 			final_counter = -params_count
 
 	if not anyway and not evalute(evalute_only_gen):
@@ -187,10 +184,14 @@ func evalute(evalute_only_gen: bool = false)->bool:
 									param_def.get_step(),
 								)
 
-				if EditorMaterial.get_layer_order(channel)[0] != layer:
-					EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.2, 1.0)
-				else:
-					EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.8, 1.0)
+				if randf() > 0.75:
+					if EditorMaterial.get_layer_order(channel)[0] != layer:
+						EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.2, 1.0)
+					else:
+						EditorMaterial.get_layer(channel, layer, current_material_data)[&"opacity"] = randf_range(0.8, 1.0)
+
+				if randf() > 0.75:
+					EditorMaterial.get_layer(channel, layer, current_material_data)[&"blend_mode"] = MixLibrary.MixModes.keys().pick_random()
 
 	return true
 

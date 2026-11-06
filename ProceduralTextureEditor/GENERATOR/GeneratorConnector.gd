@@ -7,6 +7,8 @@
 
 extends Node #GConnector
 
+const EVALUTE_ONLY_GENERATORS = false
+
 var interface: Window
 var baker: ImageBaker
 var progress_bar: ProgressBar
@@ -56,7 +58,8 @@ func _input(event: InputEvent) -> void:
 		TCPConnection.show()
 		#??? Должен предлагать ввести код доступа, после успешного подтверждения открывать меню с настройками подключения
 	elif event.is_action_pressed("ui_select"):
-		AlertWindow.alert("Абыбабы\nттутутуу!", true if randf() > 0.5 else false)
+		BF.start()
+		#??? AlertWindow.alert("Абыбабы\nттутутуу!", true if randf() > 0.5 else false)
 
 
 func _process(delta: float) -> void:
@@ -179,7 +182,7 @@ func _handle_message(msg: Dictionary) -> void:
 					material_adding_finished = true
 				
 			else:
-				var baked: Array = await baker.bake(material, false, true) #???
+				var baked: Array = await baker.bake(material, false, EVALUTE_ONLY_GENERATORS)
 				var image:Image = baked[0]
 				if image and not image.is_empty():
 					var img_base64 := _image_to_base64(image)

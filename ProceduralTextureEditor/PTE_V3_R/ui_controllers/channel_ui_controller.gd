@@ -19,7 +19,7 @@ func setup(p_channel_name: StringName) -> void:
 
 
 func _ready() -> void:
-	add_layer_button.pressed.connect(_on_add_layer)
+	add_layer_button.pressed.connect(on_add_layer)
 	SignalBus.project_loaded.connect(_refresh)
 	if channel_name != StringName():
 		_refresh()
@@ -36,11 +36,25 @@ func _refresh() -> void:
 		_create_layer_ui(layer_data)
 
 
-func _on_add_layer() -> void:
+func on_add_layer() -> void:
 	var layer_id := _generate_layer_id(channel_name)
-	print(layer_id)
+	#print(layer_id)
 	var layer_data := EditorMaterial.add_layer(channel_name,layer_id)
 	_create_layer_ui(layer_data)
+
+func add_layer(gen: String)->void:
+	var layer_id := _generate_layer_id(channel_name)
+	var layer_data := EditorMaterial.add_layer(channel_name,layer_id)
+	var controller_scene = preload("res://PTE_V3_R/UI/layer_ui.tscn")
+	var controller := controller_scene.instantiate() as LayerUIController
+	layers_container.add_child(controller)
+	controller.setup(channel_name,layer_data[&"id"],self)
+
+	controller.gui_input.connect(_on_layer_gui_input.bind(controller))
+
+	layer_controllers.append(controller)
+
+	controller.assign_generator(gen)
 
 
 func _create_layer_ui(layer_data: Dictionary) -> void:
@@ -71,6 +85,10 @@ func _remove_layer(layer_controller: LayerUIController) -> void:
 		current_layer = null
 
 	layer_controller.queue_free()
+
+func remove_all_layers() -> void:
+	for i in layer_controllers:
+		_remove_layer(i)
 
 
 func _generate_layer_id(_channel_name: StringName) -> StringName:

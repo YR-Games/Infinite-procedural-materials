@@ -312,7 +312,7 @@ async def main() -> None:
     # limit — максимальный размер буфера StreamReader (в байтах).
     # Поднимаем до 10 МБ, т.к. сообщения могут быть больше 64 KiB.
     server = await asyncio.start_server(
-        handle_client, host, port, limit=1000 * 1024 * 1024
+        handle_client, host, port, limit=100 * 1024 * 1024
     )
     lib_logger.info(f"Generator listening on {host}:{port}")
     async with server:

@@ -18,3 +18,11 @@ func add_channel(channel_name: StringName) -> void:
 	add_child(controller)
 	controller.setup(channel_name)
 	channels.append(controller)
+
+func add_layer(gen: String) -> void:
+	if not channels.is_empty():
+		channels[0].add_layer(gen)
+
+
+func clear_all()->void:
+	channels[0].remove_all_layers()

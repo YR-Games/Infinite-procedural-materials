@@ -72,11 +72,11 @@ func _on_select_generator_button_pressed() -> void:
 
 static func _static_on_generator_selected(generator_id: StringName) -> void:
 	if pending_generator_layer:
-		pending_generator_layer._assign_generator(generator_id)
+		pending_generator_layer.assign_generator(generator_id)
 		pending_generator_layer = null
 
 
-func _assign_generator(generator_id: StringName) -> void:
+func assign_generator(generator_id: StringName) -> void:
 	layer_path.child(&"generator_id").set_value(generator_id)
 	_refresh_generator_preview()
 	_refresh_generator_list()           # обновляем выделение в общем списке

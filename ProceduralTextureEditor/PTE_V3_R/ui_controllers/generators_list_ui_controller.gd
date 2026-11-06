@@ -50,13 +50,13 @@ func _refresh() -> void:
 
 # ---------------------- Добавление генератора ----------------------
 
-func add_generator(generator_type_name: StringName) -> void:
+func add_generator(generator_type_name: StringName) -> Dictionary:
 
 	var gen_data := GeneratorLibrary.get_generator_data(generator_type_name)
 
 	if not gen_data:
 		push_error("Генератор '%s' не найден в библиотеке" % generator_type_name)
-		return
+		return {}
 
 	var default_params := {}
 
@@ -74,6 +74,7 @@ func add_generator(generator_type_name: StringName) -> void:
 	controller.setup(generator_type_name,id)
 	controller.gui_input.connect(_on_panel_gui_input.bind(controller))
 	panels.append(controller)
+	return default_params
 
 
 func _generate_unique_id() -> String:
@@ -107,3 +108,7 @@ func _remove_panel(panel: GeneratorUIController) -> void:
 
 	panels.erase(panel)
 	panel.queue_free()
+
+func clear_all()->void:
+	for i in panels:
+		_remove_panel(i)
