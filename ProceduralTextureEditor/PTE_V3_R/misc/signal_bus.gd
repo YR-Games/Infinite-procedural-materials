@@ -5,3 +5,4 @@ extends Node
 signal material_value_changed()
 signal project_loaded
 signal layer_structure_changed()
+signal generator_structure_changed()

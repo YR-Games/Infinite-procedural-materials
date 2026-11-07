@@ -11,7 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://glmiy2435yw7" path="res://SkyPanoramas/sky_sunny003_hdr.exr" id="4_nnwub"]
 [ext_resource type="Script" uid="uid://4lmxuyirt8k4" path="res://PTE_V3_R/misc/material_baker.gd" id="8_i4lt2"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_1523j"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_a4pn1"]
 viewport_path = NodePath("Node/SubViewport")
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_yfcqk"]
@@ -223,7 +223,7 @@ script = ExtResource("4_hi3c7")
 [node name="PreviewRect" type="TextureRect" parent="MenuAndUI/UI/EditorPreviewSplit/Preview" unique_id=1697785336]
 layout_mode = 2
 tooltip_text = "Область предпросмотра"
-texture = SubResource("ViewportTexture_1523j")
+texture = SubResource("ViewportTexture_a4pn1")
 expand_mode = 1
 stretch_mode = 6
 

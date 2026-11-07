@@ -1,6 +1,9 @@
 class_name GeneratorListUIController
 extends PanelContainer
 
+const GENERATOR_SCENE := preload("res://PTE_V3_R/UI/generator_ui.tscn")
+const PICKER_SCENE := preload("res://PTE_V3_R/UI/generator_picker.tscn")
+
 var panels: Array[GeneratorUIController] = []
 var current: GeneratorUIController = null
 
@@ -9,106 +12,96 @@ var current: GeneratorUIController = null
 
 signal generator_selected(generator_id: StringName)
 
+
 func _ready() -> void:
 	add_generator_button.pressed.connect(_on_add_generator_button_pressed)
 	SignalBus.project_loaded.connect(_refresh)
+	# Generators created/removed by scripts show up automatically.
+	SignalBus.generator_structure_changed.connect(_sync)
+
 
 func _on_add_generator_button_pressed() -> void:
-	var picker_scene = preload("res://PTE_V3_R/UI/generator_picker.tscn")
-	var picker = picker_scene.instantiate() as GeneratorPicker
+	var picker := PICKER_SCENE.instantiate() as GeneratorPicker
 	add_child(picker)
-	picker.generator_selected.connect(_on_generator_selected)
+	picker.generator_selected.connect(add_generator)
 	picker.popup_centered()
 
 
-func _on_generator_selected(gen_name: StringName) -> void:
-	add_generator(gen_name)
-
+## Full rebuild (project loaded).
 func _refresh() -> void:
+	for panel in panels.duplicate():
+		_drop(panel)
+	_sync()
 
-	for child in generators_container.get_children():
-		child.queue_free()
 
-	panels.clear()
-	current = null
+## Incremental sync: UI follows EditorMaterial.
+func _sync() -> void:
+	var wanted := EditorMaterial.get_generator_ids()
 
-	var controller_scene = preload("res://PTE_V3_R/UI/generator_ui.tscn")
-	for generator_id in EditorMaterial.get_generator_ids():
-		var generator := EditorMaterial.get_generator(generator_id)
+	for panel in panels.duplicate():
+		if not wanted.has(panel.generator_id):
+			_drop(panel)
 
-		var generator_name : StringName = generator.get("generator_name",StringName())
+	var index := 0
+	for generator_id in wanted:
+		var panel := get_panel(generator_id)
+		if panel == null:
+			panel = _spawn(generator_id)
+		if panel == null:
+			continue  # generator without a name -> no UI
+		generators_container.move_child(panel, index)
+		index += 1
 
-		if generator_name.is_empty():
-			continue
 
-		var controller : GeneratorUIController = controller_scene.instantiate()
-		generators_container.add_child(controller)
-		controller.setup(generator_name,generator_id)
-		controller.gui_input.connect(_on_panel_gui_input.bind(controller))
+func get_panel(generator_id: StringName) -> GeneratorUIController:
+	for panel in panels:
+		if panel.generator_id == generator_id:
+			return panel
+	return null
 
-		panels.append(controller)
 
-# ---------------------- Добавление генератора ----------------------
+func _spawn(generator_id: StringName) -> GeneratorUIController:
+	var generator := EditorMaterial.get_generator(generator_id)
+	var generator_name: StringName = generator.get(&"generator_name", StringName())
+	if generator_name.is_empty():
+		return null
 
-func add_generator(generator_type_name: StringName) -> Dictionary:
+	var panel := GENERATOR_SCENE.instantiate() as GeneratorUIController
+	generators_container.add_child(panel)
+	panel.setup(generator_name, generator_id)
+	panel.gui_input.connect(_on_panel_gui_input.bind(panel))
+	panels.append(panel)
+	return panel
 
-	var gen_data := GeneratorLibrary.get_generator_data(generator_type_name)
 
-	if not gen_data:
+func _drop(panel: GeneratorUIController) -> void:
+	panels.erase(panel)
+	if current == panel:
+		current = null
+	generators_container.remove_child(panel)
+	panel.queue_free()
+
+
+# ---------------------- Actions ----------------------
+
+## Creates a generator with library defaults. Returns its id ("" if unknown type).
+func add_generator(generator_type_name: StringName) -> StringName:
+	if GeneratorLibrary.get_generator_data(generator_type_name) == null:
 		push_error("Генератор '%s' не найден в библиотеке" % generator_type_name)
-		return {}
-
-	var default_params := {}
-
-	for param_name in gen_data.parameters:
-		var param_def = gen_data.parameters[param_name]
-		default_params[param_name] = param_def.default_value
-
-	var id := StringName(_generate_unique_id())
-
-	EditorMaterial.add_generator(id,generator_type_name,default_params)
-
-	var controller_scene = preload("res://PTE_V3_R/UI/generator_ui.tscn")
-	var controller: GeneratorUIController = controller_scene.instantiate()
-	generators_container.add_child(controller)
-	controller.setup(generator_type_name,id)
-	controller.gui_input.connect(_on_panel_gui_input.bind(controller))
-	panels.append(controller)
-	return default_params
+		return StringName()
+	return EditorMaterial.create_generator(generator_type_name)  # signal -> _sync() creates the UI
 
 
-func _generate_unique_id() -> String:
-	return "gen_%d_%d" % [Time.get_ticks_usec(),randi()]
-
-
-# ---------------------- Выделение ----------------------
-
-func _on_panel_gui_input(event: InputEvent,panel: GeneratorUIController) -> void:
-
-	if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
+func _on_panel_gui_input(event: InputEvent, panel: GeneratorUIController) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		SelectionManager.select(panel)
 		generator_selected.emit(panel.generator_id)
 
 
-
-# ---------------------- Удаление ----------------------
-
 func _unhandled_input(event: InputEvent) -> void:
-
-	if (event.is_action_pressed("ui_text_delete")and current):
+	if event.is_action_pressed("ui_text_delete") and current:
 		_remove_panel(current)
 
 
 func _remove_panel(panel: GeneratorUIController) -> void:
-
-	EditorMaterial.remove_generator(panel.generator_id)
-
-	if current == panel:
-		current = null
-
-	panels.erase(panel)
-	panel.queue_free()
-
-func clear_all()->void:
-	for i in panels:
-		_remove_panel(i)
+	EditorMaterial.remove_generator(panel.generator_id)  # -> _sync() drops the UI

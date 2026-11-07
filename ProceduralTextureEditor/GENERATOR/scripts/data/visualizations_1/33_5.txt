@@ -1,0 +1,114 @@
+{
+	"args": [
+		"sn:generators",
+		{
+			"args": [
+				"sn:gen_4705745_237_1318762691",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:cellNoiseAlt",
+						"sn:parameters",
+						{
+							"args": [
+								"s:scale",
+								"f:170.004333333333",
+								"s:seed",
+								"f:-333.333333333334"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				},
+				"sn:gen_4705785_239_283953745",
+				{
+					"args": [
+						"sn:generator_name",
+						"sn:valueNoise",
+						"sn:parameters",
+						{
+							"args": [
+								"s:scale",
+								"f:0.01"
+							],
+							"type": "Dictionary"
+						}
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		},
+		"sn:channels",
+		{
+			"args": [
+				"sn:albedo",
+				{
+					"args": [
+						"sn:layers",
+						{
+							"args": [
+								"sn:albedo_layer_4705772_238_4035199991",
+								{
+									"args": [
+										"sn:id",
+										"sn:albedo_layer_4705772_238_4035199991",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_4705745_237_1318762691",
+										"sn:blend_mode",
+										"s:addBlend",
+										"sn:opacity",
+										"f:0.89935975034194",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								},
+								"sn:albedo_layer_4705794_240_497505122",
+								{
+									"args": [
+										"sn:id",
+										"sn:albedo_layer_4705794_240_497505122",
+										"sn:name",
+										"s:Layer",
+										"sn:generator_id",
+										"sn:gen_4705785_239_283953745",
+										"sn:blend_mode",
+										"s:multiplyBlend",
+										"sn:opacity",
+										"f:0.99385193320289",
+										"sn:modifiers",
+										{
+											"args": [],
+											"type": "Dictionary"
+										},
+										"sn:modifier_order",
+										[]
+									],
+									"type": "Dictionary"
+								}
+							],
+							"type": "Dictionary"
+						},
+						"sn:layer_order",
+						[
+							"sn:albedo_layer_4705772_238_4035199991",
+							"sn:albedo_layer_4705794_240_497505122"
+						]
+					],
+					"type": "Dictionary"
+				}
+			],
+			"type": "Dictionary"
+		}
+	],
+	"type": "Dictionary"
+}
